@@ -10,7 +10,20 @@
 
 在撰寫 lecture/ 下的文章 .md 檔案時，請儘量交叉引用，例如寫 lecture/ 時，若 code/ 中有適當的範例，或者 wiki/ 中有適當的文章，就引用進來，不用再重複寫。
 
-現在請在 lecture/ ，寫出這六門課程的 課程 lecture，每門課程 xxx 都先寫 xxx/README.md 讓我確認，架構沒問題之後，再開始寫內容。
+現在請在 lecture/ ，寫出這六門課程的 課程 lecture， wiki/ 下的那些條目，基本上就是課程的核心觀念。
+
+請用兩層式的架構，寫出該 lecture 的目錄 lecture/xxx/README.md 。
+
+例如：lecture/機器學習/README.md 中，像是這樣 
+
+1. 簡介
+2. 優化算法： [爬山演算法](../wiki/機器學習/爬山演算法.md) / [梯度下降法](...)
+    * 程式： [梯度下降法](../code/機器學習/nn/gd/) / ....
+3. 機器學習： [分群](...) / ...
+
+要加入 code/ 範例的連結
+
+每門課程 xxx 都先寫 xxx/README.md 讓我確認，架構沒問題之後，再開始寫內容。
 
 ## 補充：
 
@@ -28,3 +41,8 @@
     * 特別強調 AI 導向的軟體工程，包含 git, github, 測試, 敏捷開發
     * 涵蓋：prompt, context, harness engineering
     * 區分：1. 單人+AI 模式 2. 大團隊合作模式
+
+
+# 計算機結構
+計算機結構中，有 code/nand2tetris/ 是 nand2tetris 的習題專案（用HackHDL實作），code/verilog/hackcpu/ 是用 verilog 實作的結果
+這些是該課程的重點

@@ -1,70 +1,61 @@
 # 系統程式
 
-本課程介紹電腦系統的底層運作，包含編譯器、作業系統、網路等核心技術。
+本課程介紹電腦系統的底層運作。
 
-## 內容架構
+## 1. 程式語言
+* [C語言](../wiki/系統程式/C語言.md)
+* [組合語言](../wiki/系統程式/組合語言.md)
+* [函數式編程](../wiki/系統程式/函數式編程.md)
 
-### 1. 編譯器 (Compiler)
-* 詞法分析與語法分析
-    * [code/系統程式/compiler/](../code/系統程式/compiler/) - 編譯器實作
+## 2. 編譯器與直譯器
+* [編譯器](../wiki/系統程式/編譯器.md)
+    * 程式： [code/系統程式/compiler/](../code/系統程式/compiler/) - 編譯器實作
+* [直譯器](../wiki/系統程式/直譯器.md)
+    * 程式： [code/系統程式/interpreter/](../code/系統程式/interpreter/) - 直譯器實作
+* [管線處理與編譯器](../wiki/系統程式/管線處理與編譯器.md)
 
-### 2. 直譯器 (Interpreter)
-* 位元碼直譯器
-    * [code/系統程式/interpreter/](../code/系統程式/interpreter/) - 直譯器實作
+## 3. 虛擬機器與中介表示
+* [虛擬機](../wiki/系統程式/虛擬機.md)
+    * 程式： [code/系統程式/irvm/](../code/系統程式/irvm/) - IRVM 實作
+* [圖靈機](../wiki/系統程式/圖靈機.md)
+    * 程式： [code/演算法/theory/turingMachine/](../code/演算法/theory/turingMachine/) - 圖靈機實作
+* [有限狀態機](../wiki/系統程式/有限狀態機.md)
+    * 程式： [code/演算法/theory/finiteStateMachine/](../code/演算法/theory/finiteStateMachine/) - FSM 實作
+* [形式文法](../wiki/系統程式/形式文法.md)
+    * 程式： [code/演算法/theory/grammar/](../code/演算法/theory/grammar/) - 文法實作
 
-### 3. 虛擬機器與中介表示 (IR + VM)
-* **IR (Intermediate Representation)**：中介表示設計
-* **VM (Virtual Machine)**：虛擬機器實作
-* RISC-V 指令集
-* LLVM IR
-* 組譯器 (Assembler) 與反組譯器 (Objdump)
-    * [code/系統程式/irvm/](../code/系統程式/irvm/) - IRVM 實作
-        * `rv0/` - RISC-V 指令集實作
-        * `ll0/` - LLVM IR 相關
-        * `objdump/` - 反組譯器
-        * `py0/` - Python VM
-        * `qd0/` - 快速原型 VM
+## 4. 作業系統
+* [作業系統](../wiki/系統程式/作業系統.md)
+    * 程式： [code/系統程式/os/](../code/系統程式/os/) - OS 專案
+* [行程與執行緒](../wiki/系統程式/行程與執行緒.md)
+* [排程](../wiki/系統程式/排程.md)
+* [虛擬記憶體](../wiki/系統程式/虛擬記憶體.md)
+* [記憶體管理](../wiki/系統程式/記憶體管理.md)
+* [檔案系統](../wiki/系統程式/檔案系統.md)
+* [垃圾搜集](../wiki/系統程式/垃圾搜集.md)
 
-### 4. 作業系統 (OS)
-* 行程管理與排程
-* 記憶體管理
-* 檔案系統
-    * [code/系統程式/os/](../code/系統程式/os/) - OS 專案 (xv6, xv7, mini-riscv-os2)
+## 5. 網路
+* [網路](../wiki/系統程式/網路.md)
+    * 程式： [code/系統程式/network/](../code/系統程式/network/) - 網路程式
+* [HTTP](../wiki/系統程式/HTTP.md)
 
-### 5. 網路 (Network)
-* Socket 程式設計
-* 協定實作
-    * [code/系統程式/network/](../code/系統程式/network/) - 網路程式
+## 6. 密碼學與安全
+* [密碼學與資訊安全](../wiki/系統程式/密碼學與資訊安全.md)
+    * 程式： [code/系統程式/crpyto/](../code/系統程式/crpyto/) - 密碼學實作
+* [區塊鏈與比特幣](../wiki/系統程式/區塊鏈與比特幣.md)
+    * 程式： [code/系統程式/textdata/blockchain0/](../code/系統程式/textdata/blockchain0/) - 區塊鏈
 
-### 6. 密碼學與安全 (Crypto)
-* 基礎密碼學
-* SSL/TLS
-    * [code/系統程式/crpyto/](../code/系統程式/crpyto/) - 密碼學實作
+## 7. 並行與效能
+* [並行計算與異構平台](../wiki/系統程式/並行計算與異構平台.md)
+* [同步與通訊](../wiki/系統程式/同步與通訊.md)
+* [訊號處理](../wiki/系統程式/訊號處理.md)
 
-### 7. 媒體處理 (Media)
-* 影片編碼 (MP4, MPEG)
-* 音訊處理
-    * [code/系統程式/media/](../code/系統程式/media/) - 媒體處理
+## 8. 媒體處理
+* 影片編碼
+    * 程式： [code/系統程式/media/](../code/系統程式/media/) - 媒體處理
 
-### 8. 圖形使用者介面 (GUI)
-* 視窗程式設計
-    * [code/系統程式/gui/](../code/系統程式/gui/) - GUI 實作
+## 9. 連結與載入
+* [連結器與載入器](../wiki/系統程式/連結器與載入器.md)
 
-### 9. 文字資料處理 (Text Data)
-* Git 實作
-* 區塊鏈
-* SQL 資料庫
-* 正規表達式
-* 壓縮演算法
-    * [code/系統程式/textdata/](../code/系統程式/textdata/) - 文字資料處理
-
-### 10. 工具 (Tool)
-* 開發工具
-    * [code/系統程式/tool/](../code/系統程式/tool/) - 工具實作
-
-## 使用技術
-- 主要：C 語言
-- 輔助：Python, Rust
-
-## 相關資源
-- Wiki: [_wiki/系統程式/](../_wiki/) - 系統軟體理論補充
+## 10. 開發工具
+* [GDB_LLDB](../wiki/系統程式/GDB_LLDB.md)
