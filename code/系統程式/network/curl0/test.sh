@@ -1,12 +1,12 @@
 #!/bin/bash
-# test.sh — simplecurl 測試腳本
-gcc -o simplecurl simplecurl.c -lssl -lcrypto
+# test.sh — curl0 測試腳本
+gcc -o curl0 curl0.c -lssl -lcrypto
 
 #!/bin/bash
-# test.sh — simplecurl 測試腳本（支援 macOS / Linux 自動編譯）
+# test.sh — curl0 測試腳本（支援 macOS / Linux 自動編譯）
 
-BINARY="./simplecurl"
-SOURCE="./simplecurl.c"
+BINARY="./curl0"
+SOURCE="./curl0.c"
 PASS=0
 FAIL=0
 
@@ -67,7 +67,7 @@ auto_compile() {
     fi
 
     step "開始編譯..."
-    if gcc $OPENSSL_FLAGS -o simplecurl "$SOURCE" -lssl -lcrypto 2>&1; then
+    if gcc $OPENSSL_FLAGS -o curl0 "$SOURCE" -lssl -lcrypto 2>&1; then
         echo -e "${GREEN}編譯成功！${NC}"
     else
         echo -e "${RED}編譯失敗，請檢查上方錯誤訊息${NC}"
