@@ -4,6 +4,8 @@
 
 > 作者： [陳鍾誠](https://csie.nqu.edu.tw/p/404-1038-2377.php?Lang=zh-tw) [@ccckmit](https://github.com/ccckmit)
 
+> 本課程主要使用 C + Python 實作。
+
 ## 課程列表
 
 | 課程 | 程式 | 主題 |
