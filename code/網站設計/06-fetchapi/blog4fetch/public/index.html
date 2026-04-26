@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>youbook</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #000; color: #fff; min-height: 100vh; }
+    .container { display: flex; min-height: 100vh; }
+    .sidebar { width: 280px; padding: 20px; border-right: 1px solid #2d2d2d; position: fixed; height: 100vh; }
+    .main { margin-left: 280px; flex: 1; max-width: 700px; min-height: 100vh; border-right: 1px solid #2d2d2d; }
+    .logo { font-size: 24px; font-weight: bold; padding: 15px 0; margin-bottom: 20px; cursor: pointer; }
+    .nav-item { padding: 15px; font-size: 18px; border-radius: 30px; margin-bottom: 5px; display: block; color: #fff; text-decoration: none; cursor: pointer; }
+    .nav-item:hover { background: #1a1a1a; }
+    .nav-item.active { font-weight: bold; }
+    .user-profile { padding: 15px; border-radius: 30px; display: flex; align-items: center; gap: 12px; margin-top: 20px; background: #1a1a1a; }
+    .avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 18px; }
+    .user-info { flex: 1; }
+    .user-name { font-weight: bold; }
+    .user-handle { color: #71767b; font-size: 14px; }
+    .btn { padding: 10px 20px; border-radius: 20px; border: none; cursor: pointer; font-size: 14px; font-weight: bold; }
+    .btn-primary { background: #fff; color: #000; width: 100%; }
+    .btn-primary:hover { background: #e6e6e6; }
+    .header { padding: 20px; border-bottom: 1px solid #2d2d2d; position: sticky; top: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); z-index: 100; }
+    .header h1 { font-size: 20px; font-weight: bold; }
+    .post-form { padding: 20px; border-bottom: 1px solid #2d2d2d; }
+    .post-form textarea { width: 100%; background: transparent; border: none; color: #fff; font-size: 18px; resize: none; min-height: 80px; outline: none; }
+    .post-form textarea::placeholder { color: #71767b; }
+    .post-form-actions { display: flex; justify-content: flex-end; margin-top: 10px; }
+    .post { padding: 20px; border-bottom: 1px solid #2d2d2d; transition: background 0.2s; cursor: pointer; }
+    .post:hover { background: #0a0a0a; }
+    .post-link { text-decoration: none; color: inherit; display: block; }
+    .post-header { display: flex; gap: 12px; margin-bottom: 10px; }
+    .post-avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0; }
+    .post-user-info { flex: 1; min-width: 0; }
+    .post-name { font-weight: bold; }
+    .post-name a { color: #fff; text-decoration: none; }
+    .post-name a:hover { text-decoration: underline; }
+    .post-handle { color: #71767b; }
+    .post-time { color: #71767b; }
+    .post-content { font-size: 16px; line-height: 1.5; margin-bottom: 12px; white-space: pre-wrap; overflow-wrap: break-word; }
+    .delete-btn { color: #f4212e; cursor: pointer; margin-left: auto; padding: 5px 10px; }
+    .post-actions { display: flex; gap: 20px; margin-top: 12px; }
+    .post-action { display: flex; align-items: center; gap: 6px; color: #71767b; cursor: pointer; }
+    .post-action:hover { color: #1d9bf0; }
+    .post-action.liked { color: #f91880; }
+    .post-action.shared { color: #00ba7c; }
+    .post-action span { font-size: 14px; }
+    .empty-state { text-align: center; padding: 60px 20px; color: #71767b; }
+    input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid #2d2d2d; background: #000; color: #fff; font-size: 16px; }
+    .form-container { max-width: 400px; margin: 100px auto; padding: 30px; }
+    .form-title { font-size: 28px; font-weight: bold; margin-bottom: 30px; }
+    .auth-links { margin-top: 20px; text-align: center; color: #71767b; }
+    .auth-links a { color: #1d9bf0; text-decoration: none; }
+    .back-link { color: #1d9bf0; text-decoration: none; padding: 20px; display: block; border-bottom: 1px solid #2d2d2d; cursor: pointer; }
+    .comment-form { padding: 20px; border-bottom: 1px solid #2d2d2d; }
+    .comment-form textarea { width: 100%; background: transparent; border: none; color: #fff; font-size: 16px; resize: none; min-height: 60px; outline: none; }
+    .comment-form textarea::placeholder { color: #71767b; }
+    .comment { padding: 15px 20px; border-bottom: 1px solid #2d2d2d; }
+    .auth-container { display: flex; min-height: 100vh; justify-content: center; align-items: center; }
+    .error { color: #f4212e; margin-bottom: 10px; }
+  </style>
+</head>
+<body>
+  <div id="app"></div>
+
+  <script>
+    let currentUser = null;
+    let currentPage = 'public';
+
+    async function api(endpoint, options = {}) {
+      const response = await fetch(endpoint, {
+        ...options,
+        headers: {
+          'Content-Type': 'application/json',
+          ...options.headers
+        },
+        credentials: 'include'
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.error || 'Error');
+      }
+      return data;
+    }
+
+    async function checkAuth() {
+      try {
+        const { user } = await api('/api/me');
+        currentUser = user;
+        render();
+      } catch (err) {
+        currentUser = null;
+        render();
+      }
+    }
+
+    function formatDate(dateStr) {
+      const date = new Date(dateStr);
+      return date.toLocaleString();
+    }
+
+    async function render() {
+      const app = document.getElementById('app');
+      
+      if (!currentUser) {
+        app.innerHTML = renderAuth();
+        return;
+      }
+
+      const mainContent = await renderMainContent();
+      app.innerHTML = `
+        <div class="container">
+          ${renderSidebar()}
+          <div class="main" id="main-content">
+            ${mainContent}
+          </div>
+        </div>
+      `;
+      attachEventListeners();
+    }
+
+    function renderSidebar() {
+      return `
+        <div class="sidebar">
+          <div class="logo" onclick="navigateTo('public')">youbook</div>
+          <div class="nav-item ${currentPage === 'public' ? 'active' : ''}" onclick="navigateTo('public')">Public</div>
+          <div class="nav-item ${currentPage === 'my' ? 'active' : ''}" onclick="navigateTo('my')">My Posts</div>
+          
+          <div class="user-profile">
+            <div class="avatar">${currentUser.username[0].toUpperCase()}</div>
+            <div class="user-info">
+              <div class="user-name">${currentUser.username}</div>
+              <div class="user-handle">@${currentUser.username}</div>
+            </div>
+          </div>
+          <div class="nav-item" style="margin-top: 20px;" onclick="logout()">Log out</div>
+        </div>
+      `;
+    }
+
+    async function renderMainContent() {
+      if (currentPage === 'public') {
+        return await renderPublicPage();
+      } else if (currentPage === 'my') {
+        return await renderMyPage();
+      } else if (currentPage.startsWith('post:')) {
+        const postId = currentPage.split(':')[1];
+        return await renderPostPage(postId);
+      } else if (currentPage.startsWith('user:')) {
+        const userId = currentPage.split(':')[1];
+        return await renderUserPage(userId);
+      }
+      return '';
+    }
+
+    async function renderPublicPage() {
+      let posts = [];
+      try {
+        posts = await api('/api/posts');
+      } catch (err) {
+        console.error(err);
+      }
+
+      return `
+        <div class="header">
+          <h1>Public Posts</h1>
+        </div>
+        ${posts.length === 0 
+          ? '<div class="empty-state">No posts yet.</div>'
+          : posts.map(post => renderPost(post)).join('')}
+      `;
+    }
+
+    async function renderMyPage() {
+      let posts = [];
+      try {
+        posts = await api('/api/my-posts');
+      } catch (err) {
+        console.error(err);
+      }
+
+      return `
+        <div class="header">
+          <h1>My Posts</h1>
+        </div>
+        <div class="post-form">
+          <textarea id="post-content" placeholder="What is on your mind?" required></textarea>
+          <div class="post-form-actions">
+            <button class="btn btn-primary" onclick="createPost()">Post</button>
+          </div>
+        </div>
+        ${posts.length === 0 
+          ? '<div class="empty-state">No posts yet. Share something!</div>'
+          : posts.map(post => renderPost(post, true)).join('')}
+      `;
+    }
+
+    async function renderPostPage(postId) {
+      let post = null;
+      try {
+        post = await api(`/api/post/${postId}`);
+      } catch (err) {
+        return `
+          <a class="back-link" onclick="navigateTo('public')">← Back</a>
+          <div class="empty-state">Post not found</div>
+        `;
+      }
+
+      return `
+        <a class="back-link" onclick="goBack()">← Back</a>
+        <div class="post" style="cursor: default;">
+          <div class="post-header">
+            <div class="post-avatar">${(post.username || '?')[0].toUpperCase()}</div>
+            <div class="post-user-info">
+              <span class="post-name"><a href="#" onclick="navigateTo('user:${post.author_id}'); return false;">${post.username || 'Unknown'}</a></span>
+              <span class="post-handle">@${post.username || 'unknown'}</span>
+              <span class="post-time"> · ${formatDate(post.created_at)}</span>
+            </div>
+          </div>
+          <div class="post-content" style="font-size: 20px;">${post.content}</div>
+          <div class="post-actions">
+            <div class="post-action ${post.user_liked ? 'liked' : ''}" onclick="toggleLike(${post.id})">
+              <span>${post.user_liked ? '❤️' : '🤍'}</span>
+              <span>${post.like_count || 0}</span>
+            </div>
+            <div class="post-action" onclick="navigateTo('post:${post.id}')">
+              <span>💬</span>
+              <span>${post.comment_count || 0}</span>
+            </div>
+            <div class="post-action ${post.user_shared ? 'shared' : ''}" onclick="toggleShare(${post.id})">
+              <span>${post.user_shared ? '🔄' : '↗️'}</span>
+              <span>${post.share_count || 0}</span>
+            </div>
+          </div>
+        </div>
+        <div class="comment-form">
+          <textarea id="comment-content" placeholder="Write a reply..." required></textarea>
+          <div class="post-form-actions">
+            <button type="button" class="btn btn-primary reply-btn" data-post-id="${post.id}">Reply</button>
+          </div>
+        </div>
+        <div class="header">
+          <h1>Replies</h1>
+        </div>
+        ${post.comments && post.comments.length > 0 
+          ? post.comments.map(comment => `
+            <div class="comment">
+              <div class="post-header">
+                <div class="post-avatar">${(comment.username || '?')[0].toUpperCase()}</div>
+                <div class="post-user-info">
+                  <span class="post-name"><a href="#" onclick="navigateTo('user:${comment.author_id}'); return false;">${comment.username || 'Unknown'}</a></span>
+                  <span class="post-handle">@${comment.username || 'unknown'}</span>
+                  <span class="post-time"> · ${formatDate(comment.created_at)}</span>
+                </div>
+              </div>
+              <div class="post-content">${comment.content}</div>
+            </div>
+          `).join('')
+          : '<div class="empty-state">No replies yet.</div>'}
+      `;
+    }
+
+    async function renderUserPage(userId) {
+      let user = null;
+      let posts = [];
+      try {
+        user = await api(`/api/user/${userId}`);
+        posts = await api(`/api/user/${userId}/posts`);
+      } catch (err) {
+        return `
+          <a class="back-link" onclick="navigateTo('public')">← Back</a>
+          <div class="empty-state">User not found</div>
+        `;
+      }
+
+      return `
+        <a class="back-link" onclick="navigateTo('public')">← Back</a>
+        <div class="header">
+          <h1>@${user.username}'s Posts</h1>
+        </div>
+        ${posts.length === 0 
+          ? '<div class="empty-state">No posts yet.</div>'
+          : posts.map(post => renderPost(post)).join('')}
+      `;
+    }
+
+    function renderPost(post, showDelete = false) {
+      return `
+        <div class="post" onclick="navigateTo('post:${post.id}')">
+          <div class="post-header">
+            <div class="post-avatar">${(post.username || '?')[0].toUpperCase()}</div>
+            <div class="post-user-info">
+              <span class="post-name"><a href="#" onclick="event.stopPropagation(); navigateTo('user:${post.author_id}');">${post.username || 'Unknown'}</a></span>
+              <span class="post-handle">@${post.username || 'unknown'}</span>
+              <span class="post-time"> · ${formatDate(post.created_at)}</span>
+            </div>
+            ${showDelete ? `<span class="delete-btn" onclick="event.stopPropagation(); deletePost(${post.id})">✕</span>` : ''}
+          </div>
+          <div class="post-content">${post.content}</div>
+          <div class="post-actions">
+            <div class="post-action ${post.user_liked ? 'liked' : ''}" onclick="event.stopPropagation(); toggleLike(${post.id})">
+              <span>${post.user_liked ? '❤️' : '🤍'}</span>
+              <span>${post.like_count || 0}</span>
+            </div>
+            <div class="post-action" onclick="event.stopPropagation(); navigateTo('post:${post.id}')">
+              <span>💬</span>
+              <span>${post.comment_count || 0}</span>
+            </div>
+            <div class="post-action ${post.user_shared ? 'shared' : ''}" onclick="event.stopPropagation(); toggleShare(${post.id})">
+              <span>${post.user_shared ? '🔄' : '↗️'}</span>
+              <span>${post.share_count || 0}</span>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderAuth() {
+      const isLogin = authMode === 'login';
+      return `
+        <div class="auth-container">
+          <div class="form-container">
+            <h1 class="form-title" id="auth-title">${isLogin ? 'Log in to youbook' : 'Create account'}</h1>
+            <div id="auth-error" class="error"></div>
+            <form onsubmit="handleAuth(event)">
+              <input type="text" name="username" id="username" placeholder="Username" required>
+              <input type="password" name="password" id="password" placeholder="Password" required>
+              <button type="submit" class="btn btn-primary" id="auth-btn">${isLogin ? 'Log in' : 'Sign up'}</button>
+            </form>
+            <div class="auth-links">
+              <span id="auth-link-text">${isLogin ? "Don't have an account? " : "Have an account? "}</span><a href="#" onclick="toggleAuthMode(event)">${isLogin ? 'Sign up' : 'Log in'}</a>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    let authMode = 'login';
+
+    function toggleAuthMode(e) {
+      e.preventDefault();
+      authMode = authMode === 'login' ? 'register' : 'login';
+      const app = document.getElementById('app');
+      app.innerHTML = renderAuth();
+    }
+
+    async function handleAuth(e) {
+      e.preventDefault();
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      const errorEl = document.getElementById('auth-error');
+
+      try {
+        if (authMode === 'login') {
+          await api('/api/login', {
+            method: 'POST',
+            body: JSON.stringify({ username, password })
+          });
+        } else {
+          await api('/api/register', {
+            method: 'POST',
+            body: JSON.stringify({ username, password })
+          });
+          authMode = 'login';
+        }
+        errorEl.textContent = '';
+        await checkAuth();
+      } catch (err) {
+        errorEl.textContent = err.message;
+      }
+    }
+
+    async function logout() {
+      await api('/api/logout', { method: 'POST' });
+      currentUser = null;
+      currentPage = 'public';
+      render();
+    }
+
+    function navigateTo(page) {
+      currentPage = page;
+      render();
+    }
+
+    let history = [];
+    function goBack() {
+      if (history.length > 0) {
+        currentPage = history.pop();
+        render();
+      } else {
+        navigateTo('public');
+      }
+    }
+
+    async function createPost() {
+      const content = document.getElementById('post-content').value;
+      if (!content.trim()) return;
+
+      try {
+        await api('/api/posts', {
+          method: 'POST',
+          body: JSON.stringify({ content })
+        });
+        render();
+      } catch (err) {
+        alert(err.message);
+      }
+    }
+
+    async function deletePost(postId) {
+      if (!confirm('Delete this post?')) return;
+
+      try {
+        await api(`/api/post/${postId}`, { method: 'DELETE' });
+        render();
+      } catch (err) {
+        alert(err.message);
+      }
+    }
+
+    async function createComment(postId) {
+      const content = document.getElementById('comment-content');
+      if (!content) return;
+      
+      const contentValue = content.value;
+      if (!contentValue.trim()) return;
+
+      try {
+        await api(`/api/post/${postId}/comment`, {
+          method: 'POST',
+          body: JSON.stringify({ content: contentValue })
+        });
+        render();
+      } catch (err) {
+        console.error('Error creating comment:', err);
+      }
+    }
+
+    async function toggleLike(postId) {
+      try {
+        const { liked, like_count } = await api(`/api/post/${postId}/like`, { method: 'POST' });
+        
+        const mainContent = document.getElementById('main-content');
+        if (currentPage === `post:${postId}`) {
+          render();
+        } else {
+          const likeBtn = document.querySelector(`.post[onclick*="${postId}"] .post-action`);
+          if (likeBtn) {
+            likeBtn.classList.toggle('liked', liked);
+            likeBtn.querySelector('span:last-child').textContent = like_count;
+          }
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    async function toggleShare(postId) {
+      try {
+        const { shared, share_count } = await api(`/api/post/${postId}/share`, { method: 'POST' });
+        render();
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    function attachEventListeners() {
+      // Reply button listener
+      const replyBtn = document.querySelector('.reply-btn');
+      if (replyBtn) {
+        replyBtn.addEventListener('click', function() {
+          const postId = parseInt(this.getAttribute('data-post-id'));
+          createComment(postId);
+        });
+      }
+      
+      if (currentPage.startsWith('post:')) {
+        const postId = currentPage.split(':')[1];
+        history.push('public');
+      }
+    }
+
+    checkAuth();
+  </script>
+</body>
+</html>

@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>珍珠奶茶 POS 系統</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f5f5f5; }
+        .container { display: flex; height: 100vh; }
+
+        .menu-section {
+            width: 350px;
+            background: #fff;
+            border-right: 1px solid #ddd;
+            overflow-y: auto;
+            padding: 20px;
+        }
+        .menu-section h2 { margin-bottom: 15px; color: #333; font-size: 1.5rem; }
+        .category { margin-bottom: 20px; }
+        .category-title { font-size: 0.9rem; color: #888; text-transform: uppercase; margin-bottom: 10px; }
+        .menu-item {
+            background: #fff;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .menu-item:hover { border-color: #ff6b6b; background: #fff5f5; }
+        .menu-item.selected { border-color: #ff6b6b; background: #ffe0e0; }
+        .menu-item-header { display: flex; justify-content: space-between; align-items: center; }
+        .menu-item-name { font-weight: 600; color: #333; }
+        .menu-item-price { color: #ff6b6b; font-weight: 600; }
+        .menu-item-unavailable { opacity: 0.5; text-decoration: line-through; }
+
+        .order-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+        }
+        .order-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .order-header h2 { color: #333; font-size: 1.5rem; }
+        .order-number { color: #888; font-size: 0.9rem; }
+
+        .customization-panel {
+            background: #fff;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        .customization-panel.active { display: block; }
+        .customization-title { font-weight: 600; margin-bottom: 15px; display: flex; justify-content: space-between; }
+        .customization-title button { background: #ff6b6b; color: #fff; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; }
+        .option-group { margin-bottom: 15px; }
+        .option-label { font-size: 0.85rem; color: #666; margin-bottom: 8px; }
+        .options { display: flex; flex-wrap: wrap; gap: 8px; }
+        .option-btn {
+            padding: 8px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 20px;
+            background: #fff;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+        .option-btn:hover { border-color: #ff6b6b; }
+        .option-btn.selected { background: #ff6b6b; color: #fff; border-color: #ff6b6b; }
+        .option-btn:has(+.selected) { background: #ff6b6b; color: #fff; border-color: #ff6b6b; }
+
+        .toppings-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+        .topping-btn { padding: 10px; text-align: center; }
+        .topping-btn .price { font-size: 0.75rem; color: #888; }
+        .topping-btn.selected { background: #ff6b6b; color: #fff; border-color: #ff6b6b; }
+        .topping-btn.selected .price { color: #fff; }
+
+        .quantity-control { display: flex; align-items: center; gap: 15px; }
+        .qty-btn { width: 36px; height: 36px; border: 2px solid #e0e0e0; border-radius: 50%; background: #fff; font-size: 1.2rem; cursor: pointer; }
+        .qty-btn:hover { border-color: #ff6b6b; }
+        .qty-value { font-size: 1.5rem; font-weight: 600; min-width: 40px; text-align: center; }
+
+        .order-items { background: #fff; border-radius: 12px; flex: 1; overflow-y: auto; padding: 20px; }
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .order-item:last-child { border-bottom: none; }
+        .order-item-info h4 { font-weight: 600; color: #333; }
+        .order-item-info p { font-size: 0.8rem; color: #888; margin-top: 2px; }
+        .order-item-price { text-align: right; }
+        .order-item-price .subtotal { font-weight: 600; color: #ff6b6b; }
+        .order-item-price .unit { font-size: 0.75rem; color: #888; }
+        .remove-btn { color: #ff6b6b; cursor: pointer; margin-left: 10px; font-size: 1.2rem; }
+
+        .order-footer {
+            background: #fff;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .discount-row { display: flex; gap: 10px; margin-bottom: 15px; }
+        .discount-input { flex: 1; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 1rem; }
+        .discount-btn { padding: 12px 20px; background: #4ecdc4; color: #fff; border: none; border-radius: 8px; cursor: pointer; font-size: 1rem; }
+        .discount-applied { color: #4ecdc4; font-size: 0.85rem; margin-top: 5px; }
+        .totals { margin-top: 15px; }
+        .total-row { display: flex; justify-content: space-between; padding: 8px 0; font-size: 1rem; color: #666; }
+        .total-row.final { font-size: 1.3rem; font-weight: 700; color: #333; border-top: 2px solid #333; padding-top: 15px; margin-top: 10px; }
+        .submit-btn {
+            width: 100%;
+            padding: 18px;
+            background: #ff6b6b;
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background 0.2s;
+        }
+        .submit-btn:hover { background: #ff5252; }
+        .submit-btn:disabled { background: #ccc; cursor: not-allowed; }
+
+        .empty-state { text-align: center; color: #aaa; padding: 40px; }
+        .empty-state .icon { font-size: 4rem; margin-bottom: 10px; }
+
+        .tab-bar { display: flex; background: #fff; border-bottom: 1px solid #ddd; padding: 0 20px; }
+        .tab { padding: 15px 25px; cursor: pointer; border-bottom: 3px solid transparent; color: #666; }
+        .tab.active { color: #ff6b6b; border-color: #ff6b6b; }
+
+        .orders-panel { display: none; }
+        .orders-panel.active { display: block; }
+        .order-card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 10px;
+        }
+        .order-card-header { display: flex; justify-content: space-between; margin-bottom: 10px; }
+        .order-card-id { font-weight: 600; }
+        .order-card-status { padding: 4px 12px; border-radius: 15px; font-size: 0.8rem; }
+        .status-pending { background: #fff3cd; color: #856404; }
+        .status-preparing { background: #cce5ff; color: #004085; }
+        .status-ready { background: #d4edda; color: #155724; }
+        .status-completed { background: #e0e0e0; color: #333; }
+        .status-cancelled { background: #f8d7da; color: #721c24; }
+
+        .status-actions { display: flex; gap: 8px; margin-top: 10px; }
+        .action-btn { padding: 6px 12px; border: 1px solid #ddd; border-radius: 6px; background: #fff; cursor: pointer; font-size: 0.85rem; }
+        .action-btn:hover { border-color: #ff6b6b; color: #ff6b6b; }
+
+        .modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); align-items: center; justify-content: center; z-index: 1000; }
+        .modal.active { display: flex; }
+        .modal-content { background: #fff; border-radius: 16px; padding: 30px; max-width: 400px; text-align: center; }
+        .modal-content h3 { margin-bottom: 15px; }
+        .modal-content p { color: #666; margin-bottom: 20px; }
+        .modal-btn { padding: 12px 30px; border: none; border-radius: 8px; font-size: 1rem; cursor: pointer; }
+        .modal-btn.primary { background: #ff6b6b; color: #fff; }
+        .modal-btn.secondary { background: #e0e0e0; color: #333; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="menu-section">
+            <h2>📋 菜單</h2>
+            <div id="menuList"></div>
+        </div>
+
+        <div class="order-section">
+            <div class="order-header">
+                <h2>🛒 訂單</h2>
+                <span class="order-number" id="currentDate"></span>
+            </div>
+
+            <div class="tab-bar">
+                <div class="tab active" data-tab="current">新訂單</div>
+                <div class="tab" data-tab="orders">歷史訂單</div>
+            </div>
+
+            <div class="orders-panel" id="ordersPanel">
+                <div id="ordersList"></div>
+            </div>
+
+            <div id="currentOrder">
+                <div class="customization-panel" id="customizationPanel">
+                    <div class="customization-title">
+                        <span id="customItemName">選擇飲品</span>
+                        <button onclick="closeCustomization()">取消</button>
+                    </div>
+
+                    <div class="option-group">
+                        <div class="option-label">尺寸</div>
+                        <div class="options" id="sizeOptions">
+                            <button class="option-btn" data-size="S">S ($0)</button>
+                            <button class="option-btn selected" data-size="M">M (+$5)</button>
+                            <button class="option-btn" data-size="L">L (+$10)</button>
+                        </div>
+                    </div>
+
+                    <div class="option-group">
+                        <div class="option-label">甜度</div>
+                        <div class="options" id="sweetnessOptions">
+                            <button class="option-btn" data-sweetness="no_sugar">無糖</button>
+                            <button class="option-btn" data-sweetness="light">微糖</button>
+                            <button class="option-btn selected" data-sweetness="half">半糖</button>
+                            <button class="option-btn" data-sweetness="less">少糖</button>
+                            <button class="option-btn" data-sweetness="normal">正常</button>
+                        </div>
+                    </div>
+
+                    <div class="option-group">
+                        <div class="option-label">冰度</div>
+                        <div class="options" id="iceOptions">
+                            <button class="option-btn" data-ice="no_ice">去冰</button>
+                            <button class="option-btn" data-ice="light">微冰</button>
+                            <button class="option-btn" data-ice="less">少冰</button>
+                            <button class="option-btn selected" data-ice="normal">正常</button>
+                        </div>
+                    </div>
+
+                    <div class="option-group">
+                        <div class="option-label">加料 (每項 +$5~$10)</div>
+                        <div class="options toppings-grid" id="toppingOptions">
+                            <button class="option-btn topping-btn" data-topping="pearl">珍珠<div class="price">+$5</div></button>
+                            <button class="option-btn topping-btn" data-topping="boba">波霸<div class="price">+$5</div></button>
+                            <button class="option-btn topping-btn" data-topping="coconut_jelly">椰果<div class="price">+$5</div></button>
+                            <button class="option-btn topping-btn" data-topping="taro_ball">芋圓<div class="price">+$8</div></button>
+                            <button class="option-btn topping-btn" data-topping="pudding">布丁<div class="price">+$10</div></button>
+                        </div>
+                    </div>
+
+                    <div class="option-group">
+                        <div class="option-label">數量</div>
+                        <div class="quantity-control">
+                            <button class="qty-btn" onclick="changeQty(-1)">−</button>
+                            <span class="qty-value" id="qtyValue">1</span>
+                            <button class="qty-btn" onclick="changeQty(1)">+</button>
+                        </div>
+                    </div>
+
+                    <button class="submit-btn" onclick="addToOrder()" style="margin-top: 20px;">加入訂單</button>
+                </div>
+
+                <div class="order-items" id="orderItems">
+                    <div class="empty-state">
+                        <div class="icon">🧋</div>
+                        <p>點擊左側菜單加入訂單</p>
+                    </div>
+                </div>
+
+                <div class="order-footer">
+                    <div class="discount-row">
+                        <input type="text" class="discount-input" id="discountInput" placeholder="輸入折扣碼">
+                        <button class="discount-btn" onclick="applyDiscount()">套用</button>
+                    </div>
+                    <div class="discount-applied" id="discountInfo"></div>
+                    <div class="totals">
+                        <div class="total-row"><span>小計</span><span id="subtotal">$0</span></div>
+                        <div class="total-row"><span>折扣</span><span id="discount">-$0</span></div>
+                        <div class="total-row final"><span>總計</span><span id="total">$0</span></div>
+                    </div>
+                    <button class="submit-btn" id="submitBtn" onclick="submitOrder()" disabled>確認結帳</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="successModal">
+        <div class="modal-content">
+            <h3>✅ 訂單已送出</h3>
+            <p id="modalOrderInfo">訂單號碼：</p>
+            <button class="modal-btn primary" onclick="closeModal()">確定</button>
+        </div>
+    </div>
+
+    <script>
+        const API = window.location.origin;
+        let menuItems = [];
+        let currentItem = null;
+        let cart = [];
+        let currentDiscount = null;
+        let orders = [];
+
+        const toppingPrices = { pearl: 5, boba: 5, coconut_jelly: 5, taro_ball: 8, pudding: 10 };
+        const sizePrices = { S: 0, M: 5, L: 10 };
+
+        async function loadMenu() {
+            const res = await fetch(`${API}/api/menu`);
+            menuItems = await res.json();
+            renderMenu();
+        }
+
+        async function loadOrders() {
+            const res = await fetch(`${API}/api/orders`);
+            orders = await res.json();
+            renderOrders();
+        }
+
+        function renderMenu() {
+            const categories = {};
+            menuItems.forEach(item => {
+                if (!categories[item.category]) categories[item.category] = [];
+                categories[item.category].push(item);
+            });
+
+            const container = document.getElementById('menuList');
+            container.innerHTML = Object.entries(categories).map(([cat, items]) => `
+                <div class="category">
+                    <div class="category-title">${cat}</div>
+                    ${items.map(item => `
+                        <div class="menu-item ${!item.is_available ? 'menu-item-unavailable' : ''}"
+                             onclick="${item.is_available ? `selectItem('${item.id}')` : ''}">
+                            <div class="menu-item-header">
+                                <span class="menu-item-name">${item.name}</span>
+                                <span class="menu-item-price">$${item.price}</span>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `).join('');
+        }
+
+        function selectItem(id) {
+            currentItem = menuItems.find(m => m.id === id);
+            document.getElementById('customizationPanel').classList.add('active');
+            document.getElementById('customItemName').textContent = currentItem.name;
+
+            document.querySelectorAll('#sizeOptions .option-btn').forEach(btn => btn.classList.remove('selected'));
+            document.querySelector('#sizeOptions [data-size="M"]').classList.add('selected');
+
+            document.querySelectorAll('#sweetnessOptions .option-btn').forEach(btn => btn.classList.remove('selected'));
+            document.querySelector('#sweetnessOptions [data-sweetness="half"]').classList.add('selected');
+
+            document.querySelectorAll('#iceOptions .option-btn').forEach(btn => btn.classList.remove('selected'));
+            document.querySelector('#iceOptions [data-ice="normal"]').classList.add('selected');
+
+            document.querySelectorAll('#toppingOptions .option-btn').forEach(btn => btn.classList.remove('selected'));
+
+            document.getElementById('qtyValue').textContent = '1';
+        }
+
+        function closeCustomization() {
+            document.getElementById('customizationPanel').classList.remove('active');
+            currentItem = null;
+        }
+
+        function changeQty(delta) {
+            const qty = parseInt(document.getElementById('qtyValue').textContent) + delta;
+            if (qty >= 1 && qty <= 99) document.getElementById('qtyValue').textContent = qty;
+        }
+
+        document.querySelectorAll('.option-btn[data-size]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('#sizeOptions .option-btn').forEach(b => b.classList.remove('selected'));
+                btn.classList.add('selected');
+            });
+        });
+
+        document.querySelectorAll('#sweetnessOptions .option-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('#sweetnessOptions .option-btn').forEach(b => b.classList.remove('selected'));
+                btn.classList.add('selected');
+            });
+        });
+
+        document.querySelectorAll('#iceOptions .option-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('#iceOptions .option-btn').forEach(b => b.classList.remove('selected'));
+                btn.classList.add('selected');
+            });
+        });
+
+        document.querySelectorAll('#toppingOptions .option-btn').forEach(btn => {
+            btn.addEventListener('click', () => btn.classList.toggle('selected'));
+        });
+
+        function addToOrder() {
+            const size = document.querySelector('#sizeOptions .option-btn.selected').dataset.size;
+            const sweetness = document.querySelector('#sweetnessOptions .option-btn.selected').dataset.sweetness;
+            const ice = document.querySelector('#iceOptions .option-btn.selected').dataset.ice;
+            const toppings = Array.from(document.querySelectorAll('#toppingOptions .option-btn.selected')).map(b => b.dataset.topping);
+            const qty = parseInt(document.getElementById('qtyValue').textContent);
+
+            const sizePrice = sizePrices[size];
+            const toppingPrice = toppings.reduce((sum, t) => sum + toppingPrices[t], 0);
+            const unitPrice = currentItem.price + sizePrice + toppingPrice;
+
+            cart.push({
+                menu_item_id: currentItem.id,
+                name: currentItem.name,
+                size,
+                sweetness,
+                ice_level: ice,
+                toppings,
+                quantity: qty,
+                unit_price: unitPrice,
+                subtotal: unitPrice * qty
+            });
+
+            closeCustomization();
+            renderCart();
+        }
+
+        function renderCart() {
+            const container = document.getElementById('orderItems');
+            if (cart.length === 0) {
+                container.innerHTML = `<div class="empty-state"><div class="icon">🧋</div><p>點擊左側菜單加入訂單</p></div>`;
+                document.getElementById('submitBtn').disabled = true;
+                return;
+            }
+
+            container.innerHTML = cart.map((item, idx) => `
+                <div class="order-item">
+                    <div class="order-item-info">
+                        <h4>${item.name}</h4>
+                        <p>${item.size} / ${getSweetness(item.sweetness)} / ${getIce(item.ice_level)}${item.toppings.length ? ' / +' + item.toppings.map(t => getToppingName(t)).join(', ') : ''}</p>
+                        <p>x${item.quantity}</p>
+                    </div>
+                    <div class="order-item-price">
+                        <div class="unit">$${item.unit_price}/杯</div>
+                        <div class="subtotal">$${item.subtotal}</div>
+                    </div>
+                    <span class="remove-btn" onclick="removeItem(${idx})">×</span>
+                </div>
+            `).join('');
+
+            updateTotals();
+            document.getElementById('submitBtn').disabled = false;
+        }
+
+        function removeItem(idx) {
+            cart.splice(idx, 1);
+            renderCart();
+        }
+
+        function getSweetness(s) {
+            const map = { no_sugar: '無糖', light: '微糖', half: '半糖', less: '少糖', normal: '正常' };
+            return map[s] || s;
+        }
+
+        function getIce(i) {
+            const map = { no_ice: '去冰', light: '微冰', less: '少冰', normal: '正常' };
+            return map[i] || i;
+        }
+
+        function getToppingName(t) {
+            const map = { pearl: '珍珠', boba: '波霸', coconut_jelly: '椰果', taro_ball: '芋圓', pudding: '布丁' };
+            return map[t] || t;
+        }
+
+        function updateTotals() {
+            const subtotal = cart.reduce((sum, item) => sum + item.subtotal, 0);
+            let discount = 0;
+            if (currentDiscount) {
+                if (currentDiscount.type === 'percentage') discount = subtotal * currentDiscount.value / 100;
+                else discount = currentDiscount.value;
+            }
+            const total = subtotal - discount;
+
+            document.getElementById('subtotal').textContent = `$${subtotal}`;
+            document.getElementById('discount').textContent = `-$${discount.toFixed(0)}`;
+            document.getElementById('total').textContent = `$${total.toFixed(0)}`;
+            document.getElementById('discountInfo').textContent = currentDiscount ? `已套用折扣碼: ${currentDiscount.code}` : '';
+        }
+
+        async function applyDiscount() {
+            const code = document.getElementById('discountInput').value.trim().toUpperCase();
+            if (!code) return;
+
+            const subtotal = cart.reduce((sum, item) => sum + item.subtotal, 0);
+            const res = await fetch(`${API}/api/orders/validate-discount`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ code, order_amount: subtotal })
+            });
+            const result = await res.json();
+
+            if (result.valid) {
+                currentDiscount = { code, type: result.discount_type, value: result.discount_value };
+                updateTotals();
+                document.getElementById('discountInfo').textContent = `✓ ${result.message}`;
+                document.getElementById('discountInfo').style.color = '#4ecdc4';
+            } else {
+                document.getElementById('discountInfo').textContent = '✗ 無效的折扣碼';
+                document.getElementById('discountInfo').style.color = '#ff6b6b';
+                currentDiscount = null;
+                updateTotals();
+            }
+        }
+
+        async function submitOrder() {
+            const payload = {
+                items: cart.map(item => ({
+                    menu_item_id: item.menu_item_id,
+                    size: item.size,
+                    sweetness: item.sweetness,
+                    ice_level: item.ice_level,
+                    toppings: item.toppings,
+                    quantity: item.quantity
+                })),
+                discount_code: currentDiscount ? currentDiscount.code : null
+            };
+
+            const res = await fetch(`${API}/api/orders`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            if (res.ok) {
+                const order = await res.json();
+                document.getElementById('modalOrderInfo').textContent = `訂單號碼：${order.order_number}`;
+                document.getElementById('successModal').classList.add('active');
+                cart = [];
+                currentDiscount = null;
+                document.getElementById('discountInput').value = '';
+                renderCart();
+                loadOrders();
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('successModal').classList.remove('active');
+        }
+
+        function renderOrders() {
+            const container = document.getElementById('ordersList');
+            if (orders.length === 0) {
+                container.innerHTML = '<div class="empty-state"><div class="icon">📋</div><p>暫無訂單記錄</p></div>';
+                return;
+            }
+
+            container.innerHTML = orders.slice(0, 20).map(order => `
+                <div class="order-card">
+                    <div class="order-card-header">
+                        <span class="order-card-id">#${order.order_number}</span>
+                        <span class="order-card-status status-${order.status}">${getStatusText(order.status)}</span>
+                    </div>
+                    <div style="font-size: 0.85rem; color: #666;">
+                        ${order.items.map(item => `${item.name} x${item.quantity}`).join(', ')}
+                    </div>
+                    <div style="margin-top: 8px; font-weight: 600;">$${order.final_amount}</div>
+                    <div class="status-actions">
+                        ${order.status === 'pending' ? `<button class="action-btn" onclick="updateStatus('${order.id}', 'preparing')">開始製作</button>` : ''}
+                        ${order.status === 'preparing' ? `<button class="action-btn" onclick="updateStatus('${order.id}', 'ready')">製作完成</button>` : ''}
+                        ${order.status === 'ready' ? `<button class="action-btn" onclick="updateStatus('${order.id}', 'completed')">已完成</button>` : ''}
+                        ${order.status !== 'cancelled' && order.status !== 'completed' ? `<button class="action-btn" onclick="updateStatus('${order.id}', 'cancelled')">取消</button>` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function getStatusText(status) {
+            const map = { pending: '待製作', preparing: '製作中', ready: '已完成', completed: '已取貨', cancelled: '已取消' };
+            return map[status] || status;
+        }
+
+        async function updateStatus(id, status) {
+            await fetch(`${API}/api/orders/${id}/status`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ status })
+            });
+            loadOrders();
+        }
+
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                if (tab.dataset.tab === 'orders') {
+                    document.getElementById('currentOrder').style.display = 'none';
+                    document.getElementById('ordersPanel').classList.add('active');
+                    loadOrders();
+                } else {
+                    document.getElementById('currentOrder').style.display = 'block';
+                    document.getElementById('ordersPanel').classList.remove('active');
+                }
+            });
+        });
+
+        document.getElementById('currentDate').textContent = new Date().toLocaleDateString('zh-TW');
+
+        loadMenu();
+    </script>
+</body>
+</html>

@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>My Blog</title>
+  <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; background: #fafafa; min-height: 100vh; }
+    h1 { border-bottom: 2px solid #333; padding-bottom: 10px; }
+    .post { margin-bottom: 30px; padding: 20px; border: 1px solid #ddd; border-radius: 8px; background: #fff; transition: box-shadow 0.2s; }
+    .post:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    .post h2 { margin-top: 0; }
+    .post a { text-decoration: none; color: #333; cursor: pointer; }
+    .post a:hover { color: #0066cc; }
+    .meta { color: #666; font-size: 0.9em; margin-bottom: 10px; }
+    .excerpt { color: #555; line-height: 1.6; }
+    .new-post { background: #fff; padding: 25px; border-radius: 8px; margin-bottom: 30px; border: 1px solid #ddd; }
+    .new-post h3 { margin-top: 0; margin-bottom: 15px; }
+    input, textarea { width: 100%; padding: 12px; margin: 8px 0; box-sizing: border-box; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; }
+    input:focus, textarea:focus { outline: none; border-color: #0066cc; }
+    textarea { min-height: 120px; font-family: inherit; }
+    button { background: #333; color: white; padding: 12px 24px; border: none; cursor: pointer; border-radius: 4px; font-size: 14px; }
+    button:hover { background: #555; }
+    .back-link { display: inline-block; margin-bottom: 20px; color: #0066cc; text-decoration: none; cursor: pointer; }
+    .back-link:hover { text-decoration: underline; }
+    .post-content { line-height: 1.8; }
+    .post-content img { max-width: 100%; }
+    .delete-btn { background: #dc3545; margin-left: 10px; }
+    .delete-btn:hover { background: #c82333; }
+    .loading { text-align: center; padding: 40px; color: #666; }
+    .error { color: #dc3545; padding: 10px; background: #ffe6e6; border-radius: 4px; margin-bottom: 10px; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+
+    function App() {
+      const [page, setPage] = useState('home');
+      const [posts, setPosts] = useState([]);
+      const [currentPostId, setCurrentPostId] = useState(null);
+      const [currentPost, setCurrentPost] = useState(null);
+      const [loading, setLoading] = useState(false);
+
+      useEffect(() => {
+        loadPosts();
+      }, []);
+
+      const api = async (endpoint, options = {}) => {
+        const response = await fetch(endpoint, {
+          ...options,
+          headers: {
+            'Content-Type': 'application/json',
+            ...options.headers
+          }
+        });
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data.error || 'Error');
+        }
+        return data;
+      };
+
+      const loadPosts = async () => {
+        try {
+          const data = await api('/api/posts');
+          setPosts(data);
+        } catch (err) {
+          console.error(err);
+        }
+      };
+
+      const loadPost = async (id) => {
+        setLoading(true);
+        try {
+          const data = await api(`/api/post/${id}`);
+          setCurrentPost(data);
+        } catch (err) {
+          console.error(err);
+        }
+        setLoading(false);
+      };
+
+      const handleCreatePost = async (title, content) => {
+        try {
+          await api('/api/posts', {
+            method: 'POST',
+            body: JSON.stringify({ title, content })
+          });
+          await loadPosts();
+        } catch (err) {
+          alert(err.message);
+        }
+      };
+
+      const handleDeletePost = async (id) => {
+        if (!confirm('Delete this post?')) return;
+        try {
+          await api(`/api/post/${id}`, { method: 'DELETE' });
+          setPage('home');
+          setCurrentPostId(null);
+          setCurrentPost(null);
+          await loadPosts();
+        } catch (err) {
+          alert(err.message);
+        }
+      };
+
+      const viewPost = (id) => {
+        setCurrentPostId(id);
+        setPage('post');
+        loadPost(id);
+      };
+
+      const goHome = () => {
+        setPage('home');
+        setCurrentPostId(null);
+        setCurrentPost(null);
+        loadPosts();
+      };
+
+      if (page === 'post') {
+        return (
+          <PostView 
+            post={currentPost} 
+            loading={loading}
+            onBack={goHome}
+            onDelete={() => handleDeletePost(currentPostId)}
+          />
+        );
+      }
+
+      return (
+        <HomeView 
+          posts={posts} 
+          onViewPost={viewPost}
+          onCreatePost={handleCreatePost}
+        />
+      );
+    }
+
+    function HomeView({ posts, onViewPost, onCreatePost }) {
+      const [title, setTitle] = useState('');
+      const [content, setContent] = useState('');
+
+      const handleSubmit = (e) => {
+        e.preventDefault();
+        if (!title.trim() || !content.trim()) return;
+        onCreatePost(title, content);
+        setTitle('');
+        setContent('');
+      };
+
+      return (
+        <div>
+          <h1>My Blog</h1>
+          <div className="new-post">
+            <h3>New Post</h3>
+            <form onSubmit={handleSubmit}>
+              <input 
+                type="text" 
+                placeholder="Title" 
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                required 
+              />
+              <textarea 
+                placeholder="Content (Markdown supported)" 
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
+                required 
+              />
+              <button type="submit">Publish</button>
+            </form>
+          </div>
+          {posts.length === 0 ? (
+            <p className="loading">No posts yet. Create one above!</p>
+          ) : (
+            posts.map(post => (
+              <div className="post" key={post.id}>
+                <h2>
+                  <a onClick={() => onViewPost(post.id)}>{post.title}</a>
+                </h2>
+                <p className="meta">{new Date(post.created_at).toLocaleString()}</p>
+                <p className="excerpt">{post.excerpt}...</p>
+                <a onClick={() => onViewPost(post.id)}>Read more →</a>
+              </div>
+            ))
+          )}
+        </div>
+      );
+    }
+
+    function PostView({ post, loading, onBack, onDelete }) {
+      if (loading) {
+        return (
+          <div>
+            <a className="back-link" onClick={onBack}>← Back</a>
+            <p className="loading">Loading...</p>
+          </div>
+        );
+      }
+
+      if (!post) {
+        return (
+          <div>
+            <a className="back-link" onClick={onBack}>← Back</a>
+            <p className="error">Post not found</p>
+          </div>
+        );
+      }
+
+      return (
+        <div>
+          <a className="back-link" onClick={onBack}>← Back</a>
+          <h1>{post.title}</h1>
+          <p className="meta">{new Date(post.created_at).toLocaleString()}</p>
+          <div className="post-content" dangerouslySetInnerHTML={{ __html: post.html }} />
+          <div style={{ marginTop: 20 }}>
+            <button className="delete-btn" onClick={onDelete}>Delete</button>
+          </div>
+        </div>
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
+</body>
+</html>

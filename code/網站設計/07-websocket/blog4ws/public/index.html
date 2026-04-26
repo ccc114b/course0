@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>youbook</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #000; color: #fff; min-height: 100vh; }
+    .container { display: flex; min-height: 100vh; }
+    .sidebar { width: 280px; padding: 20px; border-right: 1px solid #2d2d2d; position: fixed; height: 100vh; }
+    .main { margin-left: 280px; flex: 1; max-width: 700px; min-height: 100vh; border-right: 1px solid #2d2d2d; }
+    .logo { font-size: 24px; font-weight: bold; padding: 15px 0; margin-bottom: 20px; cursor: pointer; }
+    .logo a { color: #fff; text-decoration: none; }
+    .nav-item { padding: 15px; font-size: 18px; border-radius: 30px; margin-bottom: 5px; display: block; color: #fff; text-decoration: none; cursor: pointer; }
+    .nav-item:hover { background: #1a1a1a; }
+    .nav-item.active { font-weight: bold; }
+    .user-profile { padding: 15px; border-radius: 30px; display: flex; align-items: center; gap: 12px; margin-top: 20px; background: #1a1a1a; cursor: pointer; }
+    .avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 18px; }
+    .user-info { flex: 1; }
+    .user-name { font-weight: bold; }
+    .user-handle { color: #71767b; font-size: 14px; }
+    .btn { padding: 10px 20px; border-radius: 20px; border: none; cursor: pointer; font-size: 14px; font-weight: bold; }
+    .btn-primary { background: #fff; color: #000; width: 100%; }
+    .btn-primary:hover { background: #e6e6e6; }
+    .btn-secondary { background: #1d9bf0; color: #fff; }
+    .btn-secondary:hover { background: #1a8cd8; }
+    .header { padding: 20px; border-bottom: 1px solid #2d2d2d; position: sticky; top: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); z-index: 100; }
+    .header h1 { font-size: 20px; font-weight: bold; }
+    .post-form { padding: 20px; border-bottom: 1px solid #2d2d2d; }
+    .post-form textarea { width: 100%; background: transparent; border: none; color: #fff; font-size: 18px; resize: none; min-height: 80px; outline: none; }
+    .post-form textarea::placeholder { color: #71767b; }
+    .post-form-actions { display: flex; justify-content: flex-end; margin-top: 10px; }
+    .post { padding: 20px; border-bottom: 1px solid #2d2d2d; transition: background 0.2s; }
+    .post:hover { background: #0a0a0a; cursor: pointer; }
+    .post-link { text-decoration: none; color: inherit; display: block; }
+    .post-header { display: flex; gap: 12px; margin-bottom: 10px; }
+    .post-avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0; }
+    .post-user-info { flex: 1; min-width: 0; }
+    .post-name { font-weight: bold; }
+    .post-name a { color: #fff; text-decoration: none; }
+    .post-name a:hover { text-decoration: underline; }
+    .post-handle { color: #71767b; }
+    .post-time { color: #71767b; }
+    .post-content { font-size: 16px; line-height: 1.5; margin-bottom: 12px; white-space: pre-wrap; word-break: break-word; }
+    .delete-btn { color: #f4212e; cursor: pointer; margin-left: auto; padding: 5px 10px; }
+    .post-actions { display: flex; gap: 20px; margin-top: 12px; }
+    .post-action { display: flex; align-items: center; gap: 6px; color: #71767b; cursor: pointer; }
+    .post-action:hover { color: #1d9bf0; }
+    .post-action.liked { color: #f91880; }
+    .post-action.shared { color: #00ba7c; }
+    .post-action span { font-size: 14px; }
+    .empty-state { text-align: center; padding: 60px 20px; color: #71767b; }
+    input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid #2d2d2d; background: #000; color: #fff; font-size: 16px; }
+    .form-container { max-width: 400px; margin: 100px auto; padding: 30px; }
+    .form-title { font-size: 28px; font-weight: bold; margin-bottom: 30px; }
+    .auth-links { margin-top: 20px; text-align: center; color: #71767b; }
+    .auth-links a { color: #1d9bf0; text-decoration: none; cursor: pointer; }
+    .back-link { color: #1d9bf0; text-decoration: none; padding: 20px; display: block; border-bottom: 1px solid #2d2d2d; cursor: pointer; }
+    .error { color: #f4212e; text-align: center; margin-top: 10px; }
+    .hidden { display: none !important; }
+    .comment-form { padding: 20px; border-bottom: 1px solid #2d2d2d; }
+    .comment-form textarea { width: 100%; background: #000; border: 1px solid #2d2d2d; color: #fff; font-size: 16px; padding: 12px; border-radius: 8px; resize: none; min-height: 60px; outline: none; margin-bottom: 12px; }
+    .comment-form textarea:focus { border-color: #1d9bf0; }
+    .comment-form .post-form-actions { display: flex; justify-content: flex-end; }
+    .comment-form .btn { padding: 8px 16px; }
+    .comment { padding: 15px 20px; border-bottom: 1px solid #2d2d2d; }
+    .comment-header { display: flex; gap: 12px; margin-bottom: 8px; }
+    .comment-content { color: #fff; line-height: 1.5; }
+    .loading { text-align: center; padding: 40px; color: #71767b; }
+  </style>
+</head>
+<body>
+  <div id="app"></div>
+
+  <script>
+    const App = {
+      ws: null,
+      state: {
+        page: 'login',
+        user: null,
+        posts: [],
+        myPosts: [],
+        currentPost: null,
+        currentUser: null,
+        error: null
+      },
+
+      init() {
+        this.render();
+        this.connectWebSocket();
+      },
+
+      connectWebSocket() {
+        this.ws = new WebSocket(`ws://localhost:3002`);
+        
+        this.ws.onopen = () => {
+          console.log('Connected to WebSocket');
+        };
+
+        this.ws.onmessage = (event) => {
+          const message = JSON.parse(event.data);
+          this.handleMessage(message);
+        };
+
+        this.ws.onclose = () => {
+          console.log('Disconnected, reconnecting...');
+          setTimeout(() => this.connectWebSocket(), 2000);
+        };
+
+        this.ws.onerror = (err) => {
+          console.error('WebSocket error:', err);
+        };
+      },
+
+      send(type, data) {
+        if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+          this.ws.send(JSON.stringify({ type, data }));
+        }
+      },
+
+      handleMessage(message) {
+        const { type, data } = message;
+        
+        switch (type) {
+          case 'connected':
+            if (this.state.user) {
+              this.send('get_posts', {});
+            }
+            break;
+          case 'login_success':
+            this.state.user = data;
+            this.state.page = 'public';
+            this.send('get_posts', {});
+            break;
+          case 'register_success':
+            this.state.error = null;
+            this.state.page = 'login';
+            this.render();
+            break;
+          case 'error':
+            this.state.error = data;
+            this.render();
+            break;
+          case 'posts':
+            this.state.posts = data;
+            this.render();
+            break;
+          case 'my_posts':
+            this.state.myPosts = data;
+            this.render();
+            break;
+          case 'post_detail':
+            this.state.currentPost = data;
+            this.state.page = 'post';
+            this.render();
+            break;
+          case 'post_updated':
+            if (this.state.currentPost && (this.state.currentPost.id === data.postId || this.state.currentPost.id === data.post?.id)) {
+              this.state.currentPost = { ...data.post, comments: data.comments };
+            }
+            this.render();
+            break;
+          case 'user_posts':
+            this.state.currentUser = data.user;
+            this.state.posts = data.posts;
+            this.state.page = 'user';
+            this.render();
+            break;
+          case 'logged_out':
+            this.state.user = null;
+            this.state.page = 'login';
+            this.render();
+            break;
+        }
+      },
+
+      login(username, password) {
+        this.send('login', { username, password });
+      },
+
+      register(username, password) {
+        this.send('register', { username, password });
+      },
+
+      logout() {
+        this.send('logout', {});
+      },
+
+      createPost(content) {
+        this.send('create_post', { content });
+      },
+
+      deletePost(postId) {
+        this.send('delete_post', { postId });
+      },
+
+      viewPost(postId) {
+        this.send('get_post', { postId });
+      },
+
+      createComment(postId, content) {
+        this.send('create_comment', { postId, content });
+      },
+
+      toggleLike(postId) {
+        this.send('toggle_like', { postId });
+      },
+
+      toggleShare(postId) {
+        this.send('toggle_share', { postId });
+      },
+
+      viewUser(userId) {
+        this.send('get_user', { userId });
+      },
+
+      navigate(page) {
+        this.state.page = page;
+        this.state.error = null;
+        
+        if (page === 'public') {
+          this.send('get_posts', {});
+        } else if (page === 'my') {
+          this.send('get_my_posts', {});
+        } else if (page === 'login' || page === 'register') {
+          this.state.user = null;
+        }
+        
+        this.render();
+      },
+
+      formatDate(dateStr) {
+        const date = new Date(dateStr);
+        return date.toLocaleString();
+      },
+
+      render() {
+        const app = document.getElementById('app');
+        
+        if (!this.state.user && this.state.page !== 'login' && this.state.page !== 'register') {
+          this.state.page = 'login';
+        }
+
+        let html = '';
+
+        if (this.state.page === 'login') {
+          html = this.renderLogin();
+        } else if (this.state.page === 'register') {
+          html = this.renderRegister();
+        } else {
+          html = this.renderMain();
+        }
+
+        app.innerHTML = html;
+        this.attachEventListeners();
+      },
+
+      renderLogin() {
+        return `
+          <div class="container">
+            ${this.renderSidebar()}
+            <div class="main" style="margin-left: 280px;">
+              <div class="form-container" style="margin-top: 50px;">
+                <h1 class="form-title">Log in to youbook</h1>
+                <form id="login-form">
+                  <input type="text" id="username" placeholder="Username" required>
+                  <input type="password" id="password" placeholder="Password" required>
+                  <button type="submit" class="btn btn-primary">Log in</button>
+                </form>
+                ${this.state.error ? `<div class="error">${this.state.error}</div>` : ''}
+                <div class="auth-links">
+                  Don't have an account? <a onclick="App.navigate('register')">Sign up</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      },
+
+      renderRegister() {
+        return `
+          <div class="container">
+            ${this.renderSidebar()}
+            <div class="main" style="margin-left: 280px;">
+              <div class="form-container" style="margin-top: 50px;">
+                <h1 class="form-title">Create account</h1>
+                <form id="register-form">
+                  <input type="text" id="username" placeholder="Username" required>
+                  <input type="password" id="password" placeholder="Password" required>
+                  <button type="submit" class="btn btn-primary">Sign up</button>
+                </form>
+                ${this.state.error ? `<div class="error">${this.state.error}</div>` : ''}
+                <div class="auth-links">
+                  Have an account? <a onclick="App.navigate('login')">Log in</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      },
+
+      renderMain() {
+        return `
+          <div class="container">
+            ${this.renderSidebar()}
+            ${this.renderContent()}
+          </div>
+        `;
+      },
+
+      renderSidebar() {
+        if (!this.state.user) {
+          return `
+            <div class="sidebar">
+              <div class="logo"><a onclick="App.navigate('public')">youbook</a></div>
+              <div class="nav-item ${this.state.page === 'login' ? 'active' : ''}" onclick="App.navigate('login')">Login</div>
+              <div class="nav-item ${this.state.page === 'register' ? 'active' : ''}" onclick="App.navigate('register')">Register</div>
+            </div>
+          `;
+        }
+        
+        return `
+          <div class="sidebar">
+            <div class="logo" onclick="App.navigate('public')">youbook</div>
+            <div class="nav-item ${this.state.page === 'public' ? 'active' : ''}" onclick="App.navigate('public')">Public</div>
+            <div class="nav-item ${this.state.page === 'my' ? 'active' : ''}" onclick="App.navigate('my')">My Posts</div>
+            
+            <div class="user-profile" onclick="App.viewUser(${this.state.user.userId})">
+              <div class="avatar">${this.state.user.username[0].toUpperCase()}</div>
+              <div class="user-info">
+                <div class="user-name">${this.state.user.username}</div>
+                <div class="user-handle">@${this.state.user.username}</div>
+              </div>
+            </div>
+            <div class="nav-item" style="margin-top: 20px;" onclick="App.logout()">Log out</div>
+          </div>
+        `;
+      },
+
+      renderContent() {
+        let content = '';
+        
+        switch (this.state.page) {
+          case 'public':
+            content = this.renderPublicPosts();
+            break;
+          case 'my':
+            content = this.renderMyPosts();
+            break;
+          case 'post':
+            content = this.renderPostDetail();
+            break;
+          case 'user':
+            content = this.renderUserPosts();
+            break;
+          default:
+            content = this.renderPublicPosts();
+        }
+
+        return `
+          <div class="main">
+            ${content}
+          </div>
+        `;
+      },
+
+      renderPublicPosts() {
+        return `
+          <div class="header">
+            <h1>Public Posts</h1>
+          </div>
+          ${this.state.posts.length === 0 
+            ? '<div class="empty-state">No posts yet.</div>'
+            : this.state.posts.map(post => this.renderPost(post)).join('')}
+        `;
+      },
+
+      renderMyPosts() {
+        return `
+          <div class="header">
+            <h1>My Posts</h1>
+          </div>
+          <div class="post-form">
+            <form id="post-form">
+              <textarea id="post-content" placeholder="What is on your mind?" required></textarea>
+              <div class="post-form-actions">
+                <button type="submit" class="btn btn-primary">Post</button>
+              </div>
+            </form>
+          </div>
+          ${this.state.myPosts.length === 0 
+            ? '<div class="empty-state">No posts yet. Share something!</div>'
+            : this.state.myPosts.map(post => this.renderPost(post, true)).join('')}
+        `;
+      },
+
+      renderPost(post, isOwner = false) {
+        const isMyPost = this.state.user && post.author_id === this.state.user.userId;
+        return `
+          <div class="post" onclick="App.viewPost(${post.id})">
+            <div class="post-header">
+              <div class="post-avatar">${(post.username || '?')[0].toUpperCase()}</div>
+              <div class="post-user-info">
+                <span class="post-name"><a onclick="event.stopPropagation(); App.viewUser(${post.author_id})">${post.username || 'Unknown'}</a></span>
+                <span class="post-handle">@${post.username || 'unknown'}</span>
+                <span class="post-time"> · ${this.formatDate(post.created_at)}</span>
+              </div>
+              ${(isOwner || isMyPost) ? `<span class="delete-btn" onclick="event.stopPropagation(); if(confirm('Delete this post?')) App.deletePost(${post.id})">✕</span>` : ''}
+            </div>
+            <div class="post-content">${post.content}</div>
+            <div class="post-actions">
+              <div class="post-action ${post.user_liked ? 'liked' : ''}" onclick="event.stopPropagation(); App.toggleLike(${post.id})">
+                <span>${post.user_liked ? '❤️' : '🤍'}</span>
+                <span>${post.like_count || 0}</span>
+              </div>
+              <div class="post-action" onclick="event.stopPropagation(); App.viewPost(${post.id})">
+                <span>💬</span>
+                <span>${post.comment_count || 0}</span>
+              </div>
+              <div class="post-action ${post.user_shared ? 'shared' : ''}" onclick="event.stopPropagation(); App.toggleShare(${post.id})">
+                <span>${post.user_shared ? '🔄' : '↗️'}</span>
+                <span>${post.share_count || 0}</span>
+              </div>
+            </div>
+          </div>
+        `;
+      },
+
+      renderPostDetail() {
+        const post = this.state.currentPost;
+        if (!post) {
+          return `<div class="loading">Loading...</div>`;
+        }
+
+        const comments = post.comments || [];
+        
+        return `
+          <div class="back-link" onclick="App.navigate('public')">← Back</div>
+          <div class="post">
+            <div class="post-header">
+              <div class="post-avatar">${(post.username || '?')[0].toUpperCase()}</div>
+              <div class="post-user-info">
+                <span class="post-name"><a onclick="event.stopPropagation(); App.viewUser(${post.author_id})">${post.username || 'Unknown'}</a></span>
+                <span class="post-handle">@${post.username || 'unknown'}</span>
+                <span class="post-time"> · ${this.formatDate(post.created_at)}</span>
+              </div>
+            </div>
+            <div class="post-content" style="font-size: 20px;">${post.content}</div>
+          </div>
+          ${this.state.user ? `
+            <div class="comment-form">
+              <form id="comment-form">
+                <textarea id="comment-content" placeholder="Write a reply..." required></textarea>
+                <div class="post-form-actions">
+                  <button type="submit" class="btn btn-primary">Reply</button>
+                </div>
+              </form>
+            </div>
+          ` : '<div class="empty-state"><a onclick="App.navigate(\'login\')">Log in</a> to reply to this post.</div>'}
+          <div class="header">
+            <h1>Replies</h1>
+          </div>
+          ${comments.length === 0 
+            ? '<div class="empty-state">No replies yet.</div>'
+            : comments.map(comment => `
+              <div class="comment">
+                <div class="comment-header">
+                  <div class="post-avatar">${(comment.username || '?')[0].toUpperCase()}</div>
+                  <div class="post-user-info">
+                    <span class="post-name"><a onclick="App.viewUser(${comment.author_id})">${comment.username || 'Unknown'}</a></span>
+                    <span class="post-handle">@${comment.username || 'unknown'}</span>
+                    <span class="post-time"> · ${this.formatDate(comment.created_at)}</span>
+                  </div>
+                </div>
+                <div class="comment-content">${comment.content}</div>
+              </div>
+            `).join('')}
+        `;
+      },
+
+      renderUserPosts() {
+        const user = this.state.currentUser;
+        if (!user) {
+          return `<div class="loading">Loading...</div>`;
+        }
+
+        return `
+          <div class="back-link" onclick="App.navigate('public')">← Back</div>
+          <div class="header">
+            <h1>@${user.username}'s Posts</h1>
+          </div>
+          ${this.state.posts.length === 0 
+            ? '<div class="empty-state">No posts yet.</div>'
+            : this.state.posts.map(post => `
+              <div class="post" onclick="App.viewPost(${post.id})">
+                <div class="post-header">
+                  <div class="post-avatar">${user.username[0].toUpperCase()}</div>
+                  <div class="post-user-info">
+                    <span class="post-name"><a onclick="event.stopPropagation(); App.viewUser(${user.id})">${user.username}</a></span>
+                    <span class="post-handle">@${user.username}</span>
+                    <span class="post-time"> · ${this.formatDate(post.created_at)}</span>
+                  </div>
+                </div>
+                <div class="post-content">${post.content}</div>
+                <div class="post-actions">
+                  <div class="post-action" onclick="event.stopPropagation(); App.viewPost(${post.id})">
+                    <span>💬</span>
+                    <span>${post.comment_count || 0}</span>
+                  </div>
+                </div>
+              </div>
+            `).join('')}
+        `;
+      },
+
+      attachEventListeners() {
+        const loginForm = document.getElementById('login-form');
+        if (loginForm) {
+          loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            this.login(username, password);
+          });
+        }
+
+        const registerForm = document.getElementById('register-form');
+        if (registerForm) {
+          registerForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            this.register(username, password);
+          });
+        }
+
+        const postForm = document.getElementById('post-form');
+        if (postForm) {
+          postForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const content = document.getElementById('post-content').value;
+            if (content.trim()) {
+              this.createPost(content);
+              document.getElementById('post-content').value = '';
+            }
+          });
+        }
+
+        const commentForm = document.getElementById('comment-form');
+        if (commentForm) {
+          commentForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const content = document.getElementById('comment-content').value;
+            if (content.trim() && this.state.currentPost) {
+              this.createComment(this.state.currentPost.id, content);
+              document.getElementById('comment-content').value = '';
+            }
+          });
+        }
+      }
+    };
+
+    window.App = App;
+    App.init();
+  </script>
+</body>
+</html>

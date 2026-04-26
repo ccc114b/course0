@@ -1,0 +1,22 @@
+{
+  "name": "blog4react",
+  "version": "1.0.0",
+  "description": "Blog with React and WebSocket SPA",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "build": "vite build",
+    "test": "node test.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "sqlite3": "^5.1.6",
+    "marked": "^9.1.2",
+    "bcryptjs": "^2.4.3",
+    "ws": "^8.14.2",
+    "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "jsdom": "^22.1.0"
+  }
+}

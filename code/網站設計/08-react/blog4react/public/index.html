@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>youbook</title>
+  <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #000; color: #fff; min-height: 100vh; }
+    .container { display: flex; min-height: 100vh; }
+    .sidebar { width: 280px; padding: 20px; border-right: 1px solid #2d2d2d; position: fixed; height: 100vh; }
+    .main { margin-left: 280px; flex: 1; max-width: 700px; min-height: 100vh; border-right: 1px solid #2d2d2d; }
+    .logo { font-size: 24px; font-weight: bold; padding: 15px 0; margin-bottom: 20px; cursor: pointer; }
+    .nav-item { padding: 15px; font-size: 18px; border-radius: 30px; margin-bottom: 5px; display: block; color: #fff; text-decoration: none; cursor: pointer; }
+    .nav-item:hover { background: #1a1a1a; }
+    .nav-item.active { font-weight: bold; }
+    .user-profile { padding: 15px; border-radius: 30px; display: flex; align-items: center; gap: 12px; margin-top: 20px; background: #1a1a1a; cursor: pointer; }
+    .avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 18px; }
+    .user-info { flex: 1; }
+    .user-name { font-weight: bold; }
+    .user-handle { color: #71767b; font-size: 14px; }
+    .btn { padding: 10px 20px; border-radius: 20px; border: none; cursor: pointer; font-size: 14px; font-weight: bold; }
+    .btn-primary { background: #fff; color: #000; width: 100%; }
+    .btn-primary:hover { background: #e6e6e6; }
+    .header { padding: 20px; border-bottom: 1px solid #2d2d2d; position: sticky; top: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); z-index: 100; }
+    .header h1 { font-size: 20px; font-weight: bold; }
+    .post-form { padding: 20px; border-bottom: 1px solid #2d2d2d; }
+    .post-form textarea { width: 100%; background: transparent; border: none; color: #fff; font-size: 18px; resize: none; min-height: 80px; outline: none; }
+    .post-form textarea::placeholder { color: #71767b; }
+    .post-form-actions { display: flex; justify-content: flex-end; margin-top: 10px; }
+    .post { padding: 20px; border-bottom: 1px solid #2d2d2d; transition: background 0.2s; cursor: pointer; }
+    .post:hover { background: #0a0a0a; }
+    .post-header { display: flex; gap: 12px; margin-bottom: 10px; }
+    .post-avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0; }
+    .post-user-info { flex: 1; min-width: 0; }
+    .post-name { font-weight: bold; }
+    .post-name a { color: #fff; text-decoration: none; }
+    .post-name a:hover { text-decoration: underline; }
+    .post-handle { color: #71767b; }
+    .post-time { color: #71767b; }
+    .post-content { font-size: 16px; line-height: 1.5; margin-bottom: 12px; white-space: pre-wrap; word-break: break-word; }
+    .delete-btn { color: #f4212e; cursor: pointer; margin-left: auto; padding: 5px 10px; }
+    .post-actions { display: flex; gap: 20px; margin-top: 12px; }
+    .post-action { display: flex; align-items: center; gap: 6px; color: #71767b; cursor: pointer; }
+    .post-action:hover { color: #1d9bf0; }
+    .post-action.liked { color: #f91880; }
+    .post-action.shared { color: #00ba7c; }
+    .post-action span { font-size: 14px; }
+    .empty-state { text-align: center; padding: 60px 20px; color: #71767b; }
+    input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid #2d2d2d; background: #000; color: #fff; font-size: 16px; }
+    .form-container { max-width: 400px; margin: 100px auto; padding: 30px; }
+    .form-title { font-size: 28px; font-weight: bold; margin-bottom: 30px; }
+    .auth-links { margin-top: 20px; text-align: center; color: #71767b; }
+    .auth-links a { color: #1d9bf0; text-decoration: none; cursor: pointer; }
+    .back-link { color: #1d9bf0; text-decoration: none; padding: 20px; display: block; border-bottom: 1px solid #2d2d2d; cursor: pointer; }
+    .error { color: #f4212e; text-align: center; margin-top: 10px; }
+    .hidden { display: none !important; }
+    .comment-form { padding: 20px; border-bottom: 1px solid #2d2d2d; }
+    .comment-form textarea { width: 100%; background: #000; border: 1px solid #2d2d2d; color: #fff; font-size: 16px; padding: 12px; border-radius: 8px; resize: none; min-height: 60px; outline: none; margin-bottom: 12px; }
+    .comment-form textarea:focus { border-color: #1d9bf0; }
+    .comment-form .post-form-actions { display: flex; justify-content: flex-end; }
+    .comment-form .btn { padding: 8px 16px; }
+    .comment { padding: 15px 20px; border-bottom: 1px solid #2d2d2d; }
+    .comment-header { display: flex; gap: 12px; margin-bottom: 8px; }
+    .comment-content { color: #fff; line-height: 1.5; }
+    .loading { text-align: center; padding: 40px; color: #71767b; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect, useRef } = React;
+
+    function App() {
+      const [ws, setWs] = useState(null);
+      const [page, setPage] = useState('login');
+      const [user, setUser] = useState(null);
+      const [posts, setPosts] = useState([]);
+      const [myPosts, setMyPosts] = useState([]);
+      const [currentPost, setCurrentPost] = useState(null);
+      const [currentUser, setCurrentUser] = useState(null);
+      const [error, setError] = useState(null);
+      const wsRef = useRef(null);
+      const currentPostRef = useRef(null);
+      const pageRef = useRef('login');
+      const userRef = useRef(null);
+
+      useEffect(() => {
+        currentPostRef.current = currentPost;
+        pageRef.current = page;
+        userRef.current = user;
+      });
+
+      useEffect(() => {
+        connectWebSocket();
+      }, []);
+
+      const connectWebSocket = () => {
+        const websocket = new WebSocket('ws://localhost:3004');
+        
+        websocket.onopen = () => {
+          console.log('Connected to WebSocket');
+        };
+
+        websocket.onmessage = (event) => {
+          const message = JSON.parse(event.data);
+          handleMessage(message);
+        };
+
+        websocket.onclose = () => {
+          console.log('Disconnected, reconnecting...');
+          setTimeout(() => connectWebSocket(), 2000);
+        };
+
+        websocket.onerror = (err) => {
+          console.error('WebSocket error:', err);
+        };
+
+        wsRef.current = websocket;
+        setWs(websocket);
+      };
+
+      const send = (type, data) => {
+        if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
+          wsRef.current.send(JSON.stringify({ type, data }));
+        }
+      };
+
+      const handleMessage = (message) => {
+        const { type, data } = message;
+        
+        switch (type) {
+          case 'connected':
+            if (userRef.current) {
+              send('get_posts', {});
+            }
+            break;
+          case 'login_success':
+            setUser(data);
+            setPage('public');
+            send('get_posts', {});
+            break;
+          case 'register_success':
+            setPage('login');
+            break;
+          case 'error':
+            setError(data);
+            break;
+          case 'posts':
+            setPosts(data);
+            break;
+          case 'my_posts':
+            setMyPosts(data);
+            break;
+          case 'post_detail':
+            setCurrentPost(data);
+            setPage('post');
+            break;
+          case 'post_updated':
+            if (currentPostRef.current && (currentPostRef.current.id === data.postId || currentPostRef.current.id === data.post?.id)) {
+              setCurrentPost({ ...data.post, comments: data.comments });
+            }
+            break;
+          case 'user_posts':
+            setCurrentUser(data.user);
+            setPosts(data.posts);
+            setPage('user');
+            break;
+          case 'logged_out':
+            setUser(null);
+            setPage('login');
+            break;
+        }
+      };
+
+      const login = (username, password) => {
+        send('login', { username, password });
+      };
+
+      const register = (username, password) => {
+        send('register', { username, password });
+      };
+
+      const logout = () => {
+        send('logout', {});
+      };
+
+      const createPost = (content) => {
+        send('create_post', { content });
+      };
+
+      const deletePost = (postId) => {
+        send('delete_post', { postId });
+      };
+
+      const viewPost = (postId) => {
+        send('get_post', { postId });
+      };
+
+      const createComment = (postId, content) => {
+        send('create_comment', { postId, content });
+      };
+
+      const toggleLike = (postId) => {
+        send('toggle_like', { postId });
+      };
+
+      const toggleShare = (postId) => {
+        send('toggle_share', { postId });
+      };
+
+      const viewUser = (userId) => {
+        send('get_user', { userId });
+      };
+
+      const navigate = (newPage) => {
+        setError(null);
+        
+        if (newPage === 'public') {
+          send('get_posts', {});
+        } else if (newPage === 'my') {
+          send('get_my_posts', {});
+        } else if (newPage === 'login' || newPage === 'register') {
+          setUser(null);
+        }
+        
+        setPage(newPage);
+      };
+
+      const formatDate = (dateStr) => {
+        return new Date(dateStr).toLocaleString();
+      };
+
+      if (!user && page !== 'login' && page !== 'register') {
+        return <LoginPage onLogin={() => {}} onNavigate={navigate} error={error} />;
+      }
+
+      if (!user) {
+        return page === 'register' 
+          ? <RegisterPage onRegister={register} onNavigate={navigate} error={error} />
+          : <LoginPage onLogin={login} onNavigate={navigate} error={error} />;
+      }
+
+      return (
+        <div className="container">
+          <Sidebar 
+            user={user} 
+            currentPage={page} 
+            onNavigate={navigate} 
+            onLogout={logout}
+            onViewUser={viewUser}
+          />
+          <MainContent 
+            page={page}
+            posts={posts}
+            myPosts={myPosts}
+            currentPost={currentPost}
+            currentUser={currentUser}
+            user={user}
+            onNavigate={navigate}
+            onCreatePost={createPost}
+            onDeletePost={deletePost}
+            onViewPost={viewPost}
+            onCreateComment={createComment}
+            onToggleLike={toggleLike}
+            onToggleShare={toggleShare}
+            onViewUser={viewUser}
+            formatDate={formatDate}
+          />
+        </div>
+      );
+    }
+
+    function Sidebar({ user, currentPage, onNavigate, onLogout, onViewUser }) {
+      if (!user) {
+        return (
+          <div className="sidebar">
+            <div className="logo" onClick={() => onNavigate('public')}>youbook</div>
+            <div className={`nav-item ${currentPage === 'login' ? 'active' : ''}`} onClick={() => onNavigate('login')}>Login</div>
+            <div className={`nav-item ${currentPage === 'register' ? 'active' : ''}`} onClick={() => onNavigate('register')}>Register</div>
+          </div>
+        );
+      }
+
+      return (
+        <div className="sidebar">
+          <div className="logo" onClick={() => onNavigate('public')}>youbook</div>
+          <div className={`nav-item ${currentPage === 'public' ? 'active' : ''}`} onClick={() => onNavigate('public')}>Public</div>
+          <div className={`nav-item ${currentPage === 'my' ? 'active' : ''}`} onClick={() => onNavigate('my')}>My Posts</div>
+          
+          <div className="user-profile" onClick={() => onViewUser(user.userId)}>
+            <div className="avatar">{user.username[0].toUpperCase()}</div>
+            <div className="user-info">
+              <div className="user-name">{user.username}</div>
+              <div className="user-handle">@{user.username}</div>
+            </div>
+          </div>
+          <div className="nav-item" style={{marginTop: 20}} onClick={onLogout}>Log out</div>
+        </div>
+      );
+    }
+
+    function MainContent({ page, posts, myPosts, currentPost, currentUser, user, onNavigate, onCreatePost, onDeletePost, onViewPost, onCreateComment, onToggleLike, onToggleShare, onViewUser, formatDate }) {
+      let content;
+
+      switch (page) {
+        case 'public':
+          content = <PostList posts={posts} user={user} onViewPost={onViewPost} onToggleLike={onToggleLike} onToggleShare={onToggleShare} onDeletePost={onDeletePost} onViewUser={onViewUser} formatDate={formatDate} />;
+          break;
+        case 'my':
+          content = (
+            <MyPosts 
+              posts={myPosts} 
+              user={user} 
+              onCreatePost={onCreatePost} 
+              onDeletePost={onDeletePost} 
+              onViewPost={onViewPost}
+              onViewUser={onViewUser}
+              formatDate={formatDate}
+            />
+          );
+          break;
+        case 'post':
+          content = (
+            <PostDetail 
+              post={currentPost} 
+              user={user} 
+              onNavigate={onNavigate}
+              onCreateComment={onCreateComment}
+              onViewUser={onViewUser}
+              formatDate={formatDate}
+            />
+          );
+          break;
+        case 'user':
+          content = (
+            <UserPosts 
+              user={currentUser} 
+              posts={posts} 
+              onNavigate={onNavigate}
+              onViewPost={onViewPost}
+              formatDate={formatDate}
+            />
+          );
+          break;
+        default:
+          content = <PostList posts={posts} user={user} onViewPost={onViewPost} onToggleLike={onToggleLike} onToggleShare={onToggleShare} onDeletePost={onDeletePost} onViewUser={onViewUser} formatDate={formatDate} />;
+      }
+
+      return <div className="main">{content}</div>;
+    }
+
+    function LoginPage({ onLogin, onNavigate, error }) {
+      const [username, setUsername] = useState('');
+      const [password, setPassword] = useState('');
+
+      const handleSubmit = (e) => {
+        e.preventDefault();
+        onLogin(username, password);
+      };
+
+      return (
+        <div className="container">
+          <Sidebar user={null} currentPage="login" onNavigate={onNavigate} onLogout={() => {}} onViewUser={() => {}} />
+          <div className="main" style={{marginLeft: 280}}>
+            <div className="form-container" style={{marginTop: 50}}>
+              <h1 className="form-title">Log in to youbook</h1>
+              <form onSubmit={handleSubmit}>
+                <input type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} required />
+                <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+                <button type="submit" className="btn btn-primary">Log in</button>
+              </form>
+              {error && <div className="error">{error}</div>}
+              <div className="auth-links">
+                Don't have an account? <a onClick={() => onNavigate('register')}>Sign up</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    function RegisterPage({ onRegister, onNavigate, error }) {
+      const [username, setUsername] = useState('');
+      const [password, setPassword] = useState('');
+
+      const handleSubmit = (e) => {
+        e.preventDefault();
+        onRegister(username, password);
+      };
+
+      return (
+        <div className="container">
+          <Sidebar user={null} currentPage="register" onNavigate={onNavigate} onLogout={() => {}} onViewUser={() => {}} />
+          <div className="main" style={{marginLeft: 280}}>
+            <div className="form-container" style={{marginTop: 50}}>
+              <h1 className="form-title">Create account</h1>
+              <form onSubmit={handleSubmit}>
+                <input type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} required />
+                <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+                <button type="submit" className="btn btn-primary">Sign up</button>
+              </form>
+              {error && <div className="error">{error}</div>}
+              <div className="auth-links">
+                Have an account? <a onClick={() => onNavigate('login')}>Log in</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    function PostList({ posts, user, onViewPost, onToggleLike, onToggleShare, onDeletePost, onViewUser, formatDate }) {
+      return (
+        <>
+          <div className="header">
+            <h1>Public Posts</h1>
+          </div>
+          {posts.length === 0 
+            ? <div className="empty-state">No posts yet.</div>
+            : posts.map(post => (
+                <PostItem 
+                  key={post.id} 
+                  post={post} 
+                  user={user}
+                  isOwner={user && post.author_id === user.userId}
+                  onViewPost={onViewPost}
+                  onToggleLike={onToggleLike}
+                  onToggleShare={onToggleShare}
+                  onDeletePost={onDeletePost}
+                  onViewUser={onViewUser}
+                  formatDate={formatDate}
+                />
+              ))
+          }
+        </>
+      );
+    }
+
+    function MyPosts({ posts, user, onCreatePost, onDeletePost, onViewPost, onViewUser, formatDate }) {
+      const [content, setContent] = useState('');
+
+      const handleSubmit = (e) => {
+        e.preventDefault();
+        if (content.trim()) {
+          onCreatePost(content);
+          setContent('');
+        }
+      };
+
+      return (
+        <>
+          <div className="header">
+            <h1>My Posts</h1>
+          </div>
+          <div className="post-form">
+            <form onSubmit={handleSubmit}>
+              <textarea 
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
+                placeholder="What is on your mind?" 
+                required
+              />
+              <div className="post-form-actions">
+                <button type="submit" className="btn btn-primary">Post</button>
+              </div>
+            </form>
+          </div>
+          {posts.length === 0 
+            ? <div className="empty-state">No posts yet. Share something!</div>
+            : posts.map(post => (
+                <PostItem 
+                  key={post.id} 
+                  post={post} 
+                  user={user}
+                  isOwner={true}
+                  onViewPost={onViewPost}
+                  onDeletePost={onDeletePost}
+                  onViewUser={onViewUser}
+                  formatDate={formatDate}
+                />
+              ))
+          }
+        </>
+      );
+    }
+
+    function PostItem({ post, user, isOwner, onViewPost, onToggleLike, onToggleShare, onDeletePost, onViewUser, formatDate }) {
+      const handleClick = (e) => {
+        if (e.target.closest('.post-action') || e.target.closest('.delete-btn') || e.target.closest('a')) return;
+        onViewPost(post.id);
+      };
+
+      return (
+        <div className="post" onClick={handleClick}>
+          <div className="post-header">
+            <div className="post-avatar">{(post.username || '?')[0].toUpperCase()}</div>
+            <div className="post-user-info">
+              <span className="post-name">
+                <a onClick={(e) => { e.stopPropagation(); onViewUser(post.author_id); }}>
+                  {post.username || 'Unknown'}
+                </a>
+              </span>
+              <span className="post-handle">@{post.username || 'unknown'}</span>
+              <span className="post-time"> · {formatDate(post.created_at)}</span>
+            </div>
+            {isOwner && (
+              <span className="delete-btn" onClick={(e) => { e.stopPropagation(); if(confirm('Delete this post?')) onDeletePost(post.id); }}>✕</span>
+            )}
+          </div>
+          <div className="post-content">{post.content}</div>
+          <div className="post-actions">
+            <div className={`post-action ${post.user_liked ? 'liked' : ''}`} onClick={(e) => { e.stopPropagation(); onToggleLike(post.id); }}>
+              <span>{post.user_liked ? '❤️' : '🤍'}</span>
+              <span>{post.like_count || 0}</span>
+            </div>
+            <div className="post-action" onClick={(e) => { e.stopPropagation(); onViewPost(post.id); }}>
+              <span>💬</span>
+              <span>{post.comment_count || 0}</span>
+            </div>
+            <div className={`post-action ${post.user_shared ? 'shared' : ''}`} onClick={(e) => { e.stopPropagation(); onToggleShare(post.id); }}>
+              <span>{post.user_shared ? '🔄' : '↗️'}</span>
+              <span>{post.share_count || 0}</span>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    function PostDetail({ post, user, onNavigate, onCreateComment, onViewUser, formatDate }) {
+      const [comment, setComment] = useState('');
+
+      if (!post) {
+        return <div className="loading">Loading...</div>;
+      }
+
+      const comments = post.comments || [];
+
+      const handleSubmit = (e) => {
+        e.preventDefault();
+        if (comment.trim()) {
+          onCreateComment(post.id, comment);
+          setComment('');
+        }
+      };
+
+      return (
+        <>
+          <div className="back-link" onClick={() => onNavigate('public')}>← Back</div>
+          <div className="post">
+            <div className="post-header">
+              <div className="post-avatar">{(post.username || '?')[0].toUpperCase()}</div>
+              <div className="post-user-info">
+                <span className="post-name">
+                  <a onClick={() => onViewUser(post.author_id)}>{post.username || 'Unknown'}</a>
+                </span>
+                <span className="post-handle">@{post.username || 'unknown'}</span>
+                <span className="post-time"> · {formatDate(post.created_at)}</span>
+              </div>
+            </div>
+            <div className="post-content" style={{fontSize: 20}}>{post.content}</div>
+          </div>
+          {user ? (
+            <div className="comment-form">
+              <form onSubmit={handleSubmit}>
+                <textarea 
+                  value={comment}
+                  onChange={(e) => setComment(e.target.value)}
+                  placeholder="Write a reply..." 
+                  required
+                />
+                <div className="post-form-actions">
+                  <button type="submit" className="btn btn-primary">Reply</button>
+                </div>
+              </form>
+            </div>
+          ) : (
+            <div className="empty-state"><a onClick={() => onNavigate('login')}>Log in</a> to reply to this post.</div>
+          )}
+          <div className="header">
+            <h1>Replies</h1>
+          </div>
+          {comments.length === 0 
+            ? <div className="empty-state">No replies yet.</div>
+            : comments.map(comment => (
+                <div key={comment.id} className="comment">
+                  <div className="comment-header">
+                    <div className="post-avatar">{(comment.username || '?')[0].toUpperCase()}</div>
+                    <div className="post-user-info">
+                      <span className="post-name">
+                        <a onClick={() => onViewUser(comment.author_id)}>{comment.username || 'Unknown'}</a>
+                      </span>
+                      <span className="post-handle">@{comment.username || 'unknown'}</span>
+                      <span className="post-time"> · {formatDate(comment.created_at)}</span>
+                    </div>
+                  </div>
+                  <div className="comment-content">{comment.content}</div>
+                </div>
+              ))
+          }
+        </>
+      );
+    }
+
+    function UserPosts({ user, posts, onNavigate, onViewPost, formatDate }) {
+      if (!user) {
+        return <div className="loading">Loading...</div>;
+      }
+
+      return (
+        <>
+          <div className="back-link" onClick={() => onNavigate('public')}>← Back</div>
+          <div className="header">
+            <h1>@{user.username}'s Posts</h1>
+          </div>
+          {posts.length === 0 
+            ? <div className="empty-state">No posts yet.</div>
+            : posts.map(post => (
+                <div key={post.id} className="post" onClick={() => onViewPost(post.id)}>
+                  <div className="post-header">
+                    <div className="post-avatar">{user.username[0].toUpperCase()}</div>
+                    <div className="post-user-info">
+                      <span className="post-name">
+                        <a onClick={(e) => { e.stopPropagation(); onViewUser(user.id); }}>{user.username}</a>
+                      </span>
+                      <span className="post-handle">@{user.username}</span>
+                      <span className="post-time"> · {formatDate(post.created_at)}</span>
+                    </div>
+                  </div>
+                  <div className="post-content">{post.content}</div>
+                  <div className="post-actions">
+                    <div className="post-action" onClick={(e) => { e.stopPropagation(); onViewPost(post.id); }}>
+                      <span>💬</span>
+                      <span>{post.comment_count || 0}</span>
+                    </div>
+                  </div>
+                </div>
+              ))
+          }
+        </>
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
+</body>
+</html>

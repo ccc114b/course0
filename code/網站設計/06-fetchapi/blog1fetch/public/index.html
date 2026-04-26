@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>My Blog</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; background: #fafafa; min-height: 100vh; }
+    h1 { border-bottom: 2px solid #333; padding-bottom: 10px; }
+    .post { margin-bottom: 30px; padding: 20px; border: 1px solid #ddd; border-radius: 8px; background: #fff; transition: box-shadow 0.2s; }
+    .post:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    .post h2 { margin-top: 0; }
+    .post a { text-decoration: none; color: #333; }
+    .post a:hover { color: #0066cc; }
+    .meta { color: #666; font-size: 0.9em; margin-bottom: 10px; }
+    .excerpt { color: #555; line-height: 1.6; }
+    .new-post { background: #fff; padding: 25px; border-radius: 8px; margin-bottom: 30px; border: 1px solid #ddd; }
+    .new-post h3 { margin-top: 0; margin-bottom: 15px; }
+    input, textarea { width: 100%; padding: 12px; margin: 8px 0; box-sizing: border-box; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; }
+    input:focus, textarea:focus { outline: none; border-color: #0066cc; }
+    textarea { min-height: 120px; font-family: inherit; }
+    button { background: #333; color: white; padding: 12px 24px; border: none; cursor: pointer; border-radius: 4px; font-size: 14px; }
+    button:hover { background: #555; }
+    .back-link { display: inline-block; margin-bottom: 20px; color: #0066cc; text-decoration: none; }
+    .back-link:hover { text-decoration: underline; }
+    .post-content { line-height: 1.8; }
+    .post-content img { max-width: 100%; }
+    .delete-btn { background: #dc3545; margin-left: 10px; }
+    .delete-btn:hover { background: #c82333; }
+    .loading { text-align: center; padding: 40px; color: #666; }
+    .error { color: #dc3545; padding: 10px; background: #ffe6e6; border-radius: 4px; margin-bottom: 10px; }
+  </style>
+</head>
+<body>
+  <div id="app"></div>
+
+  <script>
+    let currentPage = 'home';
+    let currentPostId = null;
+    let posts = [];
+
+    async function api(endpoint, options = {}) {
+      const response = await fetch(endpoint, {
+        ...options,
+        headers: {
+          'Content-Type': 'application/json',
+          ...options.headers
+        }
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.error || 'Error');
+      }
+      return data;
+    }
+
+    function formatDate(dateStr) {
+      return new Date(dateStr).toLocaleString();
+    }
+
+    async function render() {
+      const app = document.getElementById('app');
+      
+      if (currentPage === 'home') {
+        app.innerHTML = renderHome();
+      } else if (currentPage === 'post') {
+        app.innerHTML = renderPost();
+      }
+      
+      attachEventListeners();
+    }
+
+    function renderHome() {
+      return `
+        <h1>My Blog</h1>
+        <div class="new-post">
+          <h3>New Post</h3>
+          <div id="error-msg"></div>
+          <form id="post-form">
+            <input type="text" id="title" placeholder="Title" required>
+            <textarea id="content" placeholder="Content (Markdown supported)" required></textarea>
+            <button type="submit">Publish</button>
+          </form>
+        </div>
+        <div id="posts-container">
+          ${posts.length === 0 ? '<p class="loading">Loading posts...</p>' : posts.map(post => `
+            <div class="post">
+              <h2><a href="#" onclick="viewPost(${post.id}); return false;">${post.title}</a></h2>
+              <p class="meta">${formatDate(post.created_at)}</p>
+              <p class="excerpt">${post.excerpt}...</p>
+              <a href="#" onclick="viewPost(${post.id}); return false;">Read more →</a>
+            </div>
+          `).join('')}
+        </div>
+      `;
+    }
+
+    async function viewPost(id) {
+      currentPostId = id;
+      currentPage = 'post';
+      await render();
+      await loadPost(id);
+    }
+
+    async function loadPost(id) {
+      try {
+        const post = await api(`/api/post/${id}`);
+        document.getElementById('post-title').textContent = post.title;
+        document.getElementById('post-meta').textContent = formatDate(post.created_at);
+        document.getElementById('post-content').innerHTML = post.html;
+        document.getElementById('post-id').value = post.id;
+      } catch (err) {
+        document.getElementById('post-content').innerHTML = `<p class="error">${err.message}</p>`;
+      }
+    }
+
+    function renderPost() {
+      return `
+        <a href="#" class="back-link" onclick="goHome()">← Back</a>
+        <h1 id="post-title">Loading...</h1>
+        <p class="meta" id="post-meta"></p>
+        <div id="post-content"><p class="loading">Loading...</p></div>
+        <div style="margin-top: 20px;">
+          <input type="hidden" id="post-id">
+          <button class="delete-btn" onclick="deleteCurrentPost()">Delete</button>
+        </div>
+      `;
+    }
+
+    async function goHome() {
+      currentPage = 'home';
+      currentPostId = null;
+      await loadPosts();
+      await render();
+    }
+
+    async function loadPosts() {
+      try {
+        posts = await api('/api/posts');
+      } catch (err) {
+        posts = [];
+        console.error(err);
+      }
+    }
+
+    async function createPost(title, content) {
+      try {
+        await api('/api/posts', {
+          method: 'POST',
+          body: JSON.stringify({ title, content })
+        });
+        await loadPosts();
+        document.getElementById('post-form').reset();
+        await render();
+      } catch (err) {
+        document.getElementById('error-msg').innerHTML = `<p class="error">${err.message}</p>`;
+      }
+    }
+
+    async function deleteCurrentPost() {
+      const id = document.getElementById('post-id').value;
+      if (!confirm('Delete this post?')) return;
+      
+      try {
+        await api(`/api/post/${id}`, { method: 'DELETE' });
+        await goHome();
+      } catch (err) {
+        alert(err.message);
+      }
+    }
+
+    function attachEventListeners() {
+      const form = document.getElementById('post-form');
+      if (form) {
+        form.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const title = document.getElementById('title').value;
+          const content = document.getElementById('content').value;
+          await createPost(title, content);
+        });
+      }
+    }
+
+    async function init() {
+      await loadPosts();
+      await render();
+    }
+
+    init();
+  </script>
+</body>
+</html>
