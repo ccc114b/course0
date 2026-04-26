@@ -20,14 +20,7 @@
 
 ```
 course0/
-├── code/           # 課程程式碼範例
-├── wiki/           # LLM-based 知識庫
-├── lecture/        # 課程講稿
-├── README.md       # 本檔案
-└── AGENTS.md      # OpenCode 操作指引
+├── code/           # 程式碼
+├── wiki/           # 知識百科
+└── lecture/        # 課程講稿
 ```
-
-## 相關資源
-
-- [Wiki 首頁](wiki/) - 知識庫總覽
-- [AGENTS.md](./AGENTS.md) - OpenCode 操作指引
