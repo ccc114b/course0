@@ -11,13 +11,7 @@
 - [虛擬機](虛擬機.md) - 軟體模擬的硬體執行環境 | tags: 虛擬化, hypervisor
 - [網路](網路.md) - 電腦之間的資料交換技術 | tags: TCP/IP, 協定
 - [雲端技術](雲端技術.md) - 透過網路提供運算資源的技術 | tags: IaaS, PaaS, SaaS
-- [形式文法](形式文法.md) - 描述語言語法的數學工具 | tags: Chomsky階層, 產生式
-- [有限狀態機](有限狀態機.md) - 具有有限狀態的抽象機器 | tags: DFA, NFA, 正規語言
 - [直譯器](直譯器.md) - 程式執行與語言實現 | tags: bytecode, eval
-- [Lambda演算](Lambda演算.md) - 函數式計算理論 | tags: Church編碼, Y_Combinator
-- [圖靈機](圖靈機.md) - 通用計算模型 | tags: 停機問題, Church-Turing論點
-- [函數式編程](函數式編程.md) - 以函數為主的程式設計範式 | tags: 高階函數, 不可變性
-- [Noam_Chomsky](Noam_Chomsky.md) - 語言學家與認知科學家 | tags: 轉換生成語法
 - [LISP](LISP.md) - 最早的函數式程式語言 | tags: Scheme, Clojure
 - [Prolog](Prolog.md) - 邏輯程式語言 | tags: 知識表示, 專家系統
 - [並行計算與異構平台](並行計算與異構平台.md) - 多執行緒、GPU、FPGA | tags: CUDA, OpenCL
@@ -26,7 +20,6 @@
 
 ## 主題
 
-- [計算理論](計算理論.md) - 可計算性與複雜度理論 | tags: P vs NP, NPC
 - [RISC-V](RISC-V.md) - 開放指令集架構 | tags: 精簡指令, 開源
 - [LLVM](LLVM.md) - 編譯器框架與工具鏈 | tags: Clang, IR
 - [Linux系統呼叫](Linux系統呼叫.md) - 使用者與核心溝通的介面 | tags: 系統呼叫表
