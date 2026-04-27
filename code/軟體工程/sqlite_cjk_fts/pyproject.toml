@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "sqlite-cjk-fts"
-version = "0.2.0"
+version = "0.3.0"
 description = "CJK Bigram Tokenizer for SQLite FTS5"
 readme = "README.md"
 license = {text = "MIT"}
@@ -34,8 +34,11 @@ dev = ["pytest", "build", "twine"]
 Homepage = "https://github.com/yourusername/sqlite-cjk-fts"
 Documentation = "https://github.com/yourusername/sqlite-cjk-fts#readme"
 
+[tool.setuptools]
+package-dir = {"" = "src"}
+
 [tool.setuptools.packages.find]
 where = ["src"]
 
 [tool.setuptools.package-data]
-sqlite_cjk_fts = ["_lib/*.dylib", "_lib/*.so"]
+sqlite_cjk_fts = ["_lib/*.dylib", "_lib/*.so", "_lib/*.dll", "*.c"]

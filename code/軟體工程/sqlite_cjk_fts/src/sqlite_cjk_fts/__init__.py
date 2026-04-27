@@ -12,38 +12,87 @@ Usage:
 Or use the Connection class directly for context manager support.
 
 Tokenizer name: cjk_bigram
+
+Supported platforms: macOS (.dylib), Linux (.so), Windows (.dll)
 """
 
 import sqlite3
 import sys
 import os
+import subprocess
+import shutil
 from pathlib import Path
 from typing import Optional, List, Union
 
 __version__ = "1.0.0"
-__all__ = ["connect", "create_table", "Connection", "Tokenizer", "enable_load_extension"]
+__all__ = [
+    "connect",
+    "create_table",
+    "Connection",
+    "Tokenizer",
+    "enable_load_extension",
+    "build_extension",
+    "get_ext_path",
+]
 
 Tokenizer = "cjk_bigram"
-"""The tokenizer name to use in CREATE VIRTUAL TABLE statements."""
 
 
-def _get_ext_path() -> str:
-    """Locate the compiled extension for the current platform."""
-    lib_dir = Path(__file__).parent / "_lib"
-    ext_name = "libcjkfts"
-
+def _get_platform_ext_names() -> List[str]:
+    """Return possible extension filenames for the current platform."""
     if sys.platform == "darwin":
-        for name in [f"{ext_name}.dylib", f"{ext_name}.so"]:
-            path = lib_dir / name
-            if path.exists():
-                return str(path)
+        return ["libcjkfts.dylib", "libcjkfts.so"]
     elif sys.platform == "linux":
-        for name in [f"{ext_name}.so", f"{ext_name}.dylib"]:
-            path = lib_dir / name
-            if path.exists():
-                return str(path)
+        return ["libcjkfts.so", "libcjkfts.dylib"]
+    elif sys.platform == "win32":
+        return ["libcjkfts.dll", "cjkfts.dll"]
+    return []
 
-    return ""
+
+def get_ext_path(ext_path: Optional[str] = None) -> str:
+    """
+    Locate the compiled extension for the current platform.
+
+    Parameters
+    ----------
+    ext_path : str, optional
+        Explicit path to the extension file. If provided, this path is used
+        directly. Otherwise, searches in the package's _lib directory.
+
+    Returns
+    -------
+    str
+        Path to the extension file. Raises FileNotFoundError if not found
+        and auto_build=False.
+    """
+    if ext_path:
+        return ext_path
+
+    lib_dir = Path(__file__).parent / "_lib"
+
+    for name in _get_platform_ext_names():
+        path = lib_dir / name
+        if path.exists():
+            return str(path)
+
+    src_path = Path(__file__).parent / "cjk_tokenizer.c"
+    if src_path.exists():
+        return build_extension(output_dir=lib_dir)
+
+    raise FileNotFoundError(
+        f"CJK FTS5 extension not found. Tried: {', '.join(_get_platform_ext_names())}. "
+        f"Call build_extension() to compile from source, or provide ext_path."
+    )
+
+
+def _check_load_extension_support() -> None:
+    """Check if the current Python's sqlite3 supports load_extension."""
+    if not hasattr(sqlite3.Connection, "enable_load_extension"):
+        raise RuntimeError(
+            "This Python's sqlite3 module does not support extension loading. "
+            "On macOS, install Homebrew Python and use it instead: "
+            "/opt/homebrew/bin/python3"
+        )
 
 
 def enable_load_extension(conn: sqlite3.Connection) -> None:
@@ -52,16 +101,103 @@ def enable_load_extension(conn: sqlite3.Connection) -> None:
 
     Note: Some Python sqlite3 builds (including Apple's pre-installed Python
     on macOS) do not support load_extension(). Use Homebrew Python or compile
-    SQLite with JSON1/FTS5 enabled.
+    SQLite with extension support enabled.
     """
-    if hasattr(conn, "enable_load_extension"):
-        conn.enable_load_extension(True)
-    else:
+    _check_load_extension_support()
+    conn.enable_load_extension(True)
+
+
+def build_extension(
+    compiler: Optional[str] = None,
+    output_dir: Optional[Path] = None,
+    verbose: bool = False,
+) -> str:
+    """
+    Build the CJK FTS extension from source.
+
+    Parameters
+    ----------
+    compiler : str, optional
+        C compiler to use. Defaults to 'gcc' on Unix, 'cl' on Windows.
+    output_dir : Path, optional
+        Output directory for the compiled extension. Defaults to the
+        package's _lib directory.
+    verbose : bool
+        If True, print compilation commands.
+
+    Returns
+    -------
+    str
+        Path to the compiled extension.
+
+    Raises
+    ------
+    RuntimeError
+        If the source file is not found or compilation fails.
+    """
+    src_file = Path(__file__).parent / "cjk_tokenizer.c"
+
+    if not src_file.exists():
         raise RuntimeError(
-            "This Python's sqlite3 module does not support extension loading. "
-            "On macOS, install Homebrew Python and use it instead: "
-            "/opt/homebrew/bin/python3"
+            "Source file 'cjk_tokenizer.c' not found. "
+            "Make sure you have the source code available."
         )
+
+    if output_dir is None:
+        output_dir = Path(__file__).parent / "_lib"
+    output_dir = Path(output_dir)
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    sqlite_cflags = []
+    try:
+        sqlite_cflags = subprocess.check_output(
+            ["pkg-config", "--cflags", "sqlite3"]
+        ).decode().split()
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        pass
+
+    if sys.platform == "darwin":
+        output_file = output_dir / "libcjkfts.dylib"
+        if compiler is None:
+            compiler = "gcc"
+        cmd = [
+            compiler, "-O2", "-fPIC", "-shared", "-Wall",
+            "-o", str(output_file),
+            str(src_file),
+            *sqlite_cflags,
+        ]
+    elif sys.platform == "linux":
+        output_file = output_dir / "libcjkfts.so"
+        if compiler is None:
+            compiler = "gcc"
+        cmd = [
+            compiler, "-O2", "-fPIC", "-shared", "-Wall",
+            "-o", str(output_file),
+            str(src_file),
+            *sqlite_cflags,
+        ]
+    elif sys.platform == "win32":
+        output_file = output_dir / "libcjkfts.dll"
+        if compiler is None:
+            compiler = "cl"
+        cmd = [
+            compiler, "/O2", "/LD", "/Wall",
+            "/Fe:" + str(output_file),
+            str(src_file),
+        ]
+    else:
+        raise RuntimeError(f"Unsupported platform: {sys.platform}")
+
+    if verbose:
+        print(" ".join(cmd))
+
+    result = subprocess.run(cmd, capture_output=True, text=True)
+    if result.returncode != 0:
+        raise RuntimeError(
+            f"Compilation failed:\n{result.stderr}"
+        )
+
+    return str(output_file)
 
 
 class Connection(sqlite3.Connection):
@@ -72,16 +208,17 @@ class Connection(sqlite3.Connection):
     if you need custom behavior.
     """
 
-    def __init__(self, database: str, **kwargs):
-        ext_path = _get_ext_path()
-        if not ext_path:
-            raise FileNotFoundError(
-                "CJK FTS5 extension not found in package. "
-                "Please rebuild: python -m pip install --no-binary :all: sqlite-cjk-fts"
-            )
+    def __init__(
+        self,
+        database: str,
+        ext_path: Optional[str] = None,
+        **kwargs,
+    ):
+        path = get_ext_path(ext_path)
+
         super().__init__(database, **kwargs)
         enable_load_extension(self)
-        self.load_extension(ext_path)
+        self.load_extension(path)
 
 
 def connect(
@@ -93,6 +230,7 @@ def connect(
     factory: Optional[type] = None,
     cached_statements: int = 128,
     uri: bool = False,
+    ext_path: Optional[str] = None,
 ) -> Connection:
     """
     Open a SQLite database and auto-load the CJK FTS5 tokenizer extension.
@@ -115,6 +253,9 @@ def connect(
         Number of prepared statements to cache (default 128).
     uri : bool
         If True, interpret database as a URI (default False).
+    ext_path : str, optional
+        Explicit path to the extension file. If not provided, searches
+        in the package's _lib directory, and builds from source if needed.
 
     Returns
     -------
@@ -144,6 +285,7 @@ def connect(
         factory = Connection
 
     kwargs["factory"] = factory
+    kwargs["ext_path"] = ext_path
 
     return sqlite3.connect(database, **kwargs)
 

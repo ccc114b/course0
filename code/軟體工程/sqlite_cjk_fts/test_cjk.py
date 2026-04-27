@@ -1,24 +1,27 @@
 #!/usr/bin/env python3
 """
-test_cjk.py — Python test for cjk_bigram SQLite FTS5 tokenizer.
+test_cjk.py — Test suite for sqlite_cjk_fts package.
 
-Usage: python3 test_cjk.py [extension_path]
+Usage:
+    python3 test_cjk.py [extension_path]
 
-Default extension path: ./libcjkfts.dylib
+If no extension_path is provided, uses the package's auto-build feature.
 """
 
 import sqlite3
 import sys
-import os
+import platform
 
-EXT_PATH = sys.argv[1] if len(sys.argv) > 1 else "./libcjkfts.dylib"
+sys.path.insert(0, "src")
 
-_db = sqlite3.connect(":memory:")
-if not hasattr(_db, "enable_load_extension"):
-    print("ERROR: This Python's sqlite3 module does not support extension loading.")
-    print("On macOS, use Homebrew Python: /opt/homebrew/bin/python3 test_cjk.py")
-    sys.exit(1)
-_db.close()
+if len(sys.argv) > 1:
+    EXT_PATH = sys.argv[1]
+else:
+    try:
+        from sqlite_cjk_fts import get_ext_path
+        EXT_PATH = get_ext_path()
+    except Exception:
+        EXT_PATH = None
 
 g_pass = 0
 g_fail = 0
@@ -43,17 +46,30 @@ def exec_sql(db, sql):
     db.execute(sql)
 
 
-def make_db(ext_path):
+def make_db(ext_path=None):
     db = sqlite3.connect(":memory:")
-    db.enable_load_extension(True)
-    db.load_extension(ext_path)
+    if hasattr(db, "enable_load_extension"):
+        db.enable_load_extension(True)
+        if ext_path:
+            db.load_extension(ext_path)
+        elif EXT_PATH:
+            db.load_extension(EXT_PATH)
+        else:
+            from sqlite_cjk_fts import build_extension
+            ext = build_extension(verbose=True)
+            db.load_extension(ext)
+    else:
+        raise RuntimeError(
+            "This Python's sqlite3 module does not support extension loading. "
+            f"On macOS, use Homebrew Python: /opt/homebrew/bin/python3"
+        )
     db.execute("CREATE VIRTUAL TABLE docs USING fts5(title, body, tokenize='cjk_bigram')")
     return db
 
 
 def test_chinese():
     print("\n[Chinese]")
-    db = make_db(EXT_PATH)
+    db = make_db()
     exec_sql(db, "INSERT INTO docs VALUES ('天氣預報','今天天氣非常好，適合出門散步')")
     exec_sql(db, "INSERT INTO docs VALUES ('新聞頭條','今日股市大漲，創下歷史新高')")
     check_count(db, "搜尋 '天氣' 應命中1筆", "SELECT * FROM docs WHERE docs MATCH '天氣'", 1)
@@ -65,7 +81,7 @@ def test_chinese():
 
 def test_japanese():
     print("\n[Japanese]")
-    db = make_db(EXT_PATH)
+    db = make_db()
     exec_sql(db, "INSERT INTO docs VALUES ('天気予報','今日の東京の天気は晴れです')")
     exec_sql(db, "INSERT INTO docs VALUES ('ニュース','日本経済が回復しつつある')")
     check_count(db, "搜尋 '天気' 應命中1筆", "SELECT * FROM docs WHERE docs MATCH '天気'", 1)
@@ -76,7 +92,7 @@ def test_japanese():
 
 def test_kana():
     print("\n[Hiragana / Katakana]")
-    db = make_db(EXT_PATH)
+    db = make_db()
     exec_sql(db, "INSERT INTO docs VALUES ('カタカナ','コンピュータの画面が明るい')")
     exec_sql(db, "INSERT INTO docs VALUES ('ひらがな','きょうはいいてんきです')")
     check_count(db, "搜尋 'コンピュ' 應命中1筆", "SELECT * FROM docs WHERE docs MATCH 'コンピュ'", 1)
@@ -86,7 +102,7 @@ def test_kana():
 
 def test_korean():
     print("\n[Korean]")
-    db = make_db(EXT_PATH)
+    db = make_db()
     exec_sql(db, "INSERT INTO docs VALUES ('날씨','오늘 서울의 날씨가 맑습니다')")
     exec_sql(db, "INSERT INTO docs VALUES ('뉴스','한국 경제가 성장하고 있습니다')")
     check_count(db, "搜尋 '날씨' 應命中1筆", "SELECT * FROM docs WHERE docs MATCH '날씨'", 1)
@@ -96,7 +112,7 @@ def test_korean():
 
 def test_mixed():
     print("\n[Mixed CJK + Latin]")
-    db = make_db(EXT_PATH)
+    db = make_db()
     exec_sql(db, "INSERT INTO docs VALUES ('tech','SQLite支援FTS5全文搜尋功能，非常powerful')")
     exec_sql(db, "INSERT INTO docs VALUES ('eng','This is a simple English sentence without CJK')")
     check_count(db, "CJK 關鍵字只命中混合列", "SELECT * FROM docs WHERE docs MATCH '全文'", 1)
@@ -108,7 +124,7 @@ def test_mixed():
 
 def test_no_false_positives():
     print("\n[No false positives]")
-    db = make_db(EXT_PATH)
+    db = make_db()
     exec_sql(db, "INSERT INTO docs VALUES ('A','今天天氣很好')")
     exec_sql(db, "INSERT INTO docs VALUES ('B','明天要下雨')")
     exec_sql(db, "INSERT INTO docs VALUES ('C','Completely unrelated English text')")
@@ -119,7 +135,7 @@ def test_no_false_positives():
 
 def test_single_char():
     print("\n[Single character query]")
-    db = make_db(EXT_PATH)
+    db = make_db()
     exec_sql(db, "INSERT INTO docs VALUES ('doc1','愛は素晴らしい')")
     exec_sql(db, "INSERT INTO docs VALUES ('doc2','家族が大切だ')")
     check_count(db, "單字 '愛' 命中 doc1", "SELECT * FROM docs WHERE docs MATCH '愛'", 1)
@@ -129,7 +145,7 @@ def test_single_char():
 
 def test_multicolumn():
     print("\n[Multi-column search]")
-    db = make_db(EXT_PATH)
+    db = make_db()
     exec_sql(db, "INSERT INTO docs VALUES ('機器學習入門','深度學習是人工智慧的一個分支')")
     exec_sql(db, "INSERT INTO docs VALUES ('人工智慧概論','機器學習包括監督式和非監督式學習')")
     check_count(db, "'機器學習' 同時命中兩筆", "SELECT * FROM docs WHERE docs MATCH '機器學習'", 2)
@@ -140,7 +156,7 @@ def test_multicolumn():
 def test_large():
     global g_pass, g_fail
     print("\n[Performance / large insert]")
-    db = make_db(EXT_PATH)
+    db = make_db()
     db.execute("BEGIN")
     for i in range(500):
         db.execute(
@@ -163,8 +179,10 @@ def test_large():
 
 
 def main():
-    print(f"SQLite version : {sqlite3.sqlite_version}")
-    print(f"Extension path : {EXT_PATH}")
+    print(f"SQLite version  : {sqlite3.sqlite_version}")
+    print(f"Python version  : {platform.python_version()}")
+    print(f"Platform        : {sys.platform}")
+    print(f"Extension path  : {EXT_PATH or '(auto-build from source)'}")
     print("=" * 50)
 
     test_chinese()

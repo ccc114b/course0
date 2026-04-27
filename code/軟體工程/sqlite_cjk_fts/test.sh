@@ -1,7 +1,5 @@
 set -x
 make test
-deactivate
-/opt/homebrew/bin/python3 -m pip install -e .
-# /opt/homebrew/bin/python3 -m pip install sqlite_cjk_fts
-/opt/homebrew/bin/python3 test_cjk.py
-/opt/homebrew/bin/python3 example.py
+pip install -e .
+python test_cjk.py
+python example.py

@@ -7,9 +7,22 @@ Run:
 
 Or with Homebrew Python on macOS:
     /opt/homebrew/bin/python3 example.py
+
+This package supports:
+- macOS (.dylib)
+- Linux (.so)
+- Windows (.dll)
 """
 
-from sqlite_cjk_fts import connect, create_table, insert, search, Tokenizer
+import platform
+
+try:
+    from sqlite_cjk_fts import connect, create_table, insert, search, Tokenizer, build_extension
+except ImportError:
+    import sys
+    from pathlib import Path
+    sys.path.insert(0, str(Path(__file__).parent / "src"))
+    from sqlite_cjk_fts import connect, create_table, insert, search, Tokenizer, build_extension
 
 
 def main():
@@ -17,8 +30,18 @@ def main():
     print("sqlite-cjk-fts Example")
     print("=" * 60)
 
-    db = connect(":memory:")
-    print(f"\nDatabase opened (SQLite {db.execute('SELECT sqlite_version()').fetchone()[0]})")
+    print(f"\nPython: {platform.python_version()}")
+    print(f"Platform: {sys.platform}")
+
+    try:
+        db = connect(":memory:")
+    except FileNotFoundError:
+        print("\nNo pre-compiled extension found. Building from source...")
+        ext_path = build_extension(verbose=True)
+        print(f"Built: {ext_path}")
+        db = connect(":memory:", ext_path=ext_path)
+
+    print(f"Database opened (SQLite {db.execute('SELECT sqlite_version()').fetchone()[0]})")
     print(f"Tokenizer: {Tokenizer}\n")
 
     create_table(db, "docs", ["title", "body"])
@@ -66,4 +89,5 @@ def main():
 
 
 if __name__ == "__main__":
+    import sys
     main()
