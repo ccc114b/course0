@@ -15,6 +15,10 @@
 | 網站設計 | [講義](lecture/網站設計/README.md) / [程式](code/網站設計/) / [Wiki](wiki/網頁設計/) | JavaScript | HTML / CSS / JS / Node / React ... |
 | 軟體工程 | [講義](lecture/軟體工程/README.md) / [程式](code/軟體工程/) / [Wiki](wiki/軟體工程/) | Rust + Python | AI 導向 / 測試 / Prompt / Harness / Git ... |
 
+補充主題： 
+
+1. [計算理論 wiki](wiki/計算理論/)
+2. [程式與數學 wiki](wiki/程式與數學/)
 
 ## 專案結構
 
