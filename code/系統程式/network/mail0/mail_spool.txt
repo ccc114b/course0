@@ -1,0 +1,6 @@
+--- NEW MAIL ---
+Subject: Automated Test Subject
+
+Hello! This is a magical automated test message.
+--- END OF MAIL ---
+

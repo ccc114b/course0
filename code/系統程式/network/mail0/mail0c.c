@@ -1,334 +1,169 @@
-/*
- * mail0c.c - 從 stdin 讀取 email (RFC 2822 格式)，附加到 mailtoday.md
- *
- * 用法：
- *   echo "..." | ./mail0c
- *   或由 MTA 呼叫（如 .forward / aliases）
- *
- * 編譯：gcc -o mail0c mail0c.c
- */
-
-#define _GNU_SOURCE   /* memmem, strptime, strcasestr */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <time.h>
-#include <ctype.h>
+#include <unistd.h>
+#include <arpa/inet.h>
+#include <sys/socket.h>
 
-#define OUTPUT_FILE  "mailtoday.md"
-#define MAX_LINE     4096
-#define MAX_ATTACH   64
-#define INIT_BUF     (1 << 16)   /* 64 KB 起始 */
+#define SERVER_IP "127.0.0.1"
+#define PORT 2525
+#define BUFFER_SIZE 2048
 
-/* ---------- 工具函式 ---------- */
-
-static char *trim_inplace(char *s) {
-    if (!s) return s;
-    while (*s && isspace((unsigned char)*s)) s++;
-    char *end = s + strlen(s);
-    while (end > s && isspace((unsigned char)*(end - 1))) end--;
-    *end = '\0';
-    return s;
+// 輔助函式：移除字串結尾的換行符號
+void strip_newline(char *str) {
+    str[strcspn(str, "\n")] = '\0';
 }
 
-static int istarts(const char *s, const char *prefix) {
-    return strncasecmp(s, prefix, strlen(prefix)) == 0;
-}
-
-static int extract_filename(const char *line, char *out, int outsz) {
-    const char *p = strcasestr(line, "filename=");
-    if (!p) return 0;
-    p += 9;
-    if (*p == '"') {
-        p++;
-        const char *q = strchr(p, '"');
-        int len = q ? (int)(q - p) : (int)strlen(p);
-        if (len >= outsz) len = outsz - 1;
-        strncpy(out, p, len);
-        out[len] = '\0';
-    } else {
-        int len = 0;
-        while (p[len] && p[len] != ';' && !isspace((unsigned char)p[len])) len++;
-        if (len >= outsz) len = outsz - 1;
-        strncpy(out, p, len);
-        out[len] = '\0';
+// 輔助函式：發送 SMTP 指令並讀取伺服器回應
+void send_command(int sock, const char *cmd, char *response_buf) {
+    if (cmd != NULL) {
+        send(sock, cmd, strlen(cmd), 0);
+        printf("[C] %s", cmd);
     }
-    return out[0] != '\0';
+    memset(response_buf, 0, BUFFER_SIZE);
+    int bytes_read = read(sock, response_buf, BUFFER_SIZE - 1);
+    if (bytes_read > 0) {
+        printf("[S] %s", response_buf);
+    }
 }
 
-/* ---------- 讀取全部 stdin ---------- */
-static char *read_all_stdin(size_t *out_len) {
-    size_t cap = INIT_BUF, len = 0;
-    char *buf = malloc(cap);
-    if (!buf) return NULL;
-    int c;
-    while ((c = getchar()) != EOF) {
-        if (len + 2 >= cap) {
-            cap *= 2;
-            char *nb = realloc(buf, cap);
-            if (!nb) { free(buf); return NULL; }
-            buf = nb;
+// 寄信功能 (SMTP Client)
+void send_mail() {
+    int sock = 0;
+    struct sockaddr_in serv_addr;
+    char buffer[BUFFER_SIZE] = {0};
+    char cmd[BUFFER_SIZE] = {0};
+    char from[128], to[128], subject[256], body[1024];
+
+    // 1. 取得使用者輸入
+    printf("\n--- 撰寫新郵件 ---\n");
+    printf("寄件人 (From): ");
+    fgets(from, sizeof(from), stdin);
+    strip_newline(from);
+
+    printf("收件人 (To): ");
+    fgets(to, sizeof(to), stdin);
+    strip_newline(to);
+
+    printf("主旨 (Subject): ");
+    fgets(subject, sizeof(subject), stdin);
+    strip_newline(subject);
+
+    printf("信件內容 (Body) [單行限制]: ");
+    fgets(body, sizeof(body), stdin);
+    strip_newline(body);
+
+    // 2. 建立 Socket 連線
+    if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
+        printf("\n[錯誤] Socket 建立失敗 \n");
+        return;
+    }
+
+    serv_addr.sin_family = AF_INET;
+    serv_addr.sin_port = htons(PORT);
+
+    if (inet_pton(AF_INET, SERVER_IP, &serv_addr.sin_addr) <= 0) {
+        printf("\n[錯誤] 無效的 IP 地址 \n");
+        return;
+    }
+
+    if (connect(sock, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0) {
+        printf("\n[錯誤] 連線到伺服器失敗，請確認 mail0d 是否正在執行？\n");
+        return;
+    }
+
+    printf("\n--- 開始傳輸 ---\n");
+    
+    // 讀取初始歡迎訊息 (220)
+    send_command(sock, NULL, buffer);
+
+    // HELO
+    send_command(sock, "HELO mail0c\r\n", buffer);
+
+    // MAIL FROM
+    snprintf(cmd, sizeof(cmd), "MAIL FROM:<%s>\r\n", from);
+    send_command(sock, cmd, buffer);
+
+    // RCPT TO
+    snprintf(cmd, sizeof(cmd), "RCPT TO:<%s>\r\n", to);
+    send_command(sock, cmd, buffer);
+
+    // DATA
+    send_command(sock, "DATA\r\n", buffer);
+
+    // 傳送標頭、內容與結尾的 "."
+    snprintf(cmd, sizeof(cmd), "Subject: %s\r\n\r\n%s\r\n.\r\n", subject, body);
+    send_command(sock, cmd, buffer);
+
+    // QUIT
+    send_command(sock, "QUIT\r\n", buffer);
+
+    close(sock);
+    printf("--- 寄信完成 ---\n");
+}
+
+// 收信功能 (讀取本地 Spool 檔案)
+void read_mail() {
+    printf("\n--- 收件匣 (mail_spool.txt) ---\n");
+    FILE *file = fopen("mail_spool.txt", "r");
+    
+    if (file == NULL) {
+        printf("[!] 信箱是空的，或找不到信件檔案。\n");
+        return;
+    }
+
+    char line[256];
+    while (fgets(line, sizeof(line), file)) {
+        printf("%s", line);
+    }
+    
+    fclose(file);
+    printf("--- 讀取完畢 ---\n");
+}
+
+// 清空信箱
+void clear_mail() {
+    FILE *file = fopen("mail_spool.txt", "w"); // 以 w 模式開啟會清空檔案
+    if (file) {
+        fclose(file);
+        printf("\n[!] 信箱已清空。\n");
+    }
+}
+
+int main() {
+    char choice_str[10];
+    int choice;
+
+    while (1) {
+        printf("\n========================\n");
+        printf(" mail0c - 簡易郵件客戶端\n");
+        printf("========================\n");
+        printf(" 1. 寫信 (Send via SMTP)\n");
+        printf(" 2. 收信 (Read local spool)\n");
+        printf(" 3. 清空信箱 (Clear spool)\n");
+        printf(" 4. 離開 (Exit)\n");
+        printf("請選擇: ");
+
+        if (!fgets(choice_str, sizeof(choice_str), stdin)) break;
+        choice = atoi(choice_str);
+
+        switch (choice) {
+            case 1:
+                send_mail();
+                break;
+            case 2:
+                read_mail();
+                break;
+            case 3:
+                clear_mail();
+                break;
+            case 4:
+                printf("掰掰！\n");
+                exit(0);
+            default:
+                printf("無效的選擇，請重試。\n");
         }
-        buf[len++] = (char)c;
-    }
-    buf[len] = '\0';
-    *out_len = len;
-    return buf;
-}
-
-/* ---------- 分離 header / body ----------
- * 以第一個空行（\n\n 或 \r\n\r\n）為分界。
- * 回傳指向 raw 中 body 開頭的指標，並設定 *hdr_copy 為複製的 header 文字。
- */
-static const char *split_header_body(const char *raw, size_t rawlen,
-                                      char **hdr_copy) {
-    for (size_t i = 0; i + 1 < rawlen; i++) {
-        if (raw[i] == '\n' && raw[i+1] == '\n') {
-            *hdr_copy = strndup(raw, i);
-            return raw + i + 2;
-        }
-        if (i + 3 < rawlen &&
-            raw[i]=='\r' && raw[i+1]=='\n' &&
-            raw[i+2]=='\r' && raw[i+3]=='\n') {
-            *hdr_copy = strndup(raw, i);
-            return raw + i + 4;
-        }
-    }
-    /* 沒有空行 → 全部是 header，body 為空 */
-    *hdr_copy = strndup(raw, rawlen);
-    return raw + rawlen;
-}
-
-/* ---------- 解析 header 區段 ---------- */
-typedef struct { char *key; char *val; } KV;
-
-static KV *parse_headers(char *hdr_text, int *count) {
-    /* \r\n → \n */
-    {
-        char *p = hdr_text, *q = hdr_text;
-        while (*p) {
-            if (*p == '\r' && *(p+1) == '\n') p++;
-            *q++ = *p++;
-        }
-        *q = '\0';
-    }
-    /* 展開 header folding（行首空白 = 接續上一行） */
-    {
-        char *p = hdr_text;
-        while (*p) {
-            char *nl = strchr(p, '\n');
-            if (!nl) break;
-            char *next = nl + 1;
-            if (*next == ' ' || *next == '\t') {
-                *nl = ' ';
-                char *src = next;
-                while (*src == ' ' || *src == '\t') src++;
-                memmove(next, src, strlen(src) + 1);
-                p = nl;
-            } else {
-                p = next;
-            }
-        }
     }
 
-    int cap = 64;
-    KV *kvs = malloc(cap * sizeof(KV));
-    int n = 0;
-    if (!kvs) { *count = 0; return NULL; }
-
-    char *line = hdr_text;
-    while (*line) {
-        char *nl = strchr(line, '\n');
-        size_t llen = nl ? (size_t)(nl - line) : strlen(line);
-        char lbuf[MAX_LINE];
-        if (llen >= MAX_LINE) llen = MAX_LINE - 1;
-        strncpy(lbuf, line, llen);
-        lbuf[llen] = '\0';
-
-        char *colon = strchr(lbuf, ':');
-        if (colon) {
-            *colon = '\0';
-            char *k = trim_inplace(lbuf);
-            char *v = trim_inplace(colon + 1);
-            if (n >= cap) { cap *= 2; kvs = realloc(kvs, cap * sizeof(KV)); }
-            kvs[n].key = strdup(k);
-            kvs[n].val = strdup(v);
-            n++;
-        }
-
-        if (!nl) break;
-        line = nl + 1;
-    }
-    *count = n;
-    return kvs;
-}
-
-static char *kv_get(KV *kvs, int n, const char *key) {
-    for (int i = 0; i < n; i++)
-        if (strcasecmp(kvs[i].key, key) == 0) return kvs[i].val;
-    return "";
-}
-
-static void kv_free(KV *kvs, int n) {
-    for (int i = 0; i < n; i++) { free(kvs[i].key); free(kvs[i].val); }
-    free(kvs);
-}
-
-static char *get_boundary(const char *ctype) {
-    const char *bp = strcasestr(ctype, "boundary=");
-    if (!bp) return NULL;
-    bp += 9;
-    if (*bp == '"') {
-        bp++;
-        const char *eq = strchr(bp, '"');
-        return strndup(bp, eq ? (size_t)(eq - bp) : strlen(bp));
-    }
-    int blen = 0;
-    while (bp[blen] && bp[blen] != ';' && !isspace((unsigned char)bp[blen])) blen++;
-    return strndup(bp, blen);
-}
-
-/* ---------- 解析 multipart ---------- */
-static void parse_multipart(const char *body, size_t body_len,
-                             const char *boundary,
-                             char **out_text,
-                             char **attachments, int *nattach) {
-    char delim[512];
-    snprintf(delim, sizeof(delim), "--%s", boundary);
-    size_t dlen = strlen(delim);
-
-    const char *pos = body;
-    const char *end = body + body_len;
-
-    while (pos < end) {
-        const char *bd = memmem(pos, end - pos, delim, dlen);
-        if (!bd) break;
-
-        const char *after = bd + dlen;
-        if (after + 1 < end && after[0] == '-' && after[1] == '-') break;
-        if (after < end && *after == '\r') after++;
-        if (after < end && *after == '\n') after++;
-
-        const char *next_bd = memmem(after, end - after, delim, dlen);
-        const char *part_end = next_bd ? next_bd : end;
-
-        /* 分離此 part 的 header / body */
-        char *part_hdr_copy;
-        const char *part_body = split_header_body(after, part_end - after, &part_hdr_copy);
-        int nkv = 0;
-        KV *pkv = parse_headers(part_hdr_copy, &nkv);
-        free(part_hdr_copy);
-
-        char *pctype = kv_get(pkv, nkv, "Content-Type");
-        char *pdisp  = kv_get(pkv, nkv, "Content-Disposition");
-
-        char fname[256] = "";
-        extract_filename(pdisp, fname, 256);
-        if (!fname[0]) extract_filename(pctype, fname, 256);
-
-        size_t pblen = (size_t)(part_end - part_body);
-        while (pblen > 0 &&
-               (part_body[pblen-1] == '\n' || part_body[pblen-1] == '\r')) pblen--;
-
-        int is_attach = (istarts(pdisp, "attachment") || fname[0]);
-        int is_text   = istarts(pctype, "text/plain");
-
-        if (is_attach && fname[0]) {
-            if (*nattach < MAX_ATTACH)
-                attachments[(*nattach)++] = strdup(fname);
-        } else if (is_text && *out_text == NULL && pblen > 0) {
-            *out_text = strndup(part_body, pblen);
-        }
-
-        kv_free(pkv, nkv);
-        pos = next_bd ? next_bd : end;
-    }
-}
-
-/* ---------- main ---------- */
-int main(void) {
-    size_t rawlen;
-    char *raw = read_all_stdin(&rawlen);
-    if (!raw) { fprintf(stderr, "mail0c: 讀取 stdin 失敗\n"); return 1; }
-
-    char *hdr_copy;
-    const char *body_start = split_header_body(raw, rawlen, &hdr_copy);
-    size_t body_len = rawlen - (size_t)(body_start - raw);
-
-    int nkv = 0;
-    KV *kvs = parse_headers(hdr_copy, &nkv);
-    free(hdr_copy);
-
-    char *from_val = kv_get(kvs, nkv, "From");
-    char *subject  = kv_get(kvs, nkv, "Subject");
-    char *date_val = kv_get(kvs, nkv, "Date");
-    char *ctype    = kv_get(kvs, nkv, "Content-Type");
-
-    /* 時間字串 */
-    char time_str[64];
-    if (date_val[0]) {
-        struct tm tm_val;
-        memset(&tm_val, 0, sizeof(tm_val));
-        char *ok = strptime(date_val, "%a, %d %b %Y %H:%M:%S %z", &tm_val);
-        if (!ok) ok = strptime(date_val, "%d %b %Y %H:%M:%S %z", &tm_val);
-        if (ok) {
-            strftime(time_str, sizeof(time_str), "%Y-%m-%d %H:%M:%S %z", &tm_val);
-        } else {
-            strncpy(time_str, date_val, sizeof(time_str) - 1);
-            time_str[sizeof(time_str) - 1] = '\0';
-        }
-    } else {
-        time_t now = time(NULL);
-        strftime(time_str, sizeof(time_str), "%Y-%m-%d %H:%M:%S", localtime(&now));
-    }
-
-    /* 解析 body */
-    char *body_text = NULL;
-    char *attachments[MAX_ATTACH];
-    int nattach = 0;
-
-    char *boundary = NULL;
-    if (istarts(ctype, "multipart/")) boundary = get_boundary(ctype);
-
-    if (boundary && body_len > 0) {
-        parse_multipart(body_start, body_len, boundary,
-                        &body_text, attachments, &nattach);
-    } else if (body_len > 0) {
-        size_t blen = body_len;
-        while (blen > 0 &&
-               (body_start[blen-1] == '\n' || body_start[blen-1] == '\r')) blen--;
-        if (blen > 0) body_text = strndup(body_start, blen);
-    }
-
-    /* 寫入 mailtoday.md */
-    FILE *fp = fopen(OUTPUT_FILE, "a");
-    if (!fp) { perror("fopen " OUTPUT_FILE); return 1; }
-
-    fprintf(fp, "## time: %s\n\n", time_str);
-    fprintf(fp, "from: %s\n",  from_val[0] ? from_val : "(unknown)");
-    fprintf(fp, "title: %s\n", subject[0]  ? subject  : "(no subject)");
-
-    if (nattach > 0) {
-        fprintf(fp, "attach: ");
-        for (int i = 0; i < nattach; i++) {
-            if (i > 0) fprintf(fp, ", ");
-            fprintf(fp, "%s", attachments[i]);
-            free(attachments[i]);
-        }
-        fprintf(fp, "\n");
-    }
-
-    fprintf(fp, "body:\n\n");
-    if (body_text && body_text[0]) fprintf(fp, "%s\n", body_text);
-    fprintf(fp, "\n");
-
-    fclose(fp);
-
-    kv_free(kvs, nkv);
-    free(body_text);
-    free(boundary);
-    free(raw);
-
-    fprintf(stderr, "mail0c: appended to %s\n", OUTPUT_FILE);
     return 0;
 }

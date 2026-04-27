@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Markdown Viewer</title>
+    
+    <!-- GitHub Markdown CSS (提供 GitHub 風格的排版與表格樣式) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.5.0/github-markdown.min.css">
+    
+    <!-- Highlight.js CSS (程式碼高亮，這裡使用 GitHub 主題) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" media="(prefers-color-scheme: dark)">
+
+    <!-- KaTeX CSS (數學公式渲染) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+
+    <style>
+        body {
+            box-sizing: border-box;
+            min-width: 200px;
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 45px;
+            background-color: var(--color-canvas-default);
+        }
+        @media (max-width: 767px) {
+            body { padding: 15px; }
+        }
+        /* 避免深色模式下背景變黑但字體看不清楚的問題，交給 github-markdown-css 處理 */
+        .markdown-body {
+            box-sizing: border-box;
+            min-width: 200px;
+            max-width: 980px;
+            margin: 0 auto;
+        }
+        #loading {
+            text-align: center;
+            color: #888;
+            font-family: sans-serif;
+            margin-top: 50px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 這裡將用來顯示渲染後的 Markdown -->
+    <div id="content" class="markdown-body">
+        <div id="loading">載入中...</div>
+    </div>
+
+    <!-- 引入必要的 JS 函式庫 -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked-highlight/lib/index.umd.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked-katex-extension/lib/index.umd.js"></script>
+
+    <script>
+        // 初始化 Marked.js 的外掛 (高亮與數學公式)
+        const { Marked } = window.marked;
+        const { markedHighlight } = window.markedHighlight;
+        const markedKatex = window.markedKatex;
+
+        const markedInstance = new Marked(
+            markedHighlight({
+                langPrefix: 'hljs language-',
+                highlight(code, lang) {
+                    const language = hljs.getLanguage(lang) ? lang : 'plaintext';
+                    return hljs.highlight(code, { language }).value;
+                }
+            }),
+            markedKatex({
+                throwOnError: false, // 遇到錯誤公式不報錯，而是顯示原始碼
+                displayMode: true    // 支援 $$ 區塊公式
+            })
+        );
+
+        // 核心渲染函數
+        async function renderMarkdown() {
+            const contentDiv = document.getElementById('content');
+            
+            // 取得 Hash 中的檔案路徑 (去掉前面的 #)
+            let filePath = window.location.hash.substring(1);
+
+            // 如果沒有指定路徑，可以設定預設讀取的檔案 (例如 README.md)
+            if (!filePath) {
+                filePath = 'README.md'; 
+            }
+
+            try {
+                // 顯示載入中
+                contentDiv.innerHTML = '<div id="loading">載入 <code>' + filePath + '</code> 中...</div>';
+
+                // 抓取 Markdown 檔案
+                const response = await fetch(filePath);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP 錯誤：狀態碼 ${response.status}`);
+                }
+
+                const markdownText = await response.text();
+                
+                // 解析並渲染為 HTML
+                contentDiv.innerHTML = markedInstance.parse(markdownText);
+                
+                // 動態更改網頁標題
+                document.title = filePath.split('/').pop() + " - Markdown Viewer";
+
+            } catch (error) {
+                console.error(error);
+                contentDiv.innerHTML = `
+                    <h1>❌ 載入失敗</h1>
+                    <p>無法讀取檔案：<code>${filePath}</code></p>
+                    <p>請確認網址是否正確，以及檔案是否存在於伺服器上。</p>
+                `;
+            }
+        }
+
+        // 攔截 Markdown 內部的連結點擊事件
+        // 如果點擊了其他 .md 檔案，自動轉換成 #xxx.md，避免跳離 mdrender.html
+        document.body.addEventListener('click', function(e) {
+            let target = e.target.closest('a'); // 確保點擊的是 <a> 標籤
+            if (target && target.getAttribute('href')) {
+                const href = target.getAttribute('href');
+                // 如果是相對路徑的 .md 檔案，且不是外部連結
+                if (href.endsWith('.md') && !href.startsWith('http')) {
+                    e.preventDefault(); // 阻止預設跳轉
+                    
+                    // 處理相對路徑邏輯 (簡單版)
+                    let currentPath = window.location.hash.substring(1).split('/');
+                    currentPath.pop(); // 移除當前檔名，保留目錄
+                    
+                    // 如果 href 包含 './'，可以進一步處理，這裡簡單做拼接
+                    let newPath = currentPath.length > 0 && !href.startsWith('/') 
+                        ? currentPath.join('/') + '/' + href 
+                        : href;
+                    
+                    // 清理路徑中的 './' (簡單正則替換)
+                    newPath = newPath.replace(/\.\//g, '');
+                    
+                    window.location.hash = newPath;
+                }
+            }
+        });
+
+        // 監聽網址 Hash 改變事件 (當使用者點上一頁、或點擊內部 # 連結時觸發)
+        window.addEventListener('hashchange', renderMarkdown);
+
+        // 網頁首次載入時執行
+        window.addEventListener('DOMContentLoaded', renderMarkdown);
+    </script>
+</body>
+</html>

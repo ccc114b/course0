@@ -1,9 +1,4 @@
-# macOS
-# brew install openssl
-gcc -o gmailget gmailget.c -lssl -lcrypto \
-    -I$(brew --prefix openssl)/include \
-    -L$(brew --prefix openssl)/lib
+set -x
 
-# Linux
-#sudo apt install libssl-dev
-#gcc -o gmailget gmailget.c -lssl -lcrypto
+gcc mail0c.c -o mail0c
+gcc mail0d.c -o mail0d
