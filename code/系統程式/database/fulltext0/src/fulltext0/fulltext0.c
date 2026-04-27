@@ -1,9 +1,5 @@
 #include "fulltext0.h"
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <sys/mman.h>
-#include <fcntl.h>
-#include <unistd.h>
+#include <errno.h>
 
 /* ═══════════════════════════════════════════════════════════════════════════
  * PART 1: TOKENIZE (shared)
@@ -94,15 +90,117 @@ int unite(const uint32_t *a, int na,
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
- * PART 3: INDEX BUILD (from index.c)
+ * PART 3: CROSS-PLATFORM FILE OPERATIONS
  * ═══════════════════════════════════════════════════════════════════════════ */
 
-/* ── In-memory index ── */
+#ifdef _WIN32
+static HANDLE g_mmap_handle = NULL;
+
+static int win_open(const char *path, int oflag)
+{
+    DWORD dwDesiredAccess = 0;
+    DWORD dwCreationDisposition = OPEN_EXISTING;
+
+    if (oflag & O_RDONLY) dwDesiredAccess |= GENERIC_READ;
+    if (oflag & O_WRONLY) dwDesiredAccess |= GENERIC_WRITE;
+    if (oflag & O_RDWR) dwDesiredAccess |= (GENERIC_READ | GENERIC_WRITE);
+
+    if (oflag & O_CREAT) dwCreationDisposition = OPEN_ALWAYS;
+    if (oflag & O_TRUNC) dwCreationDisposition = CREATE_ALWAYS;
+
+    HANDLE h = CreateFileA(path, dwDesiredAccess, FILE_SHARE_READ,
+                           NULL, dwCreationDisposition, FILE_ATTRIBUTE_NORMAL, NULL);
+    if (h == INVALID_HANDLE_VALUE) return -1;
+    return (int)(intptr_t)h;
+}
+
+static int win_close(int fd)
+{
+    return CloseHandle((HANDLE)(intptr_t)fd) ? 0 : -1;
+}
+
+static intptr_t win_read(int fd, void *buf, size_t size)
+{
+    DWORD bytesRead = 0;
+    if (!ReadFile((HANDLE)(intptr_t)fd, buf, (DWORD)size, &bytesRead, NULL))
+        return -1;
+    return (intptr_t)bytesRead;
+}
+
+static intptr_t win_pread(int fd, void *buf, size_t size, uint64_t offset)
+{
+    OVERLAPPED ov = {0};
+    ov.Offset = (DWORD)(offset & 0xFFFFFFFF);
+    ov.OffsetHigh = (DWORD)(offset >> 32);
+    DWORD bytesRead = 0;
+    if (!ReadFile((HANDLE)(intptr_t)fd, buf, (DWORD)size, &bytesRead, &ov))
+        return -1;
+    return (intptr_t)bytesRead;
+}
+
+static void *win_mmap(void *addr, size_t len, int prot, int flags, int fd, uint64_t offset)
+{
+    DWORD dwProt = 0;
+    if (prot & PROT_READ) dwProt = FILE_MAP_READ;
+    if (prot & PROT_WRITE) dwProt = FILE_MAP_WRITE;
+
+    HANDLE hMap = CreateFileMappingA((HANDLE)(intptr_t)fd, NULL, dwProt, 0, 0, NULL);
+    if (!hMap) return NULL;
+
+    g_mmap_handle = hMap;
+
+    void *p = MapViewOfFile(hMap, dwProt, (DWORD)(offset >> 32), (DWORD)(offset & 0xFFFFFFFF), len);
+    if (!p) {
+        CloseHandle(hMap);
+        g_mmap_handle = NULL;
+        return NULL;
+    }
+    return p;
+}
+
+static int win_munmap(void *addr, size_t len)
+{
+    (void)len;
+    BOOL ok = UnmapViewOfFile(addr);
+    if (g_mmap_handle) {
+        CloseHandle(g_mmap_handle);
+        g_mmap_handle = NULL;
+    }
+    return ok ? 0 : -1;
+}
+
+static int win_madvise(void *addr, size_t len, int advice)
+{
+    (void)addr; (void)len; (void)advice;
+    return 0;
+}
+
+#define PLAT_OPEN win_open
+#define PLAT_CLOSE win_close
+#define PLAT_READ win_read
+#define PLAT_PREAD win_pread
+#define PLAT_MMAP win_mmap
+#define PLAT_MUNMAP win_munmap
+#define PLAT_MADVISE win_madvise
+
+#else
+#define PLAT_OPEN open
+#define PLAT_CLOSE close
+#define PLAT_READ read
+#define PLAT_PREAD pread
+#define PLAT_MMAP mmap
+#define PLAT_MUNMAP munmap
+#define PLAT_MADVISE madvise
+#endif
+
+/* ═══════════════════════════════════════════════════════════════════════════
+ * PART 4: INDEX BUILD
+ * ═══════════════════════════════════════════════════════════════════════════ */
+
 static TermEntry g_terms[MAX_TERMS];
 static PostingList g_posts[MAX_TERMS];
 static int g_num_terms = 0;
 
-/* Open-addressing hash: term → index in g_terms[] */
 #define HASH_SIZE (1<<17)
 static int32_t g_hash[HASH_SIZE];
 
@@ -167,7 +265,6 @@ static void write_index(const char *idx_path, const char *off_path,
 {
     mkdir("_index", 0755);
 
-    /* Write offsets.bin */
     {
         FILE *of = fopen(off_path, "wb");
         if (!of) { perror("fopen offsets.bin"); exit(1); }
@@ -179,7 +276,6 @@ static void write_index(const char *idx_path, const char *off_path,
                off_path, num_docs, (size_t)num_docs * sizeof(uint64_t));
     }
 
-    /* Build compressed posting buffer */
     size_t post_cap = 0;
     for (int i = 0; i < g_num_terms; i++)
         post_cap += g_posts[i].count * VARINT_MAX + 1;
@@ -188,7 +284,6 @@ static void write_index(const char *idx_path, const char *off_path,
     if (!post_buf) { fprintf(stderr,"OOM\n"); exit(1); }
     size_t pb_pos = 0;
 
-    /* Build term table buffer */
     size_t term_cap = 0;
     for (int i = 0; i < g_num_terms; i++)
         term_cap += 14 + strlen(g_terms[i].term);
@@ -362,10 +457,9 @@ int ft0_index_build(const char *corpus_path,
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
- * PART 4: QUERY ENGINE (from query.c)
+ * PART 5: QUERY ENGINE
  * ═══════════════════════════════════════════════════════════════════════════ */
 
-/* ── Query-side hash map ── */
 #define QHASH_SIZE (1<<17)
 static int32_t g_qhash[QHASH_SIZE];
 
@@ -396,7 +490,6 @@ static int qhash_lookup(const TermEntry *terms, const char *term)
     return -1;
 }
 
-/* ── Index structure ── */
 typedef struct {
     TermEntry *terms;
     uint32_t num_terms;
@@ -412,19 +505,19 @@ static int index_open(Index *idx, const char *idx_path, const char *off_path)
 {
     memset(idx, 0, sizeof(*idx));
 
-    idx->post_fd = open(idx_path, O_RDONLY);
+    idx->post_fd = PLAT_OPEN(idx_path, O_RDONLY);
     if (idx->post_fd < 0) { perror("open index"); return -1; }
 
     unsigned char hdr[BLOCK_SIZE];
-    if (read(idx->post_fd, hdr, BLOCK_SIZE) != BLOCK_SIZE) {
-        fprintf(stderr,"Short header\n"); close(idx->post_fd); return -1;
+    if (PLAT_READ(idx->post_fd, hdr, BLOCK_SIZE) != BLOCK_SIZE) {
+        fprintf(stderr,"Short header\n"); PLAT_CLOSE(idx->post_fd); return -1;
     }
 
     uint32_t magic; memcpy(&magic, hdr, 4);
     if (magic != IDX_MAGIC) {
         fprintf(stderr,"Bad magic 0x%08X (expected 0x%08X)\n", magic, IDX_MAGIC);
         fprintf(stderr,"Please re-run ./index to rebuild with the new format.\n");
-        close(idx->post_fd); return -1;
+        PLAT_CLOSE(idx->post_fd); return -1;
     }
 
     uint32_t term_block_start;
@@ -434,14 +527,14 @@ static int index_open(Index *idx, const char *idx_path, const char *off_path)
     memcpy(&idx->post_block_start,hdr+20, 4);
 
     idx->terms = malloc(idx->num_terms * sizeof(TermEntry));
-    if (!idx->terms) { fprintf(stderr,"OOM\n"); close(idx->post_fd); return -1; }
+    if (!idx->terms) { fprintf(stderr,"OOM\n"); PLAT_CLOSE(idx->post_fd); return -1; }
 
     uint32_t term_bytes = (idx->post_block_start - term_block_start) * BLOCK_SIZE;
     unsigned char *tbuf = malloc(term_bytes);
-    if (!tbuf) { fprintf(stderr,"OOM\n"); free(idx->terms); close(idx->post_fd); return -1; }
+    if (!tbuf) { fprintf(stderr,"OOM\n"); free(idx->terms); PLAT_CLOSE(idx->post_fd); return -1; }
 
     off_t toff = (off_t)term_block_start * BLOCK_SIZE;
-    if (pread(idx->post_fd, tbuf, term_bytes, toff) != (ssize_t)term_bytes) {
+    if (PLAT_PREAD(idx->post_fd, tbuf, term_bytes, toff) != (ssize_t)term_bytes) {
         fprintf(stderr,"Short term table read\n");
     }
 
@@ -462,18 +555,34 @@ static int index_open(Index *idx, const char *idx_path, const char *off_path)
     qhash_build(idx->terms, idx->num_terms);
 
     {
+#ifdef _WIN32
+        LARGE_INTEGER li;
+        li.QuadPart = 0;
+        SetFilePointerEx((HANDLE)(intptr_t)idx->post_fd, li, NULL, FILE_BEGIN);
+        DWORD size = GetFileSize((HANDLE)(intptr_t)idx->post_fd, NULL);
+        uint64_t post_start = (uint64_t)idx->post_block_start * BLOCK_SIZE;
+        idx->post_mmap_len = (size_t)(size - post_start);
+        if (idx->post_mmap_len > 0) {
+            idx->post_mmap = PLAT_MMAP(NULL, idx->post_mmap_len, PROT_READ, MAP_PRIVATE, idx->post_fd, post_start);
+            if (idx->post_mmap == MAP_FAILED || idx->post_mmap == NULL) {
+                fprintf(stderr, "mmap posting failed\n");
+                idx->post_mmap = NULL;
+            }
+        }
+#else
         struct stat st;
         if (fstat(idx->post_fd, &st) < 0) { perror("fstat"); return -1; }
         long post_start = (long)idx->post_block_start * BLOCK_SIZE;
         idx->post_mmap_len = (size_t)(st.st_size - post_start);
         if (idx->post_mmap_len > 0) {
-            idx->post_mmap = mmap(NULL, idx->post_mmap_len, PROT_READ, MAP_PRIVATE, idx->post_fd, post_start);
+            idx->post_mmap = PLAT_MMAP(NULL, idx->post_mmap_len, PROT_READ, MAP_PRIVATE, idx->post_fd, post_start);
             if (idx->post_mmap == MAP_FAILED) {
                 perror("mmap posting"); idx->post_mmap = NULL;
             } else {
-                madvise(idx->post_mmap, idx->post_mmap_len, MADV_WILLNEED);
+                PLAT_MADVISE(idx->post_mmap, idx->post_mmap_len, MADV_WILLNEED);
             }
         }
+#endif
     }
 
     {
@@ -496,9 +605,9 @@ static int index_open(Index *idx, const char *idx_path, const char *off_path)
 
 static void index_close(Index *idx)
 {
-    if (idx->post_mmap && idx->post_mmap != MAP_FAILED)
-        munmap(idx->post_mmap, idx->post_mmap_len);
-    if (idx->post_fd >= 0) close(idx->post_fd);
+    if (idx->post_mmap)
+        PLAT_MUNMAP(idx->post_mmap, idx->post_mmap_len);
+    if (idx->post_fd >= 0) PLAT_CLOSE(idx->post_fd);
     free(idx->terms);
     free(idx->doc_offsets);
 }
@@ -598,7 +707,7 @@ int ft0_query_exec_to_file(void *idx_ptr, const char *query_str,
                 int tmp = valid[a]; valid[a] = valid[b]; valid[b] = tmp;
             }
 
-    #define MAX_RESULT 65536
+#define MAX_RESULT 65536
     uint32_t *result = malloc(MAX_RESULT * sizeof(uint32_t));
     if (!result) { fprintf(stderr,"OOM\n"); return -1; }
 
@@ -662,7 +771,7 @@ int ft0_query_exec_to_file(void *idx_ptr, const char *query_str,
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
- * PART 5: PYTHON CTYPES API
+ * PART 6: PYTHON CTYPES API
  * ═══════════════════════════════════════════════════════════════════════════ */
 
 void *ft0_index_open(const char *idx_path, const char *off_path)
@@ -738,7 +847,7 @@ QueryResult *ft0_query_exec(void *idx_ptr, const char *query_str)
                 int tmp = valid[a]; valid[a] = valid[b]; valid[b] = tmp;
             }
 
-    #define MAX_RESULT 65536
+#define MAX_RESULT 65536
     uint32_t *result = malloc(MAX_RESULT * sizeof(uint32_t));
     if (!result) return NULL;
 

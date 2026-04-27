@@ -135,6 +135,43 @@ static inline char ascii_lower(char c)
     return (c>='A'&&c<='Z') ? (char)(c+32) : c;
 }
 
+/* ── Python ctypes interface ──────────────────────────────────────────────── */
+
+typedef struct {
+    uint32_t *doc_ids;
+    uint32_t  count;
+    uint32_t *scores;
+} QueryResult;
+
+typedef struct {
+    uint32_t num_terms;
+    uint32_t num_docs;
+} IndexStats;
+
+void *ft0_index_open(const char *idx_path, const char *off_path);
+void ft0_index_close(void *idx);
+
+IndexStats *ft0_index_stats(void *idx, IndexStats *out);
+
+QueryResult *ft0_query_exec(void *idx, const char *query_str);
+void ft0_query_result_free(QueryResult *res);
+
+int ft0_index_build(const char *corpus_path,
+                    const char *idx_path,
+                    const char *off_path);
+
+char **ft0_tokenize(const char *line, int *out_count);
+void ft0_tokenize_free(char **tokens, int count);
+
+char **ft0_get_line(void *idx, const char *corpus_path,
+                    uint32_t *doc_ids, uint32_t count,
+                    int *out_count);
+void ft0_lines_free(char **lines, int count);
+
+int ft0_query_exec_to_file(void *idx, const char *query_str,
+                           const char *corpus_path,
+                           FILE *out_fp);
+
 /* ── Shared declarations ──────────────────────────────────────────────────── */
 
 int tokenize(const char *line, char out[][MAX_TOKEN_LEN], int max_out);

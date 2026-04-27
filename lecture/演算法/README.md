@@ -53,10 +53,10 @@
 * [化簡法](../../wiki/演算法/化簡法.md)
 
 ## 11. 計算理論
-* [圖靈機](../../wiki/系統程式/圖靈機.md)
+* [圖靈機](../../wiki/計算理論/圖靈機.md)
     * 程式： [演算法/theory/turingMachine/](../../code/演算法/theory/turingMachine/) - 圖靈機實作
-* [Lambda 演算](../../wiki/系統程式/形式文法.md)
+* [Lambda 演算](../../wiki/計算理論/形式文法.md)
     * 程式： [演算法/theory/lambda/](../../code/演算法/theory/lambda/) - Lambda 演算實作
-* [有限狀態機](../../wiki/系統程式/有限狀態機.md)
-* [形式文法](../../wiki/系統程式/形式文法.md)
+* [有限狀態機](../../wiki/計算理論/有限狀態機.md)
+* [形式文法](../../wiki/計算理論/形式文法.md)
     * 程式： [演算法/theory/grammar/](../../code/演算法/theory/grammar/) - 文法實作
