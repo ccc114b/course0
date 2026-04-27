@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "fulltext0"
-version = "0.2.1"
+version = "0.5.0"
 description = "A lightweight full-text search engine with CJK (Chinese/Japanese/Korean) support"
 readme = "README.md"
 license = "MIT"
@@ -37,6 +37,9 @@ dev = ["pytest", "build", "twine"]
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[project.scripts]
+fulltext0 = "fulltext0.__main__:main"
 
 [tool.setuptools.package-data]
 fulltext0 = ["py.typed"]

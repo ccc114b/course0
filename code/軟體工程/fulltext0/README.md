@@ -13,7 +13,41 @@ A fast, lightweight full-text search engine library with native support for CJK 
 ## Installation
 
 ```bash
+# From PyPI (after published)
 pip install fulltext0
+
+# From GitHub (latest version)
+pip install git+https://github.com/ccccourse0/fulltext0.git
+
+# Local development install
+cd /path/to/fulltext0
+pip install .
+```
+
+> **Note:** If `fulltext0` command is not found after install, add the user scripts directory to your PATH:
+> - **macOS / Linux:** `~/.local/bin`
+> - **Windows:** `%APPDATA%\Python\Python3x\Scripts`
+>
+> Or use [pipx](https://pypa.github.io/pipx/) (`pip install pipx`) to install in isolated environments:
+> ```bash
+> pipx install fulltext0
+> ```
+
+## Command Line Interface
+
+```bash
+# Build index from a text file (one document per line)
+fulltext0 index input.txt
+
+# Query the index
+fulltext0 query "框架"
+
+# Query and show matching lines
+fulltext0 query "框架" --show
+
+# Specify custom index and corpus paths
+fulltext0 index input.txt -o my_index.idx --offset my_index.offsets
+fulltext0 query "框架" -i my_index.idx --offset my_index.offsets -c input.txt --show
 ```
 
 ## Quick Start
