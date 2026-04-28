@@ -1,18 +1,15 @@
 # course0 - 陳鍾誠的課程教材
 
 ## Structure
-
 ```
 course0/
-├── code/           # 程式碼範例 (按科目分目錄)
-├── wiki/           # LLM 知識庫
-├── lecture/       # 課程講稿
-├── AGENTS.md       # 本ファイル (根目錄)
-└── wiki/AGENTS.md  # Wiki 專用操作手冊
+├── code/       # 程式碼範例 (按科目分目錄)
+├── wiki/       # LLM 知識庫 (NOT _wiki/ - wiki/AGENTS.md has stale refs)
+├── lecture/    # 課程講稿
+└── _more/      # 補充教材
 ```
 
 ## Subjects (code/)
-
 | 目錄 | 語言 | 主題 |
 |------|------|------|
 | `code/計算機結構/` | Verilog | Nand2tetris, CPU, ALU |
@@ -21,24 +18,41 @@ course0/
 | `code/網站設計/` | JavaScript | HTML, CSS, Node, React |
 | `code/軟體工程/` | Rust, Python | AI 測試, Docker |
 | `code/機器學習/` | Python | NN, 強化學習 |
+| `code/程式與數學/` | Python | 代數, 微積分, 機率統計 |
+| `code/計算理論/` | Python | 圖靈機, Lambda Calculus |
 
 ## Key Facts
-
 - **NOT a software project**: No root-level build/test/lint commands
-- **Each code/[subject]/ is independent**: Standalone examples with own `AGENTS.md`
-- **Wiki uses LLM Wiki schema**: See `wiki/AGENTS.md` for operations (ingest/query/lint)
-- **Wiki location**: `wiki/` (NOT `_wiki/`)
-- **No cross-project dependencies**
+- **Each code/[subject]/ is independent** with own pyproject.toml or package.json
+- **No cross-project dependencies** - Each subdirectory is self-contained
 
-## Working Here
-
-1. Ask user which subject to work on
-2. Check `code/[subject]/` for relevant code examples
-3. Check `lecture/[subject]/` for lecture notes
-4. Check `wiki/` for knowledge base
-5. Check sub-AGENTS.md in code directory for project-specific guidance
+## Workflow
+1. Ask user which subject to work on (don't assume)
+2. Check `code/[subject]/` for code, `lecture/[subject]/` for notes, `wiki/` for knowledge base
+3. Check for `AGENTS.md` in project subdirectories for specific guidance
 
 ## Sub-AGENTS.md Files
+- `code/系統程式/os/mini-riscv-os2/` - RISC-V OS tutorial (stages 01-09)
+- `code/系統程式/os/xv7/` - xv7 OS implementation
+- `code/系統程式/database/sql0/` - SQL examples
+- `code/系統程式/crpyto/ssl0/` - SSL/TLS (note: directory misspelled "crpyto")
+- `code/網站設計/05-form/blog1form/` - Form handling
+- `code/網站設計/05-form/blog4form/` - Form handling
 
-- `code/系統程式/os/mini-riscv-os2/AGENTS.md` - RISC-V OS tutorial stages (01-09)
-- `code/系統程式/database/sql0/AGENTS.md` - Database SQL examples
+## Common Commands
+```bash
+cd code/[subject]/[project] && python main.py
+cd code/[subject]/[project] && python -m pytest
+cd code/[subject]/[project] && npm run dev
+```
+
+## CI / Deploy
+- `astro.yml` - Astro site (root-level or code/網站設計)
+- `hugo.yml` - Hugo site (lecture/ subdirectories)
+- `mdbook.yml` - mdBook site (Rust book style docs)
+
+## Wiki
+Uses LLM Wiki schema (see wiki/AGENTS.md):
+- **Ingest**: Add source to `wiki/source/`, then ask LLM to ingest
+- **Query**: Search `wiki/` for existing knowledge
+- **Lint**: Check for stale info, broken links, gaps
