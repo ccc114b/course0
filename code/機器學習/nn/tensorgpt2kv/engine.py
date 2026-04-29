@@ -150,3 +150,21 @@ class Tensor:
             self.grad += out.grad * (power * self.data ** (power - 1))
         out._backward = _backward
         return out
+
+# 請加入到 engine.py 的最下方
+def cat(tensors, axis=0):
+    """將多個 Tensor 沿著指定維度拼接起來"""
+    data = np.concatenate([t.data for t in tensors], axis=axis)
+    requires_grad = any(t.requires_grad for t in tensors)
+    out = Tensor(data, tuple(tensors), requires_grad)
+    
+    def _backward():
+        if not out.requires_grad: return
+        # 沿著拼接的維度切分梯度，並分配給原本的張量
+        split_sizes = [t.data.shape[axis] for t in tensors]
+        grads = np.split(out.grad, np.cumsum(split_sizes)[:-1], axis=axis)
+        for t, g in zip(tensors, grads):
+            if t.requires_grad:
+                t.grad += g
+    out._backward = _backward
+    return out
