@@ -1,5 +1,5 @@
 import numpy as np
-from engine import Tensor
+from tensor import Tensor
 from nn import Module, Linear, Embedding, RMSNorm
 
 class CausalSelfAttention(Module):

@@ -1,7 +1,7 @@
 import os
 import random
 import numpy as np
-from engine import Tensor
+from tensor import Tensor
 from nn import Adam
 from gpt import GPT
 
