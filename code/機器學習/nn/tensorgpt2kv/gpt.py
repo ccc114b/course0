@@ -1,5 +1,5 @@
 import numpy as np
-from engine import Tensor, cat  # 引入我們剛剛寫的 cat
+from tensor import Tensor, cat  # 引入我們剛剛寫的 cat
 from nn import Module, Linear, Embedding, RMSNorm
 
 class CausalSelfAttention(Module):
