@@ -1,7 +1,7 @@
 import numpy as np
 from engine import Tensor
 from nn import Adam
-# from gpt import GPT
+from gpt import GPT
 
 def train_model(model, optimizer, docs, uchars, BOS, block_size, num_steps=1000):
     """
