@@ -15,11 +15,15 @@ import re
 
 # ─── Configuration ───
 
+# 工作目錄，用於存放 Agent 產生的檔案
 WORKSPACE = os.path.expanduser("~/.agent0")
+# 使用的 Ollama 模型名稱
 MODEL = "minimax-m2.5:cloud"
 
 # ─── Tools ───
 
+# 定義工具列表，每個工具包含名稱、描述和輸入 schema
+# LLM 會根據這些描述決定何時呼叫哪個工具
 TOOLS = [
     {
         "name": "run_command",
@@ -61,6 +65,7 @@ TOOLS = [
 
 async def call_ollama(prompt: str, system: str = "") -> str:
     """Call Ollama API"""
+    # 若有 system prompt，將其附加在使用者 prompt 前方
     full_prompt = f"{system}\n\n{prompt}" if system else prompt
     
     payload = {
@@ -83,6 +88,7 @@ async def call_ollama(prompt: str, system: str = "") -> str:
 def execute_tool(name, tool_input):
     if name == "run_command":
         try:
+            # 執行 shell 命令，捕獲 stdout + stderr，30 秒超時
             result = subprocess.run(
                 tool_input["command"], shell=True, 
                 capture_output=True, text=True, timeout=30
@@ -94,6 +100,7 @@ def execute_tool(name, tool_input):
     
     elif name == "read_file":
         try:
+            # 讀取檔案內容，限制前 10000 字元防止上下文爆量
             with open(tool_input["path"], "r") as f:
                 return f.read()[:10000]
         except Exception as e:
@@ -101,6 +108,7 @@ def execute_tool(name, tool_input):
     
     elif name == "write_file":
         try:
+            # 寫入檔案，自動建立父目錄
             os.makedirs(os.path.dirname(tool_input["path"]) or ".", exist_ok=True)
             with open(tool_input["path"], "w") as f:
                 f.write(tool_input["content"])
@@ -112,6 +120,7 @@ def execute_tool(name, tool_input):
 
 # ─── Agent ───
 
+# System prompt 告知 LLM 如何使用工具，採用 <tool>JSON</tool> 格式表達工具呼叫
 SYSTEM_PROMPT = """You are Jarvis, a helpful AI assistant.
 You have tools - use them to help the user.
 
@@ -147,24 +156,27 @@ def main():
             print("Goodbye!")
             break
         
-        # 调用 Ollama
+        # 呼叫 Ollama 取得回覆（不含對話歷史，無多輪循環）
         response = asyncio.run(call_ollama(user_input, SYSTEM_PROMPT))
         
-        # 检查是否需要使用工具
+        # 檢查 LLM 回覆中是否包含 <tool> 標籤（表示需要執行工具）
         tool_match = re.search(r'<tool>(.+?)</tool>', response, re.DOTALL)
         if tool_match:
             try:
+                # 解析 JSON 格式的工具呼叫
                 tool_data = json.loads(tool_match.group(1))
                 tool_name = tool_data.get("name")
                 tool_input = tool_data.get("input", {})
                 
                 print(f"  🔧 {tool_name}: {tool_input}")
                 
+                # 執行工具並顯示結果（僅顯示前 150 字元）
                 result = execute_tool(tool_name, tool_input)
                 print(f"     → {result[:150]}")
             except Exception as e:
                 print(f"Tool error: {e}")
         else:
+            # 無工具呼叫，直接顯示 LLM 回覆
             print(f"\n🤖 {response}\n")
 
 if __name__ == "__main__":

@@ -5,6 +5,7 @@ from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
 import os
 
+# 自動選擇計算裝置
 if torch.cuda.is_available():
     device = torch.device("cuda")
 elif torch.backends.mps.is_available():
@@ -12,11 +13,12 @@ elif torch.backends.mps.is_available():
 else:
     device = torch.device("cpu")
 
-latent_dim = 100
+latent_dim = 100   # 潛在空間維度
 img_size = 28
 channels = 1
 
 class Generator(nn.Module):
+    """生成器：從 100 維噪聲生成 28×28 手寫數字"""
     def __init__(self):
         super().__init__()
         self.l0 = nn.Linear(latent_dim, 7 * 7 * 64)
@@ -33,6 +35,10 @@ class Generator(nn.Module):
         return out
 
 class Discriminator(nn.Module):
+    """判別器：區分真實圖片與生成圖片
+    
+    輸出 logit（未經 sigmoid），配合 BCEWithLogitsLoss 使用。
+    """
     def __init__(self):
         super().__init__()
         self.conv1 = nn.Conv2d(1, 32, 4, 2, 1)
@@ -50,6 +56,7 @@ class Discriminator(nn.Module):
         return out
 
 def train(epochs=30, batch_size=256, lr=0.001):
+    # 資料歸一化至 [-1, 1] 以匹配 Tanh 輸出
     transform = transforms.Compose([
         transforms.ToTensor(),
         transforms.Normalize((0.5,), (0.5,))
@@ -72,16 +79,17 @@ def train(epochs=30, batch_size=256, lr=0.001):
         epoch_loss_d = 0
         for i, (imgs, _) in enumerate(dataloader):
             batch = imgs.size(0)
-            real = torch.ones(batch, 1).to(device)
-            fake = torch.zeros(batch, 1).to(device)
+            real = torch.ones(batch, 1).to(device)   # 真實標籤
+            fake = torch.zeros(batch, 1).to(device)  # 偽造標籤
 
+            # ─── 訓練判別器 ───
             imgs = imgs.to(device)
             optimizer_d.zero_grad()
             real_validity = discriminator(imgs)
             real_loss = adversarial_loss(real_validity, real)
 
             z = torch.randn(batch, latent_dim).to(device)
-            fake_imgs = generator(z).detach()
+            fake_imgs = generator(z).detach()   # detach 避免梯度傳到生成器
             fake_validity = discriminator(fake_imgs)
             fake_loss = adversarial_loss(fake_validity, fake)
 
@@ -90,11 +98,12 @@ def train(epochs=30, batch_size=256, lr=0.001):
             optimizer_d.step()
             epoch_loss_d += d_loss.item()
 
+            # ─── 訓練生成器 ───
             optimizer_g.zero_grad()
             z = torch.randn(batch, latent_dim).to(device)
             gen_imgs = generator(z)
             validity = discriminator(gen_imgs)
-            g_loss = adversarial_loss(validity, real)
+            g_loss = adversarial_loss(validity, real)  # 讓判別器誤判為真
             g_loss.backward()
             optimizer_g.step()
             epoch_loss_g += g_loss.item()

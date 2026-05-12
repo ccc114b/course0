@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# agent0.py - AI Agent with memory and tool feedback
+# agent0.py - AI Agent with memory and tool feedback（含雙層安全機制）
 # Run: python agent0.py
 
 import subprocess
@@ -19,6 +19,7 @@ MAX_TURNS = 5
 
 conversation_history = []
 key_info = []
+# 已獲使用者授權的外部路徑集合，避免重複詢問
 outside_access_granted = set()
 
 # ─── Ollama API ───
@@ -44,6 +45,8 @@ async def call_ollama(prompt: str, system: str = "") -> str:
 
 async def review_command(cmd: str) -> tuple[bool, str]:
     """Use another Ollama model to review if command is safe"""
+    # === 第一層安全防護：LLM 安全審查 ===
+    # 使用獨立 Reviewer 模型判斷命令是否安全
     review_prompt = f"""你是安全審查者。請判斷以下 shell 命令是否安全可以執行。
 
 安全原則：
@@ -88,11 +91,13 @@ async def review_command(cmd: str) -> tuple[bool, str]:
         return False, f"審查失敗: {e}"
 
 def check_outside_access(cmd: str, cwd: str) -> tuple[bool, str]:
-    """Check if command accesses outside current directory"""
+    # === 第二層安全防護：目錄存取控制 ===
+    # 用正則表達式解析命令中的路徑參數，檢查是否試圖存取目前目錄以外
     import os.path
     
     def extract_paths(c):
         paths = []
+        # 匹配三種模式：絕對路徑命令參數、../ 開頭、單獨的 ..
         patterns = [
             (r'(?:^|\s)(?:cat|ls|cd|rm|cp|mv|chmod|chown|find|grep)\s+(/[^\s]+)', 1),
             (r'(?:^|\s)\.\./[^\s]*', 0),
@@ -115,16 +120,18 @@ def check_outside_access(cmd: str, cwd: str) -> tuple[bool, str]:
         else:
             abs_path = os.path.abspath(os.path.join(cwd, path))
         
+        # 若路徑為 .. 或以 ../ 開頭，表示試圖離開目前目錄
         if path == '..' or path.startswith('../'):
             return True, abs_path
         
+        # 若絕對路徑不在 cwd 底下，表示試圖存取外部檔案
         if not abs_path.startswith(cwd_abs):
             return True, abs_path
     
     return False, ""
 
 def ask_outside_access(path: str) -> bool:
-    """Ask user for permission to access outside directory"""
+    # 詢問使用者是否允許存取外部目錄
     print(f"\n⚠️  命令嘗試存取本資料夾以外的檔案: {path}")
     print("   是否允許？（y/N）：", end=" ")
     try:
@@ -236,6 +243,7 @@ def main():
             for cmd in shell_matches:
                 cmd = cmd.strip()
                 
+                # === 第一層安全檢查：LLM 審查 ===
                 is_safe, reason = asyncio.run(review_command(cmd))
                 
                 if not is_safe:
@@ -244,9 +252,11 @@ def main():
                     all_outputs.append(f"$ {cmd}\n阻止：{reason}")
                     continue
                 
+                # === 第二層安全檢查：目錄存取控制 ===
                 needs_access, path = check_outside_access(cmd, os.getcwd())
                 if needs_access:
                     if path in outside_access_granted:
+                        # 已授權的路徑不再重複詢問
                         pass
                     else:
                         if not ask_outside_access(path):

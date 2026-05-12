@@ -4,10 +4,10 @@ import torch.optim as optim
 from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
 
-# device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 device = torch.device("cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is_available() else "cpu")
 
 class Net(nn.Module):
+    """CNN 分類器：2 層卷積 + 2 層全連接"""
     def __init__(self):
         super().__init__()
         self.conv1 = nn.Conv2d(1, 32, 3)
@@ -27,6 +27,7 @@ class Net(nn.Module):
         return self.fc2(x)
 
 def train():
+    # 資料擴增：隨機旋轉 ±10° 提升泛化能力
     transform = transforms.Compose([
         transforms.RandomRotation(10),
         transforms.ToTensor(),

@@ -3,12 +3,17 @@ from PIL import Image, ImageOps
 from torchvision import datasets
 
 def preprocess(img):
+    """預處理：縮放至 20×20 灰階，歸一化至 [0,1]"""
     img = img.resize((20, 20))
     img = ImageOps.grayscale(img)
     arr = np.array(img) / 255.0
     return arr
 
 def extract_features(arr):
+    """從 20×20 影像提取 9 維特徵向量
+    
+    包含區域密度（8維）、全域密度（1維）、分散度（2維）
+    """
     features = []
     
     h, w = 20, 20
@@ -30,6 +35,7 @@ def extract_features(arr):
     return np.array(features)
 
 def load_templates():
+    """從 MNIST 訓練集建立各數字的特徵模板（每類平均）"""
     transform = datasets.MNIST(root="./data", train=True, download=True)
     templates = {i: [] for i in range(10)}
     
@@ -47,6 +53,7 @@ def load_templates():
     return templates
 
 def predict(image_path, templates):
+    """最近鄰分類：計算歐氏距離匹配最相似的模板"""
     img = Image.open(image_path)
     arr = preprocess(img)
     feat = extract_features(arr)

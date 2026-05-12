@@ -12,15 +12,21 @@ from typing import Optional
 
 @dataclass
 class Agent0:
+    # === 類別版本 Agent：將所有功能封裝為 dataclass ===
+    # 此版本整合了 XML 工具協議、雙層安全防護、記憶系統
+    
+    # 基本配置
     workspace: str = ""
     model: str = "minimax-m2.5:cloud"
     reviewer_model: str = "minimax-m2.5:cloud"
     max_turns: int = 5
     
+    # 記憶狀態
     conversation_history: list = field(default_factory=list)
     key_info: list = field(default_factory=list)
     outside_access_granted: set = field(default_factory=set)
     
+    # System prompt（類別屬性，但可以透過實例覆寫）
     SYSTEM_PROMPT = """你是 Jarvis，一個有用的 AI 助理。
 
 重要規則：
@@ -35,10 +41,12 @@ class Agent0:
 - 全部完成後輸出 <end/>"""
     
     def __post_init__(self):
+        # dataclass 初始化後，若 workspace 為空則設為預設值
         if not self.workspace:
             self.workspace = os.path.expanduser("~/.agent0")
     
     async def call_ollama(self, prompt: str, system: str = "") -> str:
+        # 呼叫 Ollama API，使用實例的模型設定
         full_prompt = f"{system}\n\n{prompt}" if system else prompt
         
         payload = {
@@ -57,6 +65,8 @@ class Agent0:
                 return result.get("response", "").strip()
     
     async def review_command(self, cmd: str) -> tuple[bool, str]:
+        # === 第一層安全：LLM 審查 ===
+        # 簡化版的審查 prompt（英文）
         review_prompt = f"""Review this command: {cmd}
 
 Is it SAFE to run? Reply with SAFE or UNSAFE."""
@@ -86,6 +96,7 @@ Is it SAFE to run? Reply with SAFE or UNSAFE."""
             return False, f"審查失敗: {e}"
     
     def check_outside_access(self, cmd: str, cwd: str) -> tuple[bool, str]:
+        # === 第二層安全：目錄存取控制 ===
         def extract_paths(c):
             paths = []
             patterns = [
@@ -127,6 +138,7 @@ Is it SAFE to run? Reply with SAFE or UNSAFE."""
             return False
     
     def build_context(self) -> str:
+        # 建構 XML 格式的 context（記憶 + 歷史）
         context_parts = []
         if self.key_info:
             items_xml = "\n".join(f"  <item>{k}</item>" for k in self.key_info)
@@ -145,6 +157,7 @@ Is it SAFE to run? Reply with SAFE or UNSAFE."""
             self.conversation_history.pop(0)
     
     async def extract_key_info(self, user_input: str, assistant_response: str):
+        # 用 LLM 自動提取需要長期記憶的關鍵資訊
         extract_prompt = f"""根據這段對話，有沒有需要長期記憶的關鍵資訊？
 如果有，用以下格式輸出（最多 2 項）。如果沒有，輸出 <memory></memory>。
 
@@ -168,8 +181,10 @@ Is it SAFE to run? Reply with SAFE or UNSAFE."""
             pass
     
     async def execute_shell(self, cmd: str, cwd: str = None) -> tuple[int, str]:
+        # 統一的 shell 命令執行入口（含雙層安全檢查）
         print(f"\n执行命令: {cmd}")
         
+        # 第一層安全：LLM 審查
         is_safe, reason = await self.review_command(cmd)
         
         if not is_safe:
@@ -179,6 +194,7 @@ Is it SAFE to run? Reply with SAFE or UNSAFE."""
         if cwd is None:
             cwd = os.getcwd()
         
+        # 第二層安全：目錄存取控制
         needs_access, path = self.check_outside_access(cmd, cwd)
         if needs_access:
             if path in self.outside_access_granted:
@@ -199,6 +215,8 @@ Is it SAFE to run? Reply with SAFE or UNSAFE."""
             return -1, f"錯誤：{e}"
     
     async def run(self, user_input: str, system_prompt: str = "") -> tuple[str, str]:
+        # === 主循環入口 ===
+        # 整合 context 建構、LLM 呼叫、工具循環、記憶更新
         SYSTEM = system_prompt if system_prompt else self.SYSTEM_PROMPT
         
         context = self.build_context()
@@ -214,7 +232,6 @@ Is it SAFE to run? Reply with SAFE or UNSAFE."""
         while True:
             if "<end/>" in current_response:
                 before_end = current_response.split("<end/>")[0].strip()
-                # If no text before <end/>, use tool_result or default
                 if not before_end:
                     response = "命令已執行。" if tool_result else "完成。"
                 else:

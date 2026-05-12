@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # agent0.py - AI Agent with memory and tool feedback (Class version)
 # Run: python agent0.py
+# 基礎類別，與 v4-agent-class 相同。v5-agent-team 的 agent0team.py 匯入此類別並擴展出 Planner/Generator/Evaluator 子類別
 
 import subprocess
 import os
@@ -12,6 +13,9 @@ from typing import Optional
 
 @dataclass
 class Agent0:
+    # === 類別版本 Agent：整合 XML 工具協議 + 雙層安全 + 記憶系統 ===
+    # 此類別是 v5 團隊協作的基礎，Planner、Generator、Evaluator 都繼承自此類別
+    
     workspace: str = ""
     model: str = "minimax-m2.5:cloud"
     reviewer_model: str = "minimax-m2.5:cloud"
@@ -214,7 +218,6 @@ Is it SAFE to run? Reply with SAFE or UNSAFE."""
         while True:
             if "<end/>" in current_response:
                 before_end = current_response.split("<end/>")[0].strip()
-                # If no text before <end/>, use tool_result or default
                 if not before_end:
                     response = "命令已執行。" if tool_result else "完成。"
                 else:

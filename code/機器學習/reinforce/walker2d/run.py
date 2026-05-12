@@ -1,3 +1,4 @@
+# 載入已訓練的 PPO 模型，在 Walker2d-v5 環境中展示行走效果
 import gymnasium as gym
 import torch
 import numpy as np
@@ -11,6 +12,7 @@ def run():
     action_dim = env.action_space.shape[0]
     model = ActorCritic(state_dim, action_dim)
     
+    # 載入檢查點：包含模型權重與歸一化統計參數
     checkpoint = torch.load("ppo_walker_diy.pth", weights_only=False)
     model.load_state_dict(checkpoint['model'])
     rms_mean = checkpoint['rms_mean']
@@ -20,7 +22,7 @@ def run():
     state, _ = env.reset()
     
     while True:
-        # 使用訓練時的統計數據進行歸一化
+        # 使用訓練時累積的統計資料進行狀態歸一化
         norm_s = (state - rms_mean) / np.sqrt(rms_var + 1e-8)
         s_ts = torch.FloatTensor(norm_s).unsqueeze(0)
         
@@ -29,16 +31,12 @@ def run():
             
         state, reward, term, trunc, _ = env.step(action.cpu().numpy().flatten())
         
-        # 關鍵修改:更新攝影機位置跟隨 walker
+        # 更新攝影機以跟隨 Walker 的 x 軸位置（torso 座標）
         if hasattr(env.unwrapped, 'mujoco_renderer') and env.unwrapped.mujoco_renderer is not None:
-            # 獲取 walker 的 x 座標(通常是 torso 的位置)
             walker_x = env.unwrapped.data.qpos[0]
-            
-            # 更新攝影機位置,讓它跟隨 walker
-            # lookat 參數:[x, y, z] - 攝影機注視的點
             env.unwrapped.mujoco_renderer.viewer.cam.lookat[0] = walker_x
-            env.unwrapped.mujoco_renderer.viewer.cam.lookat[1] = 0.0  # y 軸保持在中心
-            env.unwrapped.mujoco_renderer.viewer.cam.lookat[2] = 1.0  # z 軸高度
+            env.unwrapped.mujoco_renderer.viewer.cam.lookat[1] = 0.0
+            env.unwrapped.mujoco_renderer.viewer.cam.lookat[2] = 1.0
         
         env.render()
         time.sleep(0.01)

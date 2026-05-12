@@ -2,9 +2,11 @@ import torch
 from torchvision import datasets, transforms
 from PIL import Image
 
+# 從 MNIST 測試集中提取數字 3、6、8 各 2 張的測試圖片
 transform = transforms.ToTensor()
 testSet = datasets.MNIST(root="./data", train=False, download=True, transform=transform)
 
+# 記錄每個需要數字的已提取數量
 needed = {3: 0, 6: 0, 8: 0}
 for img, label in testSet:
     if label in needed and needed[label] < 2:

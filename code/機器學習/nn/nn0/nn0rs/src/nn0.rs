@@ -19,29 +19,29 @@ use std::rc::Rc;
 // Value：自動微分節點
 // ──────────────────────────────────────────────
 
-/// 計算圖中一個節點的內部狀態（用 RefCell 包裝，允許內部可變性）
+/*
+  ValueInner：計算圖中一個節點的內部資料。
+  使用 RefCell 包裝以提供內部可變性──
+  在反向傳播時，即使持有不可變引用也能修改 grad 欄位。
+*/
 #[derive(Debug)]
 struct ValueInner {
     pub data: f64,
     pub grad: f64,
-    /// 依賴的子節點
-    children: Vec<ValueRef>,
-    /// 對每個子節點的局部梯度
-    local_grads: Vec<f64>,
+    children: Vec<ValueRef>,     // 依賴的子節點（計算圖的邊）
+    local_grads: Vec<f64>,       // 對應每個子節點的局部梯度 ∂output/∂child
 }
 
-/// 引用計數 + 內部可變的 Value 節點
-///
-/// 使用 `Rc<RefCell<...>>` 模式：
-///   - `Rc`：多個節點可以共享同一個子節點（計算圖中的 fan-out）
-///   - `RefCell`：在不可變引用下仍可修改 grad（反向傳播時需要）
+/*
+  ValueRef：透過 Rc<RefCell<>> 共享的自動微分節點。
+    - Rc：允許多個節點共享同一個子節點（計算圖中的 fan-out 情況）
+    - RefCell：在不可變引用下修改 grad（反向傳播時需要）
+*/
 #[derive(Clone, Debug)]
 pub struct ValueRef(Rc<RefCell<ValueInner>>);
 
 impl ValueRef {
-    // ── 建構子 ──────────────────────────────────
-
-    /// 建立葉節點（無父節點）
+    // 建立葉節點（無父節點，無梯度依賴）
     pub fn new(data: f64) -> Self {
         ValueRef(Rc::new(RefCell::new(ValueInner {
             data,
@@ -51,7 +51,7 @@ impl ValueRef {
         })))
     }
 
-    /// 建立中間節點（有父節點和局部梯度）
+    // 建立中間節點（由運算產生，記錄運算圖的子節點與局部梯度）
     fn from_op(data: f64, children: Vec<ValueRef>, local_grads: Vec<f64>) -> Self {
         ValueRef(Rc::new(RefCell::new(ValueInner {
             data,
@@ -61,31 +61,17 @@ impl ValueRef {
         })))
     }
 
-    // ── 讀寫資料 ─────────────────────────────────
+    // ── 資料存取方法 ──
 
-    pub fn data(&self) -> f64 {
-        self.0.borrow().data
-    }
+    pub fn data(&self) -> f64 { self.0.borrow().data }
+    pub fn set_data(&self, v: f64) { self.0.borrow_mut().data = v; }
+    pub fn grad(&self) -> f64 { self.0.borrow().grad }
+    pub fn set_grad(&self, v: f64) { self.0.borrow_mut().grad = v; }
+    pub fn add_grad(&self, v: f64) { self.0.borrow_mut().grad += v; }
 
-    pub fn set_data(&self, v: f64) {
-        self.0.borrow_mut().data = v;
-    }
+    // ── 算術運算（自動微分的前向傳播）──
 
-    pub fn grad(&self) -> f64 {
-        self.0.borrow().grad
-    }
-
-    pub fn set_grad(&self, v: f64) {
-        self.0.borrow_mut().grad = v;
-    }
-
-    pub fn add_grad(&self, v: f64) {
-        self.0.borrow_mut().grad += v;
-    }
-
-    // ── 算術運算 ─────────────────────────────────
-
-    /// 加法：y = a + b，∂y/∂a = 1，∂y/∂b = 1
+    // 加法：y = a + b，∂y/∂a = 1，∂y/∂b = 1
     pub fn add(&self, other: &ValueRef) -> ValueRef {
         ValueRef::from_op(
             self.data() + other.data(),
@@ -94,57 +80,41 @@ impl ValueRef {
         )
     }
 
-    /// 加純量：y = a + c
+    // 加純量：y = a + c，∂y/∂a = 1
     pub fn add_scalar(&self, c: f64) -> ValueRef {
-        ValueRef::from_op(
-            self.data() + c,
-            vec![self.clone()],
-            vec![1.0],
-        )
+        ValueRef::from_op(self.data() + c, vec![self.clone()], vec![1.0])
     }
 
-    /// 乘法：y = a * b，∂y/∂a = b，∂y/∂b = a
+    // 乘法：y = a * b，∂y/∂a = b，∂y/∂b = a
     pub fn mul(&self, other: &ValueRef) -> ValueRef {
         let (a, b) = (self.data(), other.data());
-        ValueRef::from_op(
-            a * b,
-            vec![self.clone(), other.clone()],
-            vec![b, a],
-        )
+        ValueRef::from_op(a * b, vec![self.clone(), other.clone()], vec![b, a])
     }
 
-    /// 乘純量：y = a * c，∂y/∂a = c
+    // 乘純量：y = a * c，∂y/∂a = c
     pub fn mul_scalar(&self, c: f64) -> ValueRef {
-        ValueRef::from_op(
-            self.data() * c,
-            vec![self.clone()],
-            vec![c],
-        )
+        ValueRef::from_op(self.data() * c, vec![self.clone()], vec![c])
     }
 
-    /// 冪次：y = a^n，∂y/∂a = n * a^(n-1)
+    // 冪次：y = a^n，∂y/∂a = n * a^(n-1)
     pub fn powf(&self, n: f64) -> ValueRef {
         let a = self.data();
-        ValueRef::from_op(
-            a.powf(n),
-            vec![self.clone()],
-            vec![n * a.powf(n - 1.0)],
-        )
+        ValueRef::from_op(a.powf(n), vec![self.clone()], vec![n * a.powf(n - 1.0)])
     }
 
-    /// 自然對數：y = ln(a)，∂y/∂a = 1/a
+    // 自然對數：y = ln(a)，∂y/∂a = 1/a
     pub fn log(&self) -> ValueRef {
         let a = self.data();
         ValueRef::from_op(a.ln(), vec![self.clone()], vec![1.0 / a])
     }
 
-    /// 指數：y = e^a，∂y/∂a = e^a
+    // 指數：y = e^a，∂y/∂a = e^a
     pub fn exp(&self) -> ValueRef {
         let ea = self.data().exp();
         ValueRef::from_op(ea, vec![self.clone()], vec![ea])
     }
 
-    /// ReLU：y = max(0, a)，∂y/∂a = 1 if a > 0 else 0
+    // ReLU：y = max(0, a)，∂y/∂a = 1 (a>0) 或 0 (a≤0)
     pub fn relu(&self) -> ValueRef {
         let a = self.data();
         ValueRef::from_op(
@@ -154,34 +124,29 @@ impl ValueRef {
         )
     }
 
-    /// 取負：y = -a，等價於 a * (-1)
-    pub fn neg(&self) -> ValueRef {
-        self.mul_scalar(-1.0)
-    }
+    // 取負：y = -a
+    pub fn neg(&self) -> ValueRef { self.mul_scalar(-1.0) }
 
-    /// 減法：a - b
-    pub fn sub(&self, other: &ValueRef) -> ValueRef {
-        self.add(&other.neg())
-    }
+    // 減法：a - b = a + (-b)
+    pub fn sub(&self, other: &ValueRef) -> ValueRef { self.add(&other.neg()) }
 
-    /// 除法：a / b = a * b^(-1)
-    pub fn div(&self, other: &ValueRef) -> ValueRef {
-        self.mul(&other.powf(-1.0))
-    }
+    // 除法：a / b = a * b^(-1)
+    pub fn div(&self, other: &ValueRef) -> ValueRef { self.mul(&other.powf(-1.0)) }
 
-    // ── 反向傳播 ─────────────────────────────────
+    /*
+      反向傳播（Backpropagation）：
 
-    /// 反向傳播（Backpropagation）
-    ///
-    /// 使用拓撲排序 + 鏈式法則，從輸出節點逆向計算所有葉節點的梯度。
-    ///
-    /// 算法步驟：
-    ///   1. DFS 建立拓撲排序（子節點先於父節點）
-    ///   2. 設定輸出梯度 = 1（∂L/∂L = 1）
-    ///   3. 逆序遍歷，對每個節點傳遞梯度給其子節點
-    ///      child.grad += local_grad * node.grad  （鏈式法則）
+      Rust 實作注意事項：
+        為了避免「持有 borrow 的同時修改子節點」的借用衝突，
+        我們先將需要的資料（v.grad、children、local_grads）clone 出來，
+        釋放 borrow 後再修改子節點的 grad。
+
+      演算法步驟：
+        1. DFS 建立拓樸排序（子節點先於父節點）
+        2. 設定輸出節點梯度 = 1（∂L/∂L = 1）
+        3. 逆序遍歷：child.grad += local_grad * v.grad
+    */
     pub fn backward(&self) {
-        // 第一步：建立拓撲排序（DFS）
         let mut topo: Vec<ValueRef> = Vec::new();
         let mut visited: HashSet<*const RefCell<ValueInner>> = HashSet::new();
 
@@ -192,25 +157,19 @@ impl ValueRef {
         ) {
             let ptr = Rc::as_ptr(&v.0);
             if visited.insert(ptr) {
-                // 先遞迴處理所有子節點
                 let children: Vec<ValueRef> = v.0.borrow().children.clone();
                 for child in &children {
                     build_topo(child, topo, visited);
                 }
-                // 再把自己加入列表
                 topo.push(v.clone());
             }
         }
 
         build_topo(self, &mut topo, &mut visited);
-
-        // 第二步：初始化輸出梯度
         self.set_grad(1.0);
 
-        // 第三步：逆序傳播梯度
         for v in topo.iter().rev() {
-            // 先把需要的資料一次取出，釋放借用後再修改子節點
-            // 這樣可以避免「持有 borrow 的同時修改子節點」的衝突
+            // 先 clone 出需要的資料，釋放 borrow 後再修改
             let (v_grad, pairs): (f64, Vec<(ValueRef, f64)>) = {
                 let inner = v.0.borrow();
                 let grad = inner.grad;
@@ -221,9 +180,8 @@ impl ValueRef {
                     .map(|(c, &lg)| (c.clone(), lg))
                     .collect();
                 (grad, pairs)
-            }; // borrow 在此釋放
+            };
 
-            // 鏈式法則：child.grad += local_grad * v.grad
             for (child, lg) in &pairs {
                 child.add_grad(lg * v_grad);
             }
@@ -241,14 +199,17 @@ impl std::fmt::Display for ValueRef {
 // Adam 優化器
 // ──────────────────────────────────────────────
 
-/// Adam 優化器（Adaptive Moment Estimation）
-///
-/// 更新規則：
-///   m = β1 * m + (1-β1) * grad           （一階矩，動量）
-///   v = β2 * v + (1-β2) * grad²          （二階矩，RMSProp）
-///   m̂ = m / (1 - β1^t)                  （偏差修正）
-///   v̂ = v / (1 - β2^t)
-///   p = p - lr * m̂ / (√v̂ + ε)          （參數更新）
+/*
+  Adam 優化器（Adaptive Moment Estimation）。
+  結合動量法與 RMSProp 的優點，為每個參數提供自適應學習率。
+
+  更新規則：
+    m = β1·m + (1-β1)·grad           （一階動量，類似動量法）
+    v = β2·v + (1-β2)·grad²          （二階動量，類似 RMSProp）
+    m̂ = m / (1 - β1^t)               （偏差修正，初期估計偏差補償）
+    v̂ = v / (1 - β2^t)
+    θ = θ - lr · m̂ / (√v̂ + ε)       （參數更新）
+*/
 pub struct Adam {
     params: Vec<ValueRef>,
     pub lr: f64,
@@ -261,36 +222,19 @@ pub struct Adam {
 }
 
 impl Adam {
-    /// 建立 Adam 優化器
-    ///
-    /// 參數說明：
-    ///   params — 要優化的參數列表
-    ///   lr     — 初始學習率（預設 0.01）
-    ///   beta1  — 一階矩衰減率（預設 0.85）
-    ///   beta2  — 二階矩衰減率（預設 0.99）
-    ///   eps    — 數值穩定項（預設 1e-8）
     pub fn new(params: Vec<ValueRef>, lr: f64, beta1: f64, beta2: f64, eps: f64) -> Self {
         let n = params.len();
-        Adam {
-            params,
-            lr,
-            beta1,
-            beta2,
-            eps,
-            m: vec![0.0; n],
-            v: vec![0.0; n],
-            step_count: 0,
-        }
+        Adam { params, lr, beta1, beta2, eps, m: vec![0.0; n], v: vec![0.0; n], step_count: 0 }
     }
 
-    /// 使用預設超參數建立優化器
     pub fn default(params: Vec<ValueRef>) -> Self {
         Self::new(params, 0.01, 0.85, 0.99, 1e-8)
     }
 
-    /// 執行一步參數更新
-    ///
-    /// `lr_override`：可選的學習率覆蓋值（用於學習率衰減）
+    /*
+      執行一步參數更新。
+      lr_override 用於學習率線性衰減情境。
+    */
     pub fn step(&mut self, lr_override: Option<f64>) {
         self.step_count += 1;
         let lr = lr_override.unwrap_or(self.lr);
@@ -299,22 +243,15 @@ impl Adam {
         for (i, p) in self.params.iter().enumerate() {
             let g = p.grad();
 
-            // 一階矩（動量）
             self.m[i] = self.beta1 * self.m[i] + (1.0 - self.beta1) * g;
-
-            // 二階矩（梯度平方）
             self.v[i] = self.beta2 * self.v[i] + (1.0 - self.beta2) * g * g;
 
-            // 偏差修正
             let m_hat = self.m[i] / (1.0 - self.beta1.powf(t));
             let v_hat = self.v[i] / (1.0 - self.beta2.powf(t));
 
-            // 參數更新
             let new_data = p.data() - lr * m_hat / (v_hat.sqrt() + self.eps);
             p.set_data(new_data);
-
-            // 清除梯度
-            p.set_grad(0.0);
+            p.set_grad(0.0); // 更新後清除梯度
         }
     }
 }
@@ -323,19 +260,10 @@ impl Adam {
 // 神經網路運算函數
 // ──────────────────────────────────────────────
 
-/// 矩陣乘法（全連接層）：y = W @ x
-///
-/// y[i] = Σ_j W[i][j] * x[j]
-///
-/// 參數說明：
-///   x — 輸入向量，長度 nin
-///   w — 權重矩陣，形狀 (nout, nin)
-///
-/// 返回：輸出向量，長度 nout
+/* 全連接層：y[i] = Σ_j W[i][j] * x[j] */
 pub fn linear(x: &[ValueRef], w: &[Vec<ValueRef>]) -> Vec<ValueRef> {
     w.iter()
         .map(|row| {
-            // 計算一行的點積
             row.iter()
                 .zip(x.iter())
                 .map(|(wi, xi)| wi.mul(xi))
@@ -345,74 +273,56 @@ pub fn linear(x: &[ValueRef], w: &[Vec<ValueRef>]) -> Vec<ValueRef> {
         .collect()
 }
 
-/// 數值穩定的 Softmax
-///
-/// softmax(x)[i] = e^(x[i]-M) / Σ_j e^(x[j]-M)，M = max(x)
-///
-/// 使用最大值平移避免 e^x 溢位。
+/*
+  數值穩定的 Softmax：
+    softmax(x_i) = e^(x_i - M) / Σ_j e^(x_j - M),  M = max(x)
+  先減去最大值再取指數，防止數值溢位。
+*/
 pub fn softmax(logits: &[ValueRef]) -> Vec<ValueRef> {
     let max_val = logits.iter().map(|v| v.data()).fold(f64::NEG_INFINITY, f64::max);
 
-    let exps: Vec<ValueRef> = logits
-        .iter()
-        .map(|v| v.add_scalar(-max_val).exp())
-        .collect();
+    let exps: Vec<ValueRef> = logits.iter().map(|v| v.add_scalar(-max_val).exp()).collect();
 
-    // 計算總和
-    let total = exps
-        .iter()
-        .cloned()
+    let total = exps.iter().cloned()
         .reduce(|a, b| a.add(&b))
         .expect("softmax: logits 不能為空");
 
-    // 歸一化
     exps.iter().map(|e| e.div(&total)).collect()
 }
 
-/// RMS Normalization
-///
-/// rms  = sqrt(Σ x[i]² / n + ε)
-/// out  = x / rms  =  x * (Σ x[i]² / n + ε)^(-0.5)
-///
-/// 比 Layer Norm 更簡單（無需計算均值）。
+/*
+  RMS 正規化：
+    out[i] = x[i] / sqrt(mean(x^2) + ε)
+  相較 LayerNorm 簡化了計算（不需減去均值）。
+*/
 pub fn rmsnorm(x: &[ValueRef]) -> Vec<ValueRef> {
     let n = x.len() as f64;
 
-    // 均方值：Σ x[i]² / n
-    let ms = x
-        .iter()
+    let ms = x.iter()
         .map(|xi| xi.mul(xi))
         .reduce(|a, b| a.add(&b))
         .expect("rmsnorm: 輸入不能為空")
         .mul_scalar(1.0 / n);
 
-    // scale = (ms + ε)^(-0.5)
     let scale = ms.add_scalar(1e-5).powf(-0.5);
-
     x.iter().map(|xi| xi.mul(&scale)).collect()
 }
 
-/// 數值穩定的交叉熵損失
-///
-/// 使用 Log-Sum-Exp 技巧：
-///   Loss = log(Σ e^(x[j]-M)) - (x[target] - M)
-///        = log(total) - (logits[target] - max)
-///
-/// 參數說明：
-///   logits    — 模型輸出的 logits
-///   target_id — 正確類別的索引
+/*
+  交叉熵損失（數值穩定版本）。
+  使用 Log-Sum-Exp 技巧：
+    Loss = log(Σ e^(x_j - M)) - (x[target] - M)
+  避免直接計算 log(softmax) 可能出現的數值不穩定。
+*/
 pub fn cross_entropy(logits: &[ValueRef], target_id: usize) -> ValueRef {
     let max_val = logits.iter().map(|v| v.data()).fold(f64::NEG_INFINITY, f64::max);
 
     let exps: Vec<ValueRef> = logits.iter().map(|v| v.add_scalar(-max_val).exp()).collect();
 
-    let total = exps
-        .iter()
-        .cloned()
+    let total = exps.iter().cloned()
         .reduce(|a, b| a.add(&b))
         .expect("cross_entropy: logits 不能為空");
 
-    // Loss = log(total) - (logits[target] - max)
     total.log().sub(&logits[target_id].add_scalar(-max_val))
 }
 
@@ -420,33 +330,21 @@ pub fn cross_entropy(logits: &[ValueRef], target_id: usize) -> ValueRef {
 // 梯度下降（訓練步驟）
 // ──────────────────────────────────────────────
 
-/// 語言模型訓練介面（由呼叫端實作）
-///
-/// 對應 Python 版本的 `model(token_id, pos_id, keys, values)` 呼叫。
+/* 語言模型介面：提供前向傳播與模型資訊 */
 pub trait LanguageModel {
     fn block_size(&self) -> usize;
     fn n_layer(&self) -> usize;
-
-    /// 前向傳播，回傳 logits
-    fn forward(
-        &self,
-        token_id: usize,
-        pos_id: usize,
-        keys: &mut Vec<Vec<ValueRef>>,
-        values: &mut Vec<Vec<ValueRef>>,
-    ) -> Vec<ValueRef>;
+    fn forward(&self, token_id: usize, pos_id: usize, keys: &mut Vec<Vec<ValueRef>>, values: &mut Vec<Vec<ValueRef>>) -> Vec<ValueRef>;
 }
 
-/// 單步梯度下降（Gradient Descent）
-///
-/// 步驟：
-///   1. 前向傳播，計算每個位置的 logits
-///   2. Softmax → 機率
-///   3. Cross-Entropy Loss
-///   4. 平均 Loss 的反向傳播
-///   5. 學習率線性衰減 + Adam 更新
-///
-/// 返回：平均 loss 的數值（f64）
+/*
+  單步梯度下降（Gradient Descent）：
+    1. 對序列每個位置做 forward → softmax → cross-entropy loss
+    2. 平均所有位置的 loss
+    3. 反向傳播
+    4. 學習率線性衰減 + Adam 更新
+  回傳該步的平均 loss 數值。
+*/
 pub fn gd<M: LanguageModel>(
     model: &M,
     optimizer: &mut Adam,
@@ -454,47 +352,32 @@ pub fn gd<M: LanguageModel>(
     step: usize,
     num_steps: usize,
 ) -> f64 {
-    // 序列長度：block_size 和 tokens-1 取較小值
     let n = model.block_size().min(tokens.len() - 1);
 
-    // KV Cache：keys[layer] / values[layer] 存各位置的向量
     let mut keys: Vec<Vec<ValueRef>> = vec![Vec::new(); model.n_layer()];
     let mut values: Vec<Vec<ValueRef>> = vec![Vec::new(); model.n_layer()];
 
-    // 收集各位置的 loss
     let mut losses: Vec<ValueRef> = Vec::with_capacity(n);
 
     for pos_id in 0..n {
         let token_id = tokens[pos_id];
         let target_id = tokens[pos_id + 1];
 
-        // 前向傳播
         let logits = model.forward(token_id, pos_id, &mut keys, &mut values);
-
-        // Softmax → 機率
         let probs = softmax(&logits);
 
-        // Cross-Entropy Loss：-log(P[target])
         let loss_t = probs[target_id].log().neg();
         losses.push(loss_t);
     }
 
-    // 平均 Loss：(1/n) * Σ losses
-    let sum_loss = losses
-        .iter()
-        .cloned()
+    let sum_loss = losses.iter().cloned()
         .reduce(|a, b| a.add(&b))
         .expect("gd: tokens 不能為空");
 
     let loss = sum_loss.mul_scalar(1.0 / n as f64);
-
-    // 反向傳播
     loss.backward();
 
-    // 學習率線性衰減：lr_t = lr_0 * (1 - step / num_steps)
     let lr_t = optimizer.lr * (1.0 - step as f64 / num_steps as f64);
-
-    // Adam 更新
     optimizer.step(Some(lr_t));
 
     loss.data()

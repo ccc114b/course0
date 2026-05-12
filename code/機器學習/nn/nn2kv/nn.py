@@ -1,6 +1,7 @@
 import numpy as np
 from tensor import Tensor
 
+"""Module 基底類別，遞迴收集 requires_grad=True 的 Tensor 參數"""
 class Module:
     def parameters(self):
         params = []
@@ -15,6 +16,7 @@ class Module:
                         params.extend(item.parameters())
         return params
 
+"""全連接層：y = x @ W + b"""
 class Linear(Module):
     def __init__(self, in_features, out_features, bias=False):
         std = 0.08
@@ -27,11 +29,12 @@ class Linear(Module):
             out = out + self.bias
         return out
 
+"""Embedding 查表層，反向傳播使用 np.add.at 處理索引重複"""
 class Embedding(Module):
     def __init__(self, num_embeddings, embedding_dim):
         self.weight = Tensor(np.random.normal(0, 0.08, (num_embeddings, embedding_dim)), requires_grad=True)
 
-    def __call__(self, indices): # indices 為 NumPy 陣列
+    def __call__(self, indices):
         out_data = self.weight.data[indices]
         out = Tensor(out_data, (self.weight,), requires_grad=True)
         def _backward():
@@ -39,16 +42,13 @@ class Embedding(Module):
         out._backward = _backward
         return out
 
+"""RMS 正規化：x / sqrt(mean(x^2) + eps)"""
 class RMSNorm(Module):
     def __init__(self, dim, eps=1e-5):
         self.eps = eps
-        # 由於原始程式無參數，這裡我們也省略 gamma 參數或將其固定
         self.scale = Tensor(np.ones(dim), requires_grad=False)
 
     def __call__(self, x):
-        # 變異數計算 x / sqrt(mean(x^2))
-        ms = (x ** 2)
-        # 用手動方式寫出 sum 避免複雜 graph，但在這裡為了簡化，直接用 numpy 前向/後向
         out_data = x.data * (np.mean(x.data**2, axis=-1, keepdims=True) + self.eps) ** -0.5
         out = Tensor(out_data, (x,), requires_grad=True)
         
@@ -62,6 +62,7 @@ class RMSNorm(Module):
         out._backward = _backward
         return out
 
+"""向量化 Adam 優化器"""
 class Adam:
     def __init__(self, params, lr=0.01, betas=(0.85, 0.99), eps=1e-8):
         self.params = params

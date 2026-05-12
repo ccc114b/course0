@@ -5,6 +5,8 @@ import asyncio
 import sys
 
 async def test_basic():
+    # 測試 1：基本團隊循環（1 Generator + 1 Evaluator，1 次迭代）
+    # 驗證最少配置能否正常運作
     print("=== 測試 1: 基本團隊循環 ===")
     user_input = "請說 'Hello World'"
     
@@ -25,6 +27,8 @@ async def test_basic():
 
 
 async def test_iteration():
+    # 測試 2：多迭代測試（max_iterations=2）
+    # 驗證迭代次數限制是否能正確生效
     print("=== 測試 2: 多迭代測試 ===")
     user_input = "計算 1+1 等於多少"
     
@@ -45,6 +49,8 @@ async def test_iteration():
 
 
 async def test_multi_generator():
+    # 測試 3：多 Generator 測試
+    # 驗證多個執行者是否能正確平行運作
     print("=== 測試 3: 多 Generator ===")
     user_input = "列出目前目錄的檔案"
     
@@ -65,6 +71,8 @@ async def test_multi_generator():
 
 
 async def test_multi_evaluator():
+    # 測試 4：多 Evaluator 測試
+    # 驗證多個評估者是否能正確平行運作
     print("=== 測試 4: 多 Evaluator ===")
     user_input = "說 '測試'"
     

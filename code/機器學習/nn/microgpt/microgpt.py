@@ -1,17 +1,18 @@
 """
-The most atomic way to train and run inference for a GPT in pure, dependency-free Python.
-This file is the complete algorithm.
-Everything else is just efficiency.
+最簡潔的純 Python GPT 語言模型（無外部依賴）。
+此檔案包含完整的訓練與推論演算法。
+其餘的一切都只是效率問題。
 
 @karpathy
 """
 
-import os       # os.path.exists
-import math     # math.log, math.exp
-import random   # random.seed, random.choices, random.gauss, random.shuffle
-random.seed(42) # Let there be order among chaos
+import os
+import math
+import random
+random.seed(42)
 
-# Let there be a Dataset `docs`: list[str] of documents (e.g. a list of names)
+# === 資料集準備 ===
+# 從 names.txt 載入人名列表，每行一個文檔
 if not os.path.exists('input.txt'):
     import urllib.request
     names_url = 'https://raw.githubusercontent.com/karpathy/makemore/988aa59/names.txt'
@@ -20,21 +21,23 @@ docs = [line.strip() for line in open('input.txt') if line.strip()]
 random.shuffle(docs)
 print(f"num docs: {len(docs)}")
 
-# Let there be a Tokenizer to translate strings to sequences of integers ("tokens") and back
-uchars = sorted(set(''.join(docs))) # unique characters in the dataset become token ids 0..n-1
-BOS = len(uchars) # token id for a special Beginning of Sequence (BOS) token
-vocab_size = len(uchars) + 1 # total number of unique tokens, +1 is for BOS
+# === Tokenizer（字符級分詞器）===
+# 收集所有不重複字元，建立 ID 映射
+uchars = sorted(set(''.join(docs)))
+BOS = len(uchars)          # 序列起始標記 ID
+vocab_size = len(uchars) + 1  # 詞彙表大小（+1 為 BOS）
 print(f"vocab size: {vocab_size}")
 
-# Let there be Autograd to recursively apply the chain rule through a computation graph
+# === 自動微分引擎（Value 節點）===
+# 支援計算圖的自動反向傳播
 class Value:
-    __slots__ = ('data', 'grad', '_children', '_local_grads') # Python optimization for memory usage
+    __slots__ = ('data', 'grad', '_children', '_local_grads')
 
     def __init__(self, data, children=(), local_grads=()):
-        self.data = data                # scalar value of this node calculated during forward pass
-        self.grad = 0                   # derivative of the loss w.r.t. this node, calculated in backward pass
-        self._children = children       # children of this node in the computation graph
-        self._local_grads = local_grads # local derivative of this node w.r.t. its children
+        self.data = data
+        self.grad = 0
+        self._children = children
+        self._local_grads = local_grads
 
     def __add__(self, other):
         other = other if isinstance(other, Value) else Value(other)
@@ -56,6 +59,12 @@ class Value:
     def __truediv__(self, other): return self * other**-1
     def __rtruediv__(self, other): return other * self**-1
 
+    """
+      反向傳播（鏈式法則）：
+        1. DFS 建立拓樸排序
+        2. 設定輸出節點梯度 = 1
+        3. 逆序遍歷每個節點，累加梯度到子節點
+    """
     def backward(self):
         topo = []
         visited = set()
@@ -71,12 +80,13 @@ class Value:
             for child, local_grad in zip(v._children, v._local_grads):
                 child.grad += local_grad * v.grad
 
-# Initialize the parameters, to store the knowledge of the model
-n_layer = 1     # depth of the transformer neural network (number of layers)
-n_embd = 16     # width of the network (embedding dimension)
-block_size = 16 # maximum context length of the attention window (note: the longest name is 15 characters)
-n_head = 4      # number of attention heads
-head_dim = n_embd // n_head # derived dimension of each head
+# === 初始化模型參數 ===
+# 小型 GPT：1 層、16 維 embedding、4 個注意力頭、16 tokens 上下文
+n_layer = 1
+n_embd = 16
+block_size = 16
+n_head = 4
+head_dim = n_embd // n_head
 matrix = lambda nout, nin, std=0.08: [[Value(random.gauss(0, std)) for _ in range(nin)] for _ in range(nout)]
 state_dict = {'wte': matrix(vocab_size, n_embd), 'wpe': matrix(block_size, n_embd), 'lm_head': matrix(vocab_size, n_embd)}
 for i in range(n_layer):
@@ -86,33 +96,42 @@ for i in range(n_layer):
     state_dict[f'layer{i}.attn_wo'] = matrix(n_embd, n_embd)
     state_dict[f'layer{i}.mlp_fc1'] = matrix(4 * n_embd, n_embd)
     state_dict[f'layer{i}.mlp_fc2'] = matrix(n_embd, 4 * n_embd)
-params = [p for mat in state_dict.values() for row in mat for p in row] # flatten params into a single list[Value]
+params = [p for mat in state_dict.values() for row in mat for p in row]
 print(f"num params: {len(params)}")
 
-# Define the model architecture: a function mapping tokens and parameters to logits over what comes next
-# Follow GPT-2, blessed among the GPTs, with minor differences: layernorm -> rmsnorm, no biases, GeLU -> ReLU
+# === 模型架構（類似 GPT-2，簡化差異：RMSNorm、ReLU、無 bias）===
+
 def linear(x, w):
+    """線性變換：y = W @ x"""
     return [sum(wi * xi for wi, xi in zip(wo, x)) for wo in w]
 
 def softmax(logits):
+    """數值穩定的 Softmax：減去最大值防止溢位"""
     max_val = max(val.data for val in logits)
     exps = [(val - max_val).exp() for val in logits]
     total = sum(exps)
     return [e / total for e in exps]
 
 def rmsnorm(x):
+    """RMS 正規化：x / sqrt(mean(x^2) + eps)"""
     ms = sum(xi * xi for xi in x) / len(x)
     scale = (ms + 1e-5) ** -0.5
     return [xi * scale for xi in x]
 
 def gpt(token_id, pos_id, keys, values):
-    tok_emb = state_dict['wte'][token_id] # token embedding
-    pos_emb = state_dict['wpe'][pos_id] # position embedding
-    x = [t + p for t, p in zip(tok_emb, pos_emb)] # joint token and position embedding
-    x = rmsnorm(x) # note: not redundant due to backward pass via the residual connection
+    """
+    GPT 前向傳播（單步）：
+      1. Token + Position Embedding
+      2. N 層 Transformer（Attention + MLP + 殘差連接）
+      3. lm_head 輸出 logits
+    """
+    tok_emb = state_dict['wte'][token_id]
+    pos_emb = state_dict['wpe'][pos_id]
+    x = [t + p for t, p in zip(tok_emb, pos_emb)]
+    x = rmsnorm(x)
 
     for li in range(n_layer):
-        # 1) Multi-head Attention block
+        # --- 多頭注意力區塊 ---
         x_residual = x
         x = rmsnorm(x)
         q = linear(x, state_dict[f'layer{li}.attn_wq'])
@@ -132,7 +151,7 @@ def gpt(token_id, pos_id, keys, values):
             x_attn.extend(head_out)
         x = linear(x_attn, state_dict[f'layer{li}.attn_wo'])
         x = [a + b for a, b in zip(x, x_residual)]
-        # 2) MLP block
+        # --- MLP 區塊 ---
         x_residual = x
         x = rmsnorm(x)
         x = linear(x, state_dict[f'layer{li}.mlp_fc1'])
@@ -143,10 +162,10 @@ def gpt(token_id, pos_id, keys, values):
     logits = linear(x, state_dict['lm_head'])
     return logits
 
-# Let there be Adam, the blessed optimizer and its buffers
+# === Adam 優化器 ===
 learning_rate, beta1, beta2, eps_adam = 0.01, 0.85, 0.99, 1e-8
-m = [0.0] * len(params) # first moment buffer
-v = [0.0] * len(params) # second moment buffer
+m = [0.0] * len(params)   # 一階動量緩衝
+v = [0.0] * len(params)   # 二階動量緩衝
 
 # Repeat in sequence
 num_steps = 1000 # number of training steps

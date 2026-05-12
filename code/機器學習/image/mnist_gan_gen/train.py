@@ -5,6 +5,7 @@ from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
 import os
 
+# 自動選擇計算裝置：CUDA > MPS > CPU
 if torch.cuda.is_available():
     device = torch.device("cuda")
 elif torch.backends.mps.is_available():
@@ -12,11 +13,17 @@ elif torch.backends.mps.is_available():
 else:
     device = torch.device("cpu")
 
-latent_dim = 100
-img_size = 28
-channels = 1
+latent_dim = 100   # 生成器的潛在空間維度
+img_size = 28      # MNIST 圖片尺寸
+channels = 1       # 灰階
 
 class Generator(nn.Module):
+    """生成器：從隨機噪聲生成手寫數字
+    
+    結構：全連接層 → Reshape → 轉置卷積(上採樣) → 轉置卷積 → Tanh
+    輸入：z ∈ R^100（標準常態分佈）
+    輸出：28×28 灰階影像，值域 [-1, 1]
+    """
     def __init__(self):
         super().__init__()
         self.l0 = nn.Linear(latent_dim, 7 * 7 * 64)
@@ -33,6 +40,11 @@ class Generator(nn.Module):
         return out
 
 class Discriminator(nn.Module):
+    """判別器：區分真實 MNIST 圖片與偽造圖片
+    
+    結構：卷積(下採樣) → Dropout → 卷積(下採樣) → 全連接 → 輸出
+    輸出為單一 logit（未經 sigmoid），配合 BCEWithLogitsLoss 使用
+    """
     def __init__(self):
         super().__init__()
         self.conv1 = nn.Conv2d(1, 32, 4, 2, 1)
@@ -50,6 +62,7 @@ class Discriminator(nn.Module):
         return out
 
 def train(epochs=30, batch_size=256, lr=0.001):
+    # 資料預處理：歸一化至 [-1, 1] 以匹配生成器 Tanh 輸出
     transform = transforms.Compose([
         transforms.ToTensor(),
         transforms.Normalize((0.5,), (0.5,))
@@ -61,6 +74,7 @@ def train(epochs=30, batch_size=256, lr=0.001):
     generator = Generator().to(device)
     discriminator = Discriminator().to(device)
 
+    # 對抗損失：二分類的 BCE，輸出層無 sigmoid
     adversarial_loss = nn.BCEWithLogitsLoss()
     optimizer_g = optim.Adam(generator.parameters(), lr=lr, betas=(0.5, 0.999))
     optimizer_d = optim.Adam(discriminator.parameters(), lr=lr, betas=(0.5, 0.999))
@@ -72,9 +86,11 @@ def train(epochs=30, batch_size=256, lr=0.001):
         epoch_loss_d = 0
         for i, (imgs, _) in enumerate(dataloader):
             batch = imgs.size(0)
-            real = torch.ones(batch, 1).to(device)
-            fake = torch.zeros(batch, 1).to(device)
+            real = torch.ones(batch, 1).to(device)   # 真實標籤：1
+            fake = torch.zeros(batch, 1).to(device)  # 偽造標籤：0
 
+            # ─── 訓練判別器 ───
+            # 目標：對真實圖片輸出 1，對偽造圖片輸出 0
             imgs = imgs.to(device)
             optimizer_d.zero_grad()
             real_validity = discriminator(imgs)
@@ -90,6 +106,8 @@ def train(epochs=30, batch_size=256, lr=0.001):
             optimizer_d.step()
             epoch_loss_d += d_loss.item()
 
+            # ─── 訓練生成器 ───
+            # 目標：讓判別器對偽造圖片輸出 1（欺騙判別器）
             optimizer_g.zero_grad()
             z = torch.randn(batch, latent_dim).to(device)
             gen_imgs = generator(z)
@@ -103,6 +121,7 @@ def train(epochs=30, batch_size=256, lr=0.001):
         avg_d_loss = epoch_loss_d / len(dataloader)
         print(f"Epoch {epoch+1}/{epochs} - D_loss: {avg_d_loss:.4f}, G_loss: {avg_g_loss:.4f}")
 
+        # 每 10 個 epoch 儲存一次權重
         if (epoch + 1) % 10 == 0:
             torch.save({
                 "generator": generator.state_dict(),
@@ -110,6 +129,7 @@ def train(epochs=30, batch_size=256, lr=0.001):
             }, f"weights/gan_{epoch+1}.pth")
             print(f"Saved weights/gan_{epoch+1}.pth")
 
+    # 儲存最終模型
     torch.save({
         "generator": generator.state_dict(),
         "discriminator": discriminator.state_dict(),

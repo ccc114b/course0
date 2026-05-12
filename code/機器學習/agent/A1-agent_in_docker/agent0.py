@@ -10,10 +10,15 @@ import re
 
 # ─── Configuration ───
 
+# 工作目錄，存放 Agent 相關檔案
 WORKSPACE = os.path.expanduser("~/.agent0")
+# 沙盒目錄，掛載到 Docker 容器內作為安全執行環境
 SANDBOX = os.path.expanduser("~/.agent0_sandbox")
+# 主 LLM 模型
 MODEL = "minimax-m2.5:cloud"
+# 最大工具使用回合數
 MAX_TURNS = 5
+# Docker 映像檔名稱，使用輕量級的 Alpine Linux
 DOCKER_IMAGE = "alpine:latest"
 
 # ─── Memory ───
@@ -24,11 +29,18 @@ key_info = []
 # ─── Docker Security ───
 
 def run_in_docker(cmd):
+    # 將所有命令包裝在 docker run 中執行，達到沙盒隔離效果
     timeout = 60
+    # 若是啟動伺服器的長期命令，延長 timeout 並使用 nohup 背景執行
     if any(kw in cmd for kw in ["uvicorn", "python.*server", "npm start", "node.*server"]):
         timeout = 300
         cmd = f"nohup {cmd} > /dev/null 2>&1 &"
     
+    # 建構 docker run 命令：
+    # --rm：容器執行後自動刪除
+    # -v SANDBOX:/sandbox：掛載沙盒目錄
+    # -p 3000-9000:3000-9000：暴露埠範圍供 Web 服務使用
+    # --memory=256m：限制容器記憶體
     docker_cmd = [
         "docker", "run", "--rm",
         "-v", f"{SANDBOX}:/sandbox",
@@ -172,6 +184,8 @@ def main():
             for cmd in shell_matches:
                 cmd = cmd.strip()
                 try:
+                    # === Docker 隔離執行 ===
+                    # 所有命令都在 Docker 容器內執行，而非主機
                     output = run_in_docker(cmd)
                     print(f"\n=== 執行命令 ===\n{cmd}\n\n結果：{output if output else '（無輸出）'}\n")
                     all_outputs.append(f"$ {cmd}\n{output if output else '（無輸出）'}")

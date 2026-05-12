@@ -4,6 +4,7 @@ from torchvision.utils import save_image
 import os
 import argparse
 
+# 自動選擇計算裝置
 if torch.cuda.is_available():
     device = torch.device("cuda")
 elif torch.backends.mps.is_available():
@@ -11,11 +12,15 @@ elif torch.backends.mps.is_available():
 else:
     device = torch.device("cpu")
 
-latent_dim = 100
+latent_dim = 100   # 潛在空間維度
 img_size = 28
 channels = 1
 
 class Generator(nn.Module):
+    """生成器：從 100 維噪聲生成 28×28 手寫數字
+    
+    使用轉置卷積逐步上採樣。
+    """
     def __init__(self):
         super().__init__()
         self.l0 = nn.Linear(latent_dim, 7 * 7 * 64)
@@ -23,7 +28,7 @@ class Generator(nn.Module):
         self.conv2 = nn.ConvTranspose2d(32, 1, 4, 2, 1)
         self.bn1 = nn.BatchNorm2d(32)
         self.act = nn.ReLU(True)
-        self.out = nn.Tanh()
+        self.out = nn.Tanh()   # 輸出 [-1, 1]
 
     def forward(self, z):
         out = self.l0(z).view(-1, 64, 7, 7)
@@ -32,6 +37,7 @@ class Generator(nn.Module):
         return out
 
 def generate(weights_path="weights/gan_final.pth", num_images=16, output_dir="output"):
+    # 載入訓練好的生成器權重
     generator = Generator().to(device)
     checkpoint = torch.load(weights_path, map_location=device, weights_only=False)
     generator.load_state_dict(checkpoint["generator"])

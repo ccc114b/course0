@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
+# 測試安全審查模型 + 目錄存取控制的整合工具
 import asyncio
 import aiohttp
 import os
 
 async def test_review(cmd: str) -> str:
+    # 建構安全審查的 prompt，包含六條安全原則
     prompt = f"""你是安全審查者。請判斷以下 shell 命令是否安全可以執行。
 
 安全原則：
@@ -39,14 +41,19 @@ async def test_review(cmd: str) -> str:
             return result.get("response", "").strip()
 
 def check_outside_access(cmd: str, cwd: str) -> tuple[bool, str]:
+    # 檢查命令是否試圖存取目前目錄以外的檔案或路徑
     import re
     import os.path
     
     def extract_paths(c):
+        # 使用正則表達式從命令字串中提取所有可能的路徑參數
         paths = []
         patterns = [
+            # 匹配特定指令後接絕對路徑（如 cat /etc/passwd）
             (r'(?:^|\s)(?:cat|ls|cd|rm|cp|mv|chmod|chown|find|grep)\s+(/[^\s]+)', 1),
+            # 匹配 ../ 開頭的相對路徑
             (r'(?:^|\s)\.\./[^\s]*', 0),
+            # 匹配單獨的 .. 作為命令參數
             (r'(?:^|\s)\.\.(?:\s|$)', 0),
         ]
         for pattern, group in patterns:
@@ -66,9 +73,11 @@ def check_outside_access(cmd: str, cwd: str) -> tuple[bool, str]:
         else:
             abs_path = os.path.abspath(os.path.join(cwd, path))
         
+        # 若路徑為 .. 或以 ../ 開頭，表示試圖離開目前目錄
         if path == '..' or path.startswith('../'):
             return True, abs_path
         
+        # 若絕對路徑不在 cwd 底下，表示試圖存取外部檔案
         if not abs_path.startswith(cwd_abs):
             return True, abs_path
     
@@ -78,12 +87,15 @@ if __name__ == "__main__":
     import sys
     
     if len(sys.argv) > 1:
+        # 命令列模式：直接審查給定的命令
         cmd = " ".join(sys.argv[1:])
         print(asyncio.run(test_review(cmd)))
     else:
+        # 無參數模式：執行預設的測試案例套件
         print("=== 測試安全審查者 ===\n")
         
         def test_cmd(cmd, expected):
+            # 測試 LLM 安全審查功能，比對預期結果
             result = asyncio.run(test_review(cmd))
             status = "✅" if (expected == "SAFE" and result.startswith("SAFE")) or (expected == "UNSAFE" and result.startswith("UNSAFE")) else "❌"
             print(f"命令: {cmd}")
@@ -91,6 +103,7 @@ if __name__ == "__main__":
             print(f"{status}\n")
         
         def test_outside(cmd, cwd, expected):
+            # 測試目錄存取控制功能，比對是否需要詢問使用者
             needs_access, path = check_outside_access(cmd, cwd)
             status = "✅" if (expected and needs_access) or (not expected and not needs_access) else "❌"
             print(f"命令: {cmd}")

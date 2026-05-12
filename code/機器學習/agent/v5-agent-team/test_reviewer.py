@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
+# 測試安全審查模型 + 目錄存取控制的整合工具（v5 版本）
 import asyncio
 import aiohttp
 import os
 
 async def test_review(cmd: str) -> str:
+    # 建構安全審查的 prompt
     prompt = f"""你是安全審查者。請判斷以下 shell 命令是否安全可以執行。
 
 安全原則：
@@ -39,6 +41,7 @@ async def test_review(cmd: str) -> str:
             return result.get("response", "").strip()
 
 def check_outside_access(cmd: str, cwd: str) -> tuple[bool, str]:
+    # 檢查命令是否試圖存取目前目錄以外的檔案或路徑
     import re
     import os.path
     

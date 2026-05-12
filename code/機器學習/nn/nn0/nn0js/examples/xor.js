@@ -1,15 +1,19 @@
 /**
- * xor_example.js — 使用 nn0.js 訓練多層感知器 (MLP) 解決 XOR 問題
+ * xor.js — 使用 nn0.js 訓練 MLP 解決 XOR 問題
+ * 
+ * 網路結構：Input(2) → Hidden(4, ReLU) → Output(2)
+ * XOR 問題是非線性可分的經典範例，單層感知器無法解決。
+ * 
+ * 執行方法: node xor.js
  */
 const { Value, Adam, linear, cross_entropy } = require('../nn0.js');
 
-// 建立單層線性層 (包含權重與偏差)
+/* 全連接層：權重 + 偏差 */
 class LinearLayer {
     constructor(nin, nout) {
         this.w =[];
         for (let i = 0; i < nout; i++) {
             let row =[];
-            // 使用均勻分佈隨機初始化 (-0.5 ~ 0.5)
             for (let j = 0; j < nin; j++) {
                 row.push(new Value((Math.random() - 0.5))); 
             }
@@ -19,7 +23,6 @@ class LinearLayer {
     }
 
     forward(x) {
-        // y = Wx + b
         let out = linear(x, this.w);
         return out.map((val, i) => val.add(this.b[i]));
     }
@@ -32,17 +35,15 @@ class LinearLayer {
     }
 }
 
-// 建立兩層 MLP: Input(2) -> Hidden(4) -> Output(2)
+/* 兩層 MLP：輸入 2 → 隱藏 4 (ReLU) → 輸出 2 */
 class MLP {
     constructor() {
         this.l1 = new LinearLayer(2, 4);
-        this.l2 = new LinearLayer(4, 2); // 預測 2 個類別 (0 或是 1)
+        this.l2 = new LinearLayer(4, 2);
     }
 
     forward(x) {
-        // 第一層 + ReLU 激活函數
         let h = this.l1.forward(x).map(v => v.relu());
-        // 第二層 (輸出 Logits)
         return this.l2.forward(h);
     }
 
@@ -51,15 +52,15 @@ class MLP {
     }
 }
 
-// XOR 資料集
+// XOR 資料集：4 筆樣本，輸入 2 維，輸出為二元類別
 const X = [[new Value(0), new Value(0)],
     [new Value(0), new Value(1)],[new Value(1), new Value(0)],
     [new Value(1), new Value(1)]
 ];
-const Y = [0, 1, 1, 0]; // XOR 邏輯正確答案
+const Y = [0, 1, 1, 0];
 
 const model = new MLP();
-const optimizer = new Adam(model.parameters(), 0.1); // lr = 0.1
+const optimizer = new Adam(model.parameters(), 0.1);
 
 console.log("=== 開始訓練 XOR MLP ===");
 for (let epoch = 1; epoch <= 100; epoch++) {
@@ -71,7 +72,6 @@ for (let epoch = 1; epoch <= 100; epoch++) {
         total_loss = total_loss.add(loss);
     }
 
-    // 計算平均 Loss 並反向傳播
     let avg_loss = total_loss.mul(1/4);
     avg_loss.backward();
     optimizer.step();
@@ -84,7 +84,6 @@ for (let epoch = 1; epoch <= 100; epoch++) {
 console.log("\n=== 訓練結果預測 ===");
 for (let i = 0; i < 4; i++) {
     let logits = model.forward(X[i]);
-    // 判斷 logits[0] 和 logits[1] 誰比較大
     let pred = logits[1].data > logits[0].data ? 1 : 0; 
-    console.log(`輸入: [${X[i][0].data}, ${X[i][1].data}] | 預測: ${pred} | 實際: ${Y[i]} | (Logits: [${logits[0].data.toFixed(2)}, ${logits[1].data.toFixed(2)}])`);
+    console.log(`輸入: [${X[i][0].data}, ${X[i][1].data}] | 預測: ${pred} | 實際: ${Y[i]}`);
 }

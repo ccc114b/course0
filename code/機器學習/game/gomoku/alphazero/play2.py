@@ -1,10 +1,11 @@
-# play.py
+# play.py 第二版 — 支援人類與 AI 兩種身份的對戰
 import sys
 import torch
 import numpy as np
-from train import GomokuGame, AlphaZeroNet, MCTS # 引入剛寫好的架構
+from train import GomokuGame, AlphaZeroNet, MCTS  # 引入 train.py 中定義的遊戲邏輯與 AI 架構
 
 def parse_args():
+    """解析命令列參數：先手與後手各為何種玩家類型。"""
     if len(sys.argv) != 3:
         print("用法: python play2.py [P|C] [P|C]")
         print("  第一個參數: 先手 (P=人類, C=電腦)")
@@ -19,14 +20,18 @@ def parse_args():
     return p1, p2
 
 def print_board(state, game):
+    """以文字方式在終端機上顯示當前棋盤狀態。"""
     chars = {0: '-', 1: 'x', -1: 'o'}
+    # 顯示上方的欄位編號
     print('\n  ' + ' '.join([str(i) for i in range(game.board_size)]))
     for i in range(game.board_size):
         row_str = ' '.join([chars[state[i, j]] for j in range(game.board_size)])
         print(f"{i} {row_str} {i}")
+    # 顯示下方的欄位編號
     print('  ' + ' '.join([str(i) for i in range(game.board_size)]) + '\n')
 
 def human_turn(state, game):
+    """人類玩家透過命令列輸入座標（如 34 代表第 3 列第 4 行），並檢查是否合法。"""
     valid_moves = game.get_valid_moves(state)
     while True:
         try:
@@ -40,10 +45,11 @@ def human_turn(state, game):
             print("格式錯誤。請輸入兩個數字。")
 
 def play(p1, p2):
-    # 注意：這裡的 size 要跟訓練時一樣
+    """執行一局五子棋對戰，支援人類 vs AI 或 AI vs AI。"""
+    # 棋盤大小須與訓練時一致（8x8，連 5 子獲勝）
     game = GomokuGame(board_size=8, n_in_row=5)
 
-    # 載入模型
+    # 載入已訓練的 AlphaZero 模型權重
     model = AlphaZeroNet(game)
     try:
         model.load_state_dict(torch.load("alphazero_gomoku.pth", map_location=model.device))
@@ -53,12 +59,12 @@ def play(p1, p2):
 
     model.eval()
 
-    # 遊玩時，MCTS 模擬次數可以提高，AI 會更強 (預設 400 次)
+    # MCTS 搜尋參數：400 次模擬，c_puct=1.0（數值越高探索性越強）
     mcts = MCTS(game, model, num_simulations=400, c_puct=1.0)
 
     state = game.get_initial_state()
     players = [p1, p2]
-    player_turn = 1  # 1=先手(x), -1=後手(o)
+    player_turn = 1  # 1 = 先手 (x)，-1 = 後手 (o)
 
     names = {1: "x", -1: "o"}
     print(f"遊戲開始！{p1} (x) vs {p2} (o)")
@@ -66,39 +72,42 @@ def play(p1, p2):
 
     last_action = -1
     while True:
+        # 根據目前輪到誰，決定玩家類型
         p = players[0] if player_turn == 1 else players[1]
         if p == "human":
             action = human_turn(state, game)
         else:
             print("AI 思考中...")
-            # 注意：MCTS 搜尋永遠是從「當前視角 (1)」來搜尋
-            # 所以傳入 MCTS 時，要將 state 轉化為讓電腦以為自己是 1
+            # AlphaZero MCTS 搜尋時固定以「當前視角玩家視為先手 (1)」
+            # 因此需要將棋盤乘以 player_turn 進行視角轉換
             ai_view_state = state * player_turn
 
-            # 獲取機率 (因為是遊玩，直接選機率最高的走法，不進行隨機探索)
+            # 取得 MCTS 回傳的動作機率分佈 pi
+            # 遊玩時不作隨機採樣，直接選取機率最高的動作
             pi = mcts.search(ai_view_state)
             action = np.argmax(pi)
             r, c = action // game.board_size, action % game.board_size
             print(f"AI 下在: {r}{c}")
-            
-        # 更新狀態 (這裡使用原視角的 state 下棋)
+
+        # 更新棋盤（以原始視角的 state 進行落子）
         r, c = action // game.board_size, action % game.board_size
         state[r, c] = player_turn
-        
+
         print_board(state, game)
-        
-        # 檢查輸贏
-        # 因為 check_win 是以當前下的子為準，我們需先還原視角檢查
+
+        # 勝負判定：轉換為 AI 視角後檢查當前棋子是否達成連線
         ai_view_state = state * player_turn
         if game.check_win(ai_view_state, action):
             winner = f"{players[0]} (x)" if player_turn == 1 else f"{players[1]} (o)"
             print(f"===== 遊戲結束，{winner} 獲勝！ =====")
             break
 
+        # 若棋盤已無空位，判定平局
         if np.sum(game.get_valid_moves(state)) == 0:
             print("===== 遊戲結束，平局！ =====")
             break
 
+        # 交換玩家回合
         player_turn *= -1
 
 if __name__ == "__main__":

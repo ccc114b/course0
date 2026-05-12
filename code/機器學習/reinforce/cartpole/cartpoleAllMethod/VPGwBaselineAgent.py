@@ -1,18 +1,22 @@
+# VPG with Baseline：引入基線 V(s) 降低策略梯度方差
 import torch
 import torch.nn as nn
 import torch.optim as optim
 import torch.distributions as distributions
 
 class VPGwBaselineAgent:
+    """帶基線的 VPG，使用 G_t - γ^t V(s_t) 作為策略梯度權重"""
     def __init__(self, env,):
         self.action_n = env.action_space.n
         self.gamma = 0.99
 
+        # 策略網路：輸出動作機率
         self.policy_net = self.build_net(
                 input_size=env.observation_space.shape[0],
                 hidden_sizes=[],
                 output_size=self.action_n, output_activator=nn.Softmax(1))
         self.policy_optimizer = optim.Adam(self.policy_net.parameters(), lr=0.005)
+        # 基線網路：估計狀態價值 V(s)
         self.baseline_net = self.build_net(
                 input_size=env.observation_space.shape[0],
                 hidden_sizes=[])
@@ -51,17 +55,20 @@ class VPGwBaselineAgent:
             self.learn()
 
     def learn(self):
+        """更新基線網路與策略網路，使用 ψ_t = G_t - γ^t V(s_t) 作為權重"""
         state_tensor = torch.as_tensor(self.trajectory[0::4], dtype=torch.float)
         reward_tensor = torch.as_tensor(self.trajectory[1::4], dtype=torch.float)
         action_tensor = torch.as_tensor(self.trajectory[3::4], dtype=torch.long)
         arange_tensor = torch.arange(state_tensor.shape[0], dtype=torch.float)
 
-        # update baseline
+        # ── 更新基線網路 ──
         discount_tensor = self.gamma ** arange_tensor
         discounted_reward_tensor = discount_tensor * reward_tensor
         discounted_return_tensor = discounted_reward_tensor.flip(0).cumsum(0).flip(0)
+        # 將折扣回報還原為未折扣形式（除以 γ^t）作為回歸目標
         return_tensor = discounted_return_tensor / discount_tensor
         pred_tensor = self.baseline_net(state_tensor)
+        # ψ_t = G_t - γ^t V(s_t)，detach 後不影響策略梯度的計算圖
         psi_tensor = (discounted_return_tensor - discount_tensor *
                 pred_tensor).detach()
         baseline_loss_tensor = self.baseline_loss(pred_tensor,
@@ -70,7 +77,7 @@ class VPGwBaselineAgent:
         baseline_loss_tensor.backward()
         self.baseline_optimizer.step()
 
-        # update policy
+        # ── 更新策略網路 ──
         all_pi_tensor = self.policy_net(state_tensor)
         pi_tensor = torch.gather(all_pi_tensor, 1,
                 action_tensor.unsqueeze(1)).squeeze(1)

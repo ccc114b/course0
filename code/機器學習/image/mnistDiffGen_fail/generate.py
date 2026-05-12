@@ -15,9 +15,10 @@ else:
 
 img_size = 28
 channels = 1
-timesteps = 100
+timesteps = 100   # 注意：僅 100 步（標準 DDPM 通常為 1000 步）
 
 class SinusoidalPositionEmbedding(nn.Module):
+    """正弦位置編碼：將時間步 t 映射為高維嵌入向量"""
     def __init__(self, dim):
         super().__init__()
         self.dim = dim
@@ -31,6 +32,10 @@ class SinusoidalPositionEmbedding(nn.Module):
         return emb
 
 class ResidualBlock(nn.Module):
+    """殘差區塊：兩層卷積 + 時間步條件注入
+    
+    注意：此區塊無 GroupNorm，且輸入輸出通道數相同。
+    """
     def __init__(self, channels, time_dim):
         super().__init__()
         self.conv1 = nn.Conv2d(channels, channels, 3, padding=1)
@@ -45,6 +50,11 @@ class ResidualBlock(nn.Module):
         return x + h
 
 class Unet(nn.Module):
+    """簡化版 UNet（無跳躍連接，無正規化層）
+    
+    注意：此 UNet 缺少標準 UNet 的跳躍連接（skip connections），
+    編碼器的特徵不會直接傳遞給解碼器，這可能影響生成品質。
+    """
     def __init__(self, channels=64, time_dim=128):
         super().__init__()
         self.time_embed = SinusoidalPositionEmbedding(time_dim)
@@ -121,17 +131,22 @@ def generate(weights_path="weights/diffusion_final.pth", num_images=16, output_d
             alpha_cum = alphas_cum[i]
             alpha_cum_prev = alphas_cum[i - 1] if i > 0 else torch.tensor(1.0, device=device)
 
+            # 估計原始影像 x₀
             pred_original = (x - predicted * torch.sqrt(1 - alpha_cum)) / torch.sqrt(alpha_cum)
 
+            # 簡化的逆向更新（可能缺少正確的後驗變異數項）
             coef1 = (1 - alpha_cum_prev).sqrt() * alpha.sqrt() / (1 - alpha_cum)
             coef2 = (1 - alpha).sqrt() * alpha_cum_prev.sqrt() / (1 - alpha_cum)
 
             x = coef1 * pred_original + coef2 * predicted
 
+            # 注意：噪聲項被乘以 0，實際等於關閉了隨機性
+            # 這與標準 DDPM 不同（標準應使用 posterior_variance 的 sqrt）
             if i > 0:
                 noise = torch.randn_like(x)
                 x = x + noise * torch.sqrt(1 - alpha) * 0
 
+        # 將 [-1, 1] 映射回 [0, 1]
         x = (x + 1) / 2
         x = torch.clamp(x, 0, 1)
 

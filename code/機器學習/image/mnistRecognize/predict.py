@@ -5,6 +5,7 @@ from PIL import Image
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
+# 圖片預處理：灰階 → 28×28 → Tensor → [-1, 1]
 transform = transforms.Compose([
     transforms.Grayscale(),
     transforms.Resize((28, 28)),
@@ -13,6 +14,7 @@ transform = transforms.Compose([
 ])
 
 class Net(nn.Module):
+    """CNN 分類器：2 層卷積 + 2 層全連接"""
     def __init__(self):
         super().__init__()
         self.conv1 = nn.Conv2d(1, 32, 3)

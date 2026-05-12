@@ -15,9 +15,10 @@ else:
 
 img_size = 28
 channels = 1
-timesteps = 100
+timesteps = 100   # 擴散步數較少（僅 100 步）
 
 class SinusoidalPositionEmbedding(nn.Module):
+    """正弦位置編碼"""
     def __init__(self, dim):
         super().__init__()
         self.dim = dim
@@ -31,6 +32,7 @@ class SinusoidalPositionEmbedding(nn.Module):
         return emb
 
 class ResidualBlock(nn.Module):
+    """殘差區塊（無正規化）"""
     def __init__(self, channels, time_dim):
         super().__init__()
         self.conv1 = nn.Conv2d(channels, channels, 3, padding=1)
@@ -45,6 +47,7 @@ class ResidualBlock(nn.Module):
         return x + h
 
 class Unet(nn.Module):
+    """簡化版 UNet（無跳躍連接、無正規化層）"""
     def __init__(self, channels=64, time_dim=128):
         super().__init__()
         self.time_embed = SinusoidalPositionEmbedding(time_dim)
@@ -99,6 +102,11 @@ class Unet(nn.Module):
         return x
 
 class Diffusion:
+    """擴散過程管理：前向加噪
+    
+    注意：此類只儲存 alpha_bar（ᾱ），
+    缺少標準實作中的後驗變異數等預計算。
+    """
     def __init__(self, timesteps=100, beta_start=0.0001, beta_end=0.02):
         self.timesteps = timesteps
         betas = torch.linspace(beta_start, beta_end, timesteps)
@@ -107,6 +115,7 @@ class Diffusion:
         self.alphas_cum = alphas_cum
 
     def noise_images(self, images, t):
+        """根據時間步 t 對影像加噪"""
         batch = images.size(0)
         alphas_cum = self.alphas_cum.to(images.device)
         sqrt_alpha_cum = torch.sqrt(alphas_cum[t])[:, None, None, None]
@@ -132,6 +141,7 @@ def train(epochs=20, batch_size=128):
     for epoch in range(epochs):
         total_loss = 0
         for i, (imgs, _) in enumerate(dataloader):
+            # 標準化輸入至 [-1, 1]
             imgs = imgs.to(device) * 2 - 1
 
             batch = imgs.size(0)

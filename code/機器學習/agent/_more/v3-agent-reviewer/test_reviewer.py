@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
+# 測試安全審查模型的獨立工具
 import asyncio
 import aiohttp
 
 async def test_review(cmd: str) -> str:
+    # 建構安全審查的 prompt，包含六條安全原則
     prompt = f"""你是安全審查者。請判斷以下 shell 命令是否安全可以執行。
 
 安全原則：
@@ -28,6 +30,7 @@ async def test_review(cmd: str) -> str:
         "stream": False
     }
 
+    # 直接呼叫 Ollama API，繞過 Agent 主循環
     async with aiohttp.ClientSession() as session:
         async with session.post(
             "http://localhost:11434/api/generate",
@@ -40,6 +43,7 @@ async def test_review(cmd: str) -> str:
 if __name__ == "__main__":
     import sys
     if len(sys.argv) > 1:
+        # 命令列模式：將所有參數合併為一條命令進行審查
         cmd = " ".join(sys.argv[1:])
         print(asyncio.run(test_review(cmd)))
     else:

@@ -4,10 +4,15 @@ import torch.optim as optim
 from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
 
-# device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+# 裝置自動選擇：CUDA > MPS（Apple Silicon） > CPU
 device = torch.device("cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is_available() else "cpu")
 
 class Net(nn.Module):
+    """簡單 CNN 分類器：2 層卷積 + 2 層全連接
+    
+    輸入：28×28 灰階影像
+    輸出：10 維 logits（對應 0-9 數字）
+    """
     def __init__(self):
         super().__init__()
         self.conv1 = nn.Conv2d(1, 32, 3)
@@ -27,6 +32,7 @@ class Net(nn.Module):
         return self.fc2(x)
 
 def train():
+    # 資料擴增：隨機旋轉 ±10° 以提升泛化能力
     transform = transforms.Compose([
         transforms.RandomRotation(10),
         transforms.ToTensor(),
@@ -37,7 +43,7 @@ def train():
     trainLoader = DataLoader(trainSet, batch_size=64, shuffle=True)
 
     model = Net().to(device)
-    criterion = nn.CrossEntropyLoss()
+    criterion = nn.CrossEntropyLoss()      # 內含 Softmax
     optimizer = optim.Adam(model.parameters(), lr=0.001)
 
     model.train()

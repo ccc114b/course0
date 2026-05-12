@@ -1,12 +1,14 @@
 import gd as gd
 
+"""
+  目標函數：f(x, y, z) = (x-1)^2 + (y-2)^2 + (z-3)^2
+  此為凸函數，全域最小值位於點 (1, 2, 3)。
+  亦可嘗試其他註解掉的二次函數。
+"""
 def f(p):
     [x, y, z] = p
     return (x-1)**2+(y-2)**2+(z-3)**2
-    # return (x-2)**2+3*(y-0.5)**2+(z-2.5)**2
-    # return x*x + 3*y*y + z*z - 4*x - 3*y - 5*z + 8
 
-
+# 從原點 (0, 0, 0) 開始梯度下降
 p = [0.0, 0.0, 0.0]
-# gd.gradientDescendent(f, p, dump_period=1)
 gd.gradientDescendent(f, p)

@@ -1,15 +1,15 @@
 # https://github.com/weixiang0470/ai112b/blob/master/Homework/hw08/cartpole1.py
 
 import gymnasium as gym
-env = gym.make("CartPole-v1", render_mode="human") # 若改用這個，會畫圖
-# env = gym.make("CartPole-v1", render_mode="rgb_array")
+# 使用 human 模式渲染畫面
+env = gym.make("CartPole-v1", render_mode="human")
 observation, info = env.reset(seed=42)
 steps = 0
-#action = 0
 for _ in range(2000):
    env.render()
 
-   #action = env.action_space.sample()  # 把這裡改成你的公式，看看能撐多久
+   # 閉合形式控制法則：根據杆子角度 θ (observation[2]) 與角速度 θ' (observation[3]) 決策
+   # 當杆子向右傾 (θ > 0) 且角速度大於 0.01 時，連續向右推兩次以快速矯正
    if observation[2] > 0 : 
     if observation[3] > 0.01 :
         action = 1 
@@ -21,6 +21,7 @@ for _ in range(2000):
        action = 0
        observation, reward, terminated, truncated, info = env.step(action)
        steps += 1
+   # 當杆子向左傾 (θ < 0) 且角速度小於 -0.01 時，連續向左推兩次
    elif observation[2] < 0 : 
     if observation[3] < -0.01 :
         action = 0 
@@ -33,7 +34,7 @@ for _ in range(2000):
        observation, reward, terminated, truncated, info = env.step(action)
        steps += 1
    
-   if terminated or truncated: # 這裡要加入程式，紀錄你每次撐多久
+   if terminated or truncated:
       observation, info = env.reset()
       print('steps:',steps)
       steps = 0

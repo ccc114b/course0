@@ -10,14 +10,20 @@ import re
 
 # ─── Configuration ───
 
+# 工作目錄，存放 Agent 產生的檔案和資料
 WORKSPACE = os.path.expanduser("~/.agent0")
+# 主 LLM 模型，負責理解使用者意圖和產生命令
 MODEL = "minimax-m2.5:cloud"
+# 安全審查 LLM 模型，獨立於主模型，用於判斷命令安全性
 REVIEWER_MODEL = "minimax-m2.5:cloud"
+# 最大工具使用回合數（防止無限循環）
 MAX_TURNS = 5
 
 # ─── Memory ───
 
+# 對話歷史列表，儲存最近的 user/assistant/tool 互動
 conversation_history = []
+# 長期記憶列表，存放 LLM 自動提取的關鍵資訊
 key_info = []
 
 # ─── Ollama API ───
@@ -43,6 +49,7 @@ async def call_ollama(prompt: str, system: str = "") -> str:
 
 async def review_command(cmd: str) -> tuple[bool, str]:
     """Use another Ollama model to review if command is safe"""
+    # 建構審查 prompt，包含六條安全原則，要求 LLM 輸出 SAFE 或 UNSAFE
     review_prompt = f"""你是安全審查者。請判斷以下 shell 命令是否安全可以執行。
 
 安全原則：
@@ -189,6 +196,8 @@ def main():
             for cmd in shell_matches:
                 cmd = cmd.strip()
                 
+                # === 安全審查步驟 ===
+                # 每個 shell 命令在執行前都先送給 Reviewer LLM 審查
                 is_safe, reason = asyncio.run(review_command(cmd))
                 
                 if not is_safe:

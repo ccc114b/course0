@@ -4,6 +4,7 @@ from torchvision.utils import save_image
 import os
 import argparse
 
+# 自動選擇計算裝置：CUDA > MPS > CPU
 if torch.cuda.is_available():
     device = torch.device("cuda")
 elif torch.backends.mps.is_available():
@@ -11,11 +12,16 @@ elif torch.backends.mps.is_available():
 else:
     device = torch.device("cpu")
 
-latent_dim = 100
-img_size = 28
-channels = 1
+latent_dim = 100   # 潛在空間維度
+img_size = 28      # 輸出圖片尺寸
+channels = 1       # 灰階影像
 
 class Generator(nn.Module):
+    """生成器網路：從隨機噪聲合成手寫數字影像
+    
+    先將 100 維潛在向量通過全連接層映射到 7×7×64 特徵圖，
+    再用轉置卷積層逐步上採樣至 28×28。
+    """
     def __init__(self):
         super().__init__()
         self.l0 = nn.Linear(latent_dim, 7 * 7 * 64)
@@ -23,7 +29,7 @@ class Generator(nn.Module):
         self.conv2 = nn.ConvTranspose2d(32, 1, 4, 2, 1)
         self.bn1 = nn.BatchNorm2d(32)
         self.act = nn.ReLU(True)
-        self.out = nn.Tanh()
+        self.out = nn.Tanh()   # 輸出值域 [-1, 1]
 
     def forward(self, z):
         out = self.l0(z).view(-1, 64, 7, 7)
@@ -32,6 +38,7 @@ class Generator(nn.Module):
         return out
 
 def generate(weights_path="weights/gan_final.pth", num_images=16, output_dir="output"):
+    # 載入訓練好的生成器權重
     generator = Generator().to(device)
     checkpoint = torch.load(weights_path, map_location=device, weights_only=False)
     generator.load_state_dict(checkpoint["generator"])
@@ -43,6 +50,7 @@ def generate(weights_path="weights/gan_final.pth", num_images=16, output_dir="ou
         z = torch.randn(num_images, latent_dim).to(device)
         gen_imgs = generator(z)
 
+    # 單張儲存與網格組合圖
     for i, img in enumerate(gen_imgs):
         save_image(img, f"{output_dir}/digit_{i:03d}.png")
 

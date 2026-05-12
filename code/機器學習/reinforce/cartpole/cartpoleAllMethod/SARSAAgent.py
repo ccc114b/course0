@@ -1,3 +1,4 @@
+# SARSA：基於策略的 TD 學習，使用實際的下一步動作進行 Q 值更新
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -6,9 +7,9 @@ import random
 from collections import deque
 import pandas as pd
 import copy
-# from Replayer import Replayer
 
 class Replayer:
+    """經驗回放緩衝區，儲存 (s, a, r, s', a', terminated) 用於 SARSA 更新"""
     def __init__(self, capacity):
         self.memory = pd.DataFrame(index=range(capacity),
                                    columns=['state', 'action', 'reward', 'next_state', 'next_action', 'terminated'])
@@ -26,6 +27,7 @@ class Replayer:
         return (np.stack(self.memory.loc[indices, field]) for field in self.memory.columns)
 
 class SARSAAgent:
+    """SARSA 智能體：使用 Q(s',a')（而非 max Q(s',·)）進行更新"""
     def __init__(self, env):
         self.action_n = env.action_space.n
         self.gamma = 0.99
@@ -54,6 +56,7 @@ class SARSAAgent:
             self.trajectory = []
 
     def step(self, observation, reward, terminated):
+        """ε-greedy 選擇動作，儲存轉移時包含下一步動作 a'"""
         if self.mode == 'train' and np.random.rand() < 0.001:
             action = np.random.randint(self.action_n)
         else:
@@ -65,6 +68,7 @@ class SARSAAgent:
         if self.mode == 'train':
             self.trajectory += [observation, reward, terminated, action]
             if len(self.trajectory) >= 8:
+                # 從 trajectory 中取出完整的 (s, a, r, s', a') 五元組
                 state, _, _, act, next_state, reward, terminated, next_action = self.trajectory[-8:]
                 self.replayer.store(state, act, reward, next_state, next_action, terminated)
             if self.replayer.count >= self.replayer.capacity * 0.95:
@@ -75,7 +79,7 @@ class SARSAAgent:
         pass
 
     def learn(self):
-        # 從記憶庫中隨機抽取
+        """從回放緩衝區抽樣，使用 Q(s',a') 計算 TD 目標（SARSA 核心）"""
         states, actions, rewards, next_states, next_actions, terminateds = self.replayer.sample(1024)
         
         state_tensor = torch.as_tensor(states, dtype=torch.float)
@@ -85,17 +89,14 @@ class SARSAAgent:
         next_action_tensor = torch.as_tensor(next_actions, dtype=torch.long)
         terminated_tensor = torch.as_tensor(terminateds, dtype=torch.float)
         
-        # 根據 SARSA 演算法進行更新
-        # 使用 next_action 來獲取下一狀態的 Q 值
+        # SARSA 更新：使用實際選擇的 a' 的 Q 值，而非 max Q
         next_q_tensor = self.evaluate_net(next_state_tensor).gather(1, next_action_tensor.unsqueeze(1)).squeeze(1)
-        # 以下公式為 q(s,a) = r + gamma * q(s',a')
         target_tensor = reward_tensor + self.gamma * (1. - terminated_tensor) * next_q_tensor
         
         pred_tensor = self.evaluate_net(state_tensor)
         q_tensor = pred_tensor.gather(1, action_tensor.unsqueeze(1)).squeeze(1)
         
-        loss_tensor = self.loss(target_tensor, q_tensor) # 目標：縮小 r + gamma * q(s',a') 與 q(s,a) 之間的差距
-        # 參考 https://chatgpt.com/c/672da875-6be4-8012-a637-d81121396dae
+        loss_tensor = self.loss(target_tensor, q_tensor)
         self.optimizer.zero_grad()
         loss_tensor.backward()
         self.optimizer.step()

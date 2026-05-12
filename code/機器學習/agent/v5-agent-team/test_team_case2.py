@@ -9,6 +9,8 @@ PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
 async def test_iran_war_report():
+    # 端到端測試：要求 Agent 團隊搜集網路資訊並產出報告
+    # 使用 3 個 Generator + 2 個 Evaluator 的較大規模團隊配置
     print("=" * 60)
     print("測試個案 2: 伊朗戰情報告")
     print("=" * 60)

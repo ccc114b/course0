@@ -9,6 +9,8 @@ PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
 async def test_blog_system():
+    # 端到端測試：要求 Agent 團隊建立一個 FastAPI + SQLite 部落格系統
+    # 這驗證了團隊是否能完成真實世界的開發任務
     print("=" * 60)
     print("測試個案 1: FastAPI + SQLite 網誌系統")
     print("=" * 60)

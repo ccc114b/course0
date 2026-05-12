@@ -2,6 +2,7 @@ import torch
 from torchvision import datasets, transforms
 from PIL import Image
 
+# 從 MNIST 測試集提取數字 3、6、8 各 2 張作為測試樣本
 transform = transforms.ToTensor()
 testSet = datasets.MNIST(root="./data", train=False, download=True, transform=transform)
 

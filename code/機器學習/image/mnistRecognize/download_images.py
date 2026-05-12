@@ -2,6 +2,7 @@ import torch
 from torchvision import datasets, transforms
 from PIL import Image
 
+# 從 MNIST 測試集提取前 10 張作為測試圖片
 transform = transforms.ToTensor()
 testSet = datasets.MNIST(root="./data", train=False, download=True, transform=transform)
 

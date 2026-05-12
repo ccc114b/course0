@@ -11,16 +11,24 @@ import argparse
 from dataclasses import dataclass, field
 from typing import Optional
 
+# === 全域配置 ===
+# 團隊中所有角色共用這些基本設定
 WORKSPACE = os.path.expanduser("~/.agent0")
 MODEL = "minimax-m2.5:cloud"
 MAX_TURNS = 5
-MAX_ITERATIONS = 3
-NUM_GENERATORS = 1
-NUM_EVALUATORS = 1
+MAX_ITERATIONS = 3       # 團隊循環最大迭代次數
+NUM_GENERATORS = 1       # 預設 Generator 數量
+NUM_EVALUATORS = 1       # 預設 Evaluator 數量
 
 
 @dataclass
 class Agent0:
+    # === 基礎 Agent 類別 ===
+    # 提供 call_ollama、安全審查、目錄控制、shell 執行等共用功能
+    # 與 v4-agent-class/agent0.py 基本相同，但：
+    # - 不再使用 extract_key_info（團隊協作中暫不支援記憶）
+    # - SYSTEM_PROMPT 改為明確宣告型別
+    
     workspace: str = ""
     model: str = "minimax-m2.5:cloud"
     reviewer_model: str = "minimax-m2.5:cloud"
@@ -56,6 +64,7 @@ class Agent0:
             "stream": False
         }
         
+        # 加入例外處理，避免 API 錯誤中斷團隊循環
         try:
             async with aiohttp.ClientSession() as session:
                 async with session.post(
@@ -157,6 +166,7 @@ Is it SAFE to run? Reply with SAFE or UNSAFE."""
             self.conversation_history.pop(0)
     
     async def execute_shell(self, cmd: str, cwd: str = None) -> tuple[int, str]:
+        # 統一的 shell 命令執行入口（含雙層安全檢查）
         print(f"\n执行命令: {cmd}")
         
         is_safe, reason = await self.review_command(cmd)
@@ -188,6 +198,7 @@ Is it SAFE to run? Reply with SAFE or UNSAFE."""
             return -1, f"錯誤：{e}"
     
     async def run(self, user_input: str, system_prompt: str = "") -> tuple[str, str]:
+        # 基本 run 方法（團隊循環中不使用 extract_key_info）
         SYSTEM = system_prompt if system_prompt else self.SYSTEM_PROMPT
         
         context = self.build_context()
@@ -237,12 +248,17 @@ Is it SAFE to run? Reply with SAFE or UNSAFE."""
 Done. Output <end/> now."""
             current_response = await self.call_ollama(follow_up_prompt, SYSTEM)
         
+        # 僅更新記憶，不提取關鍵資訊（團隊版本暫不支援）
         self.update_memory(user_input, response, tool_result)
         
         return response, tool_result
 
 
+# === 角色類別（皆繼承自 Agent0） ===
+
 class Planner(Agent0):
+    # Planner（規劃者）：分析任務、制定計劃、綜整評估結果、做出決策
+    # 使用 <plan> 標籤輸出計劃，<decision> 標籤輸出決策
     SYSTEM_PROMPT = """你是 Planner，團隊的規劃者。
 
 職責：
@@ -266,6 +282,8 @@ class Planner(Agent0):
 
 
 class Generator(Agent0):
+    # Generator（執行者）：按照 Planner 的計劃執行 shell 命令
+    # 使用 <shell> 標籤執行命令，<done/> 結束
     SYSTEM_PROMPT = """你是 Generator，團隊的執行者。
 
 職責：
@@ -281,6 +299,8 @@ class Generator(Agent0):
 
 
 class Evaluator(Agent0):
+    # Evaluator（評估者）：檢查 Generator 輸出是否滿足要求
+    # 使用 <evaluation> 標籤輸出 PASS/FAIL、分數和反饋
     SYSTEM_PROMPT = """你是 Evaluator，團隊的評估者。
 
 職責：
@@ -300,7 +320,12 @@ class Evaluator(Agent0):
 - 如果是 FAIL，必須提供具體的 <feedback> 說明問題和改進建議"""
 
 
+# === 團隊循環的各個階段函數 ===
+
 async def plan_task(planner: Planner, user_input: str, context: str, feedback: str = None) -> dict:
+    # 階段一：Planner 制定計劃
+    # 接收使用者輸入、當前 context、上一輪的反饋（可選）
+    # 回傳包含 analysis 和 steps 的計劃字典
     feedback_section = f"\n\n<feedback>{feedback}</feedback>" if feedback else ""
     
     prompt = f"""<user_input>{user_input}</user_input>
@@ -319,6 +344,7 @@ async def plan_task(planner: Planner, user_input: str, context: str, feedback: s
     response = await planner.call_ollama(prompt, planner.SYSTEM_PROMPT)
     print(f"\n📋 Planner 回應: {response[:300]}...")
     
+    # 用正則表達式解析 <plan>、<analysis>、<steps>、<step> 標籤
     plan_match = re.search(r'<plan>(.*?)</plan>', response, re.DOTALL)
     analysis_match = re.search(r'<analysis>(.*?)</analysis>', response, re.DOTALL)
     steps_match = re.search(r'<steps>(.*?)</steps>', response, re.DOTALL)
@@ -335,6 +361,8 @@ async def plan_task(planner: Planner, user_input: str, context: str, feedback: s
 
 
 async def execute_plan(generator: Generator, plan: dict, context: str, generator_id: int) -> dict:
+    # 階段二：Generator 執行計劃
+    # 逐個步驟呼叫 Generator，對每個步驟進行 shell 命令循環
     if not plan.get("steps"):
         return {
             "generator_id": generator_id,
@@ -351,6 +379,7 @@ async def execute_plan(generator: Generator, plan: dict, context: str, generator
         
         step_outputs = []
         
+        # 建構 prompt 讓 Generator 知道完整的計劃和當前步驟
         prompt = f"""<context>{context}</context>
 <plan>
   <analysis>{plan.get('analysis', '')}</analysis>
@@ -366,6 +395,7 @@ async def execute_plan(generator: Generator, plan: dict, context: str, generator
         
         current_response = response
         
+        # 對單一步驟進行 shell 命令循環（類似 Agent0.run 但使用 <done/>）
         while True:
             if "<done/>" in current_response:
                 before_done = current_response.split("<done/>")[0].strip()
@@ -407,6 +437,8 @@ async def execute_plan(generator: Generator, plan: dict, context: str, generator
 
 
 async def evaluate_output(evaluator: Evaluator, user_input: str, generator_outputs: list, plan: dict, evaluator_id: int) -> dict:
+    # 階段三：Evaluator 評估 Generator 的輸出
+    # 檢查輸出是否滿足使用者要求，回傳 PASS/FAIL、分數和反饋
     outputs_text = "\n\n---\n\n".join([
         f"Generator {o['generator_id']}:\n{o['output']}"
         for o in generator_outputs
@@ -432,6 +464,7 @@ async def evaluate_output(evaluator: Evaluator, user_input: str, generator_outpu
     response = await evaluator.call_ollama(prompt, evaluator.SYSTEM_PROMPT)
     print(f"\n  [Evaluator {evaluator_id}] 評估結果: {response[:200]}...")
     
+    # 用正則表達式解析 <result>、<feedback>、<score> 標籤
     result_match = re.search(r'<result>(PASS|FAIL)</result>', response, re.IGNORECASE)
     feedback_match = re.search(r'<feedback>(.*?)</feedback>', response, re.DOTALL)
     score_match = re.search(r'<score>(\d+)</score>', response)
@@ -448,6 +481,8 @@ async def evaluate_output(evaluator: Evaluator, user_input: str, generator_outpu
 
 
 async def review_evaluations(planner: Planner, evaluations: list, plan: dict) -> dict:
+    # 階段四：Planner 綜整所有 Evaluator 的評估結果
+    # 決定 complete（完成）/ continue（繼續改進）/ abandon（放棄）
     eval_text = "\n\n".join([
         f"Evaluator {e['evaluator_id']}: PASS={e['passed']}, feedback={e['feedback']}"
         for e in evaluations
@@ -468,6 +503,7 @@ async def review_evaluations(planner: Planner, evaluations: list, plan: dict) ->
 
     response = await planner.call_ollama(prompt, planner.SYSTEM_PROMPT)
     
+    # 解析 <decision> 和 <summary> 標籤
     decision_match = re.search(r'<decision>(complete|continue|abandon)</decision>', response, re.IGNORECASE)
     summary_match = re.search(r'<summary>(.*?)</summary>', response, re.DOTALL)
     
@@ -482,6 +518,9 @@ async def review_evaluations(planner: Planner, evaluations: list, plan: dict) ->
 
 
 async def run_team_loop(user_input: str, num_generators: int = NUM_GENERATORS, num_evaluators: int = NUM_EVALUATORS, max_iterations: int = MAX_ITERATIONS, debug: bool = False) -> tuple[str, list]:
+    # === 團隊主循環 ===
+    # 建立一個 Planner、多個 Generator、多個 Evaluator
+    # 迭代執行：計劃 → 執行 → 評估 → 綜整決定
     planner = Planner(workspace=WORKSPACE, model=MODEL, reviewer_model=MODEL)
     generators = [Generator(workspace=WORKSPACE, model=MODEL, reviewer_model=MODEL) for _ in range(num_generators)]
     evaluators = [Evaluator(workspace=WORKSPACE, model=MODEL, reviewer_model=MODEL) for _ in range(num_evaluators)]
@@ -500,12 +539,14 @@ async def run_team_loop(user_input: str, num_generators: int = NUM_GENERATORS, n
         if debug:
             print(f"[DEBUG] Planner 制定計劃...")
         
+        # 步驟一：Planner 制定計劃（可選：傳入上一輪的回饋）
         plan = await plan_task(planner, user_input, planner.build_context(), last_feedback)
         
         if debug:
             print(f"[DEBUG] 計劃: {plan.get('analysis', '')[:100]}...")
             print(f"[DEBUG] 步驟數: {len(plan.get('steps', []))}")
         
+        # 步驟二：所有 Generator 執行計劃（平行順序執行）
         generator_outputs = []
         for i, gen in enumerate(generators):
             print(f"\n▶ Generator {i} 執行中...")
@@ -513,6 +554,7 @@ async def run_team_loop(user_input: str, num_generators: int = NUM_GENERATORS, n
             generator_outputs.append(output)
             print(f"✓ Generator {i} 完成")
         
+        # 步驟三：所有 Evaluator 評估輸出（平行順序執行）
         evaluators_results = []
         for i, ev in enumerate(evaluators):
             print(f"\n▶ Evaluator {i} 評估中...")
@@ -520,8 +562,10 @@ async def run_team_loop(user_input: str, num_generators: int = NUM_GENERATORS, n
             evaluators_results.append(result)
             print(f"✓ Evaluator {i} 評估: {'PASS' if result['passed'] else 'FAIL'}")
         
+        # 步驟四：Planner 綜整評估結果並做出決策
         review = await review_evaluations(planner, evaluators_results, plan)
         
+        # 記錄本次迭代的完整日誌
         team_log.append({
             "iteration": iteration + 1,
             "plan": plan,
@@ -533,19 +577,24 @@ async def run_team_loop(user_input: str, num_generators: int = NUM_GENERATORS, n
         print(f"\n📊 Planner 決定: {review['decision']}")
         
         if review["decision"] == "complete":
+            # 任務完成：回傳第一個 Generator 的輸出
             final_output = generator_outputs[0]["output"] if generator_outputs else "任務完成"
             return final_output, team_log
         
         if review["decision"] == "abandon":
+            # 放棄任務
             return f"任務無法完成：{review['summary']}", team_log
         
+        # 繼續迭代：將 Planner 的 summary 作為 feedback 傳入下一輪
         last_feedback = review["summary"]
         iteration += 1
     
+    # 達到最大迭代次數仍未完成
     return "達到最大迭代次數", team_log
 
 
 def main():
+    # 命令列參數解析，支援設定 Generator/Evaluator 數量和除錯模式
     parser = argparse.ArgumentParser(description="Agent0 Team")
     parser.add_argument("--generators", "-g", type=int, default=NUM_GENERATORS, help="Generator 數量")
     parser.add_argument("--evaluators", "-e", type=int, default=NUM_EVALUATORS, help="Evaluator 數量")
@@ -576,6 +625,7 @@ def main():
             print("團隊記憶功能開發中...")
             continue
         
+        # 啟動團隊循環
         response, team_log = asyncio.run(run_team_loop(
             user_input,
             num_generators=args.generators,

@@ -16,17 +16,26 @@ from tqdm import tqdm
 # ─────────────────────────────────────────
 # 與 train.py 相同的模型定義
 # ─────────────────────────────────────────
+# 裝置自動選擇：優先 CUDA → CPU
 DEVICE     = "cuda" if torch.cuda.is_available() else "cpu"
 IMG_SIZE   = 28
-T          = 1000
-BETA_START = 1e-4
-BETA_END   = 0.02
+T          = 1000          # 總擴散步數（DDPM 完整採樣步數）
+BETA_START = 1e-4          # 噪聲排程起始值
+BETA_END   = 0.02          # 噪聲排程終止值
 CHECKPOINT = "ddpm_mnist.pth"
 OUTPUT_DIR = "generated"
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 
 def make_schedule(T, beta_start, beta_end, device):
+    """建立擴散模型的噪聲排程表（線性排程）
+    
+    回傳字典包含所有前向與逆向所需的預計算係數：
+    - betas: β_t，每個時間步的噪聲強度
+    - alphas: α_t = 1 - β_t
+    - alpha_bar: ᾱ_t = ∏α_s，累積乘積
+    - posterior_variance: 逆向條件分佈的變異數 σ_t²
+    """
     betas         = torch.linspace(beta_start, beta_end, T, device=device)
     alphas        = 1.0 - betas
     alpha_bar     = torch.cumprod(alphas, dim=0)
@@ -43,6 +52,11 @@ def make_schedule(T, beta_start, beta_end, device):
 
 
 class SinusoidalPE(nn.Module):
+    """正弦位置編碼：將時間步 t 映射為高維嵌入向量
+    
+    使用不同頻率的正弦餘弦函數，讓模型能夠感知時間步的相對位置。
+    靈感來自 Transformer 的 Positional Encoding。
+    """
     def __init__(self, dim):
         super().__init__()
         self.dim = dim
@@ -57,11 +71,17 @@ class SinusoidalPE(nn.Module):
 
 
 def get_groups(channels):
+    """自動選取 GroupNorm 的 group 數量（需能整除 channels，最大 8）"""
     for g in [8, 4, 2, 1]:
         if channels % g == 0:
             return g
 
 class ResBlock(nn.Module):
+    """殘差區塊，內含兩層卷積 + 時間步條件注入
+    
+    將時間步嵌入透過線性投影加到第一個卷積的輸出上，
+    讓網路能根據時間步動態調整特徵。
+    """
     def __init__(self, in_ch, out_ch, time_dim):
         super().__init__()
         self.norm1 = nn.GroupNorm(get_groups(in_ch), in_ch)
@@ -79,6 +99,13 @@ class ResBlock(nn.Module):
 
 
 class UNet(nn.Module):
+    """簡易 U-Net 架構（適合 28×28 輸入）
+    
+    編碼器：3 層 ResBlock，逐步下採樣（28→14→7）
+    瓶頸：2 層 ResBlock
+    解碼器：轉置卷積上採樣 + 跳躍連接（7→14→28）
+    時間條件：SinusoidalPE → MLP → 注入每個 ResBlock
+    """
     def __init__(self, in_ch=1, base_ch=64, time_dim=256):
         super().__init__()
         self.time_dim = time_dim
@@ -117,6 +144,11 @@ class UNet(nn.Module):
 # ─────────────────────────────────────────
 @torch.no_grad()
 def ddpm_sample(model, schedule, n, device, verbose=True):
+    """DDPM 完整逆向採樣：從純噪聲逐步還原為圖片
+    
+    執行完整的 T 步馬可夫鏈逆向過程，每一步先預測噪聲，
+    再根據後驗分佈 q(x_{t-1} | x_t, x_0) 取樣。
+    """
     x = torch.randn(n, 1, IMG_SIZE, IMG_SIZE, device=device)
     steps = reversed(range(T))
     if verbose:
@@ -148,11 +180,15 @@ def ddpm_sample(model, schedule, n, device, verbose=True):
 # ─────────────────────────────────────────
 @torch.no_grad()
 def ddim_sample(model, schedule, n, device, ddim_steps=50, eta=0.0, verbose=True):
+    """DDIM 快速取樣：非馬可夫式逆向，可跳步
+    
+    DDIM 的核心思想是將逆向過程改為非馬可夫鏈，
+    允許只在完整 T 步中的一個子集上進行迭代。
+    eta 控制隨機性：
+      eta=0   → 完全確定性（最快，可重現）
+      eta=1   → 等同 DDPM（帶隨機噪聲，品質最佳）
     """
-    eta=0   → 完全確定性（最快）
-    eta=1   → 等同 DDPM（帶隨機噪聲）
-    """
-    # 均勻選取子步驟
+    # 從完整 T 步中均勻選取 ddim_steps 個時間點
     step_indices = torch.linspace(0, T - 1, ddim_steps, dtype=torch.long)
     steps        = list(reversed(step_indices.tolist()))
 
@@ -170,7 +206,7 @@ def ddim_sample(model, schedule, n, device, ddim_steps=50, eta=0.0, verbose=True
         eps    = model(x, t_tensor)
         x0_hat = ((x - (1 - ab_t).sqrt() * eps) / ab_t.sqrt()).clamp(-1, 1)
 
-        # DDIM update
+        # DDIM 更新式，引入 sigma 控制隨機強度
         sigma  = eta * ((1 - ab_prev) / (1 - ab_t) * (1 - ab_t / ab_prev)).sqrt()
         dir_xt = (1 - ab_prev - sigma ** 2).sqrt() * eps
         noise  = sigma * torch.randn_like(x) if eta > 0 else 0.0
@@ -188,7 +224,7 @@ def visualize_denoising(model, schedule, device, n_steps_show=8):
     x = torch.randn(1, 1, IMG_SIZE, IMG_SIZE, device=device)
     snapshots = []
 
-    # 均勻挑選要截圖的步驟
+    # 從 T-1 到 0 均勻選取 n_steps_show 個時間點作為截圖
     show_at = set(
         int(T - 1 - i * (T / n_steps_show))
         for i in range(n_steps_show)
@@ -217,7 +253,7 @@ def visualize_denoising(model, schedule, device, n_steps_show=8):
             img = (x * 0.5 + 0.5).clamp(0, 1).cpu()
             snapshots.append((T - 1 - step, img))
 
-    # 繪圖
+    # 按時間順序排列並繪製成子圖
     snapshots.sort(key=lambda kv: kv[0])
     fig, axes = plt.subplots(1, len(snapshots), figsize=(len(snapshots) * 2, 2.5))
     for ax, (removed_noise, img) in zip(axes, snapshots):

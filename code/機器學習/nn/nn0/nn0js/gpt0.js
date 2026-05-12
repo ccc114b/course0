@@ -4,15 +4,15 @@
 
 const { Value, Adam, linear, softmax, rmsnorm, gd } = require('./nn0.js');
 
-// 輔助函式：產生常態分佈的隨機數 (Box-Muller transform)
+/* Box-Muller 變換：產生常態分佈隨機數 */
 function randomGauss(mu = 0, std = 1) {
-    let u = 1 - Math.random(); // (0, 1]
+    let u = 1 - Math.random();
     let v = Math.random();
     let z = Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
     return z * std + mu;
 }
 
-// 輔助函式：加權隨機選擇 (取代 Python 的 random.choices)
+/* 加權隨機選擇：根據 weights 比例隨機選取索引 */
 function weightedChoices(weights) {
     let sum = weights.reduce((a, b) => a + b, 0);
     let r = Math.random() * sum;
@@ -24,10 +24,12 @@ function weightedChoices(weights) {
 }
 
 class Gpt {
-    /**
-     * GPT 模型：embedding → transformer layers → lm_head。
-     * 結構類似 GPT-2，但用 RMSNorm 取代 LayerNorm、ReLU 取代 GeLU、無 bias。
-     */
+    /*
+      GPT 模型：結構類似 GPT-2，但做以下簡化：
+        - RMSNorm 取代 LayerNorm
+        - ReLU 取代 GeLU
+        - 無 bias 項
+    */
     constructor(vocab_size, n_embd = 16, n_layer = 1, n_head = 4, block_size = 16) {
         this.vocab_size = vocab_size;
         this.n_embd = n_embd;
@@ -38,7 +40,7 @@ class Gpt {
 
         this.state_dict = this._init_params();
         
-        // 攤平所有參數到 this.params 陣列中供優化器使用
+        // 攤平所有參數供 Adam 優化器使用
         this.params =[];
         for (const mat of Object.values(this.state_dict)) {
             for (const row of mat) {
@@ -47,8 +49,8 @@ class Gpt {
         }
     }
 
+    // 使用常態分佈 N(0, std) 隨機初始化所有權重矩陣
     _init_params(std = 0.08) {
-        /** 隨機初始化所有權重矩陣。 */
         const matrix = (nout, nin) => {
             return Array.from({ length: nout }, () => 
                 Array.from({ length: nin }, () => new Value(randomGauss(0, std)))
@@ -72,19 +74,25 @@ class Gpt {
         return sd;
     }
 
+    /*
+      單步前向傳播：
+        輸入：當前 token_id、位置 pos_id、KV 快取
+        流程：
+          1. Token Embedding + Position Embedding
+          2. RMSNorm → N 層 Transformer（Attention + MLP）
+          3. lm_head → logits
+    */
     forward(token_id, pos_id, keys, values) {
-        /** 單步前向傳播：給定一個 token 和位置，回傳 logits。 */
         const sd = this.state_dict;
 
         const tok_emb = sd['wte'][token_id];
         const pos_emb = sd['wpe'][pos_id];
         
-        // x = tok_emb + pos_emb
         let x = tok_emb.map((t, i) => t.add(pos_emb[i]));
         x = rmsnorm(x);
 
         for (let li = 0; li < this.n_layer; li++) {
-            // --- Multi-head Attention ---
+            // --- 多頭注意力區塊 ---
             let x_residual = x;
             x = rmsnorm(x);
             
@@ -101,6 +109,7 @@ class Gpt {
                 let k_h = keys[li].map(ki => ki.slice(hs, hs + this.head_dim));
                 let v_h = values[li].map(vi => vi.slice(hs, hs + this.head_dim));
                 
+                // Scaled Dot-Product Attention
                 let attn_logits =[];
                 let scale = Math.pow(this.head_dim, -0.5);
                 for (let t = 0; t < k_h.length; t++) {
@@ -127,7 +136,7 @@ class Gpt {
             x = linear(x_attn, sd[`layer${li}.attn_wo`]);
             x = x.map((a, i) => a.add(x_residual[i]));
 
-            // --- MLP ---
+            // --- MLP 區塊 ---
             x_residual = x;
             x = rmsnorm(x);
             x = linear(x, sd[`layer${li}.mlp_fc1`]);
@@ -141,24 +150,35 @@ class Gpt {
     }
 }
 
+/*
+  訓練迴圈：
+    對每個文檔執行一步梯度下降（含 forward → loss → backward → Adam update）。
+    遍歷所有文檔直到達到指定的訓練步數。
+*/
 function train(model, optimizer, docs, uchars, BOS, num_steps = 1000) {
-    /** 訓練迴圈：對每個文件做一步梯度下降。 */
     console.log(`Training for ${num_steps} steps ...`);
     for (let step = 0; step < num_steps; step++) {
         let doc = docs[step % docs.length];
-        // 將字元轉為 id，前後加上 BOS
         let tokens =[BOS, ...doc.split('').map(ch => uchars.indexOf(ch)), BOS];
         
         let loss_val = gd(model, optimizer, tokens, step, num_steps);
         
-        // 模擬 end='\r' 動態覆蓋輸出的效果
         process.stdout.write(`step ${(step + 1).toString().padStart(4, ' ')} / ${num_steps.toString().padStart(4, ' ')} | loss ${loss_val.toFixed(4)}\r`);
     }
-    console.log(); // 訓練結束後換行
+    console.log();
 }
 
+/*
+  推論（文字生成）：
+    從 BOS token 開始，逐 token 取樣。
+    每一步：
+      1. 前向傳播得到 logits
+      2. Temperature scaling: logits / T
+      3. Softmax → 機率分布
+      4. 加權隨機取樣下一個 token
+    遇到 BOS 或達到最大長度時停止。
+*/
 function inference(model, uchars, BOS, num_samples = 20, temperature = 0.5) {
-    /** 生成文字：從 BOS 開始，逐 token 取樣直到再次產生 BOS。 */
     let vocab_size = model.vocab_size;
     console.log(`--- inference (${num_samples} samples, temperature=${temperature}) ---`);
     
@@ -171,11 +191,9 @@ function inference(model, uchars, BOS, num_samples = 20, temperature = 0.5) {
         for (let pos_id = 0; pos_id < model.block_size; pos_id++) {
             let logits = model.forward(token_id, pos_id, keys, values);
             
-            // 處理 temperature scaling
             let scaled_logits = logits.map(l => l.mul(1 / temperature));
             let probs = softmax(scaled_logits);
             
-            // 將 Value 物件轉為純數值供隨機選取
             let weights = probs.map(p => p.data);
             token_id = weightedChoices(weights);
             
