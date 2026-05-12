@@ -1,0 +1,4 @@
+exclude:
+  - .github/
+  - .git/
+encoding: "utf-8"
