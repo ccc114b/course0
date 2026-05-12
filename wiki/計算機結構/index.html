@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>計算機結構 — 陳鍾誠的課程教材</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans TC", sans-serif; background: #f5f7fa; color: #333; line-height: 1.6; }
+header { background: linear-gradient(135deg, #16a085 0%, #1abc9c 100%); color: #fff; padding: 40px 20px; text-align: center; }
+header h1 { font-size: 2rem; margin-bottom: 8px; }
+.container { max-width: 1100px; margin: 0 auto; padding: 20px; }
+.tabs { display: flex; gap: 4px; background: #fff; border-radius: 10px; padding: 6px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); flex-wrap: wrap; }
+.tab { flex: 1; min-width: 80px; padding: 10px 16px; border: none; background: transparent; border-radius: 8px; cursor: pointer; font-size: 0.9rem; color: #666; }
+.tab:hover { background: #f0f0f5; }
+.tab.active { background: #16a085; color: #fff; }
+.search { width: 100%; padding: 10px 14px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 0.95rem; margin-bottom: 16px; }
+.search:focus { border-color: #16a085; outline: none; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; }
+.card { background: #fff; border-radius: 10px; padding: 16px; box-shadow: 0 2px 6px rgba(0,0,0,0.05); border: 1px solid #eee; }
+.card h3 { font-size: 1rem; margin-bottom: 4px; }
+.card h3 a { color: #333; text-decoration: none; }
+.card h3 a:hover { color: #16a085; }
+.card p { font-size: 0.85rem; color: #777; }
+.links { margin-top: 10px; padding-top: 10px; border-top: 1px solid #eee; display: flex; flex-wrap: wrap; gap: 6px; }
+.links a { font-size: 0.75rem; padding: 3px 10px; border-radius: 5px; text-decoration: none; color: #fff; background: #16a085; }
+.links a:hover { opacity: 0.85; }
+.section-title { font-size: 1.2rem; font-weight: 700; margin: 20px 0 12px; border-bottom: 2px solid #16a085; padding-bottom: 4px; }
+footer { text-align: center; padding: 20px; color: #999; font-size: 0.8rem; }
+footer a { color: #16a085; }
+.hidden { display: none; }
+</style>
+</head>
+<body>
+<header>
+  <h1>計算機結構</h1>
+  <p>計算機的硬體設計與組織</p>
+</header>
+<div class="container">
+<div class="tabs">
+  <button class="tab active" data-tab="概念">概念 <span id="c0">0</span></button>
+  <button class="tab" data-tab="主題">主題 <span id="c1">0</span></button>
+  <button class="tab" data-tab="工具">工具 <span id="c2">0</span></button>
+  <button class="tab" data-tab="人物">人物 <span id="c3">0</span></button>
+  <button class="tab" data-tab="程式碼">程式碼 <span id="c4">0</span></button>
+</div>
+<input class="search" id="search" placeholder="搜尋..." oninput="doSearch()">
+<div id="content"></div>
+<footer><a href="index.md">index.md</a></footer>
+</div>
+<script>
+var CODE = '../../code/計算機結構';
+
+var data = {
+  '概念': [
+    {name:'計算機結構歷史', file:'計算機結構的歷史.md'},
+    {name:'數位邏輯', file:'數位邏輯.md'},
+    {name:'暫存器', file:'暫存器.md'},
+    {name:'CPU架構', file:'CPU架構.md'},
+    {name:'記憶體', file:'記憶體.md'},
+    {name:'ALU', file:'ALU.md'},
+    {name:'異常與中斷', file:'異常與中斷.md'},
+    {name:'開放原始碼EDA', file:'開放原始碼EDA.md', code:['eda']},
+  ],
+  '主題': [
+    {name:'x86與ARM架構', file:'x86與ARM架構.md'},
+    {name:'快取一致性', file:'快取一致性.md'},
+    {name:'分支預測', file:'分支預測.md'},
+    {name:'超純量與亂序', file:'超純量與亂序執行.md'},
+    {name:'記憶體層次', file:'記憶體層次.md'},
+    {name:'組合語言', file:'組合語言.md'},
+    {name:'指令集架構', file:'指令集架構.md'},
+    {name:'管線處理', file:'管線處理.md'},
+    {name:'快取', file:'快取.md'},
+    {name:'平行運算', file:'平行運算.md'},
+    {name:'GPU架構', file:'GPU架構.md'},
+    {name:'CUDA', file:'CUDA.md'},
+    {name:'虛擬記憶體', file:'虛擬記憶體.md'},
+  ],
+  '工具': [
+    {name:'Verilog', file:'Verilog.md'},
+    {name:'QEMU', file:'QEMU.md'},
+    {name:'Nand2Tetris', file:'Nand2Tetris.md', code:['nand2tetris']},
+    {name:'EDA', file:'EDA.md', code:['eda']},
+    {name:'HDL', file:'HDL.md'},
+    {name:'IcarusVerilog', file:'IcarusVerilog.md'},
+    {name:'Verilator', file:'Verilator.md'},
+  ],
+  '人物': [
+    {name:'John Hennessy', file:'John_Hennessy.md'},
+    {name:'David Patterson', file:'David_Patterson.md'},
+  ],
+  '程式碼': [
+    {name:'Nand2Tetris', path:'nand2tetris', files:['asm.py','code.py']},
+    {name:'Nand2Tetris VM', path:'nand2tetris/09', files:['anbn.py','exp.py','expParser.py','compiler.py']},
+    {name:'Nand2Tetris編譯器', path:'nand2tetris/11/py', files:['Parser.py','Compiler.py','Lex.py']},
+    {name:'EDA工具', path:'eda/eda0', files:['eda0.py']},
+    {name:'SPICE', path:'eda/spice0', files:['spice0.py','test_spice0.py']},
+  ]
+};
+
+document.getElementById('c0').textContent = data['概念'].length;
+document.getElementById('c1').textContent = data['主題'].length;
+document.getElementById('c2').textContent = data['工具'].length;
+document.getElementById('c3').textContent = data['人物'].length;
+document.getElementById('c4').textContent = data['程式碼'].length;
+
+function showCard(item, isCode) {
+  var h = '<div class="card"><h3>';
+  if (item.file) h += '<a href="./' + item.file + '">' + item.name + '</a>';
+  else h += item.name;
+  h += '</h3>';
+  if (item.code && !isCode) {
+    for (var i = 0; i < item.code.length; i++) {
+      h += '<div class="links"><a href="' + CODE + '/' + item.code[i] + '">📁 ' + item.code[i] + '</a></div>';
+    }
+  }
+  if (item.files) {
+    h += '<div class="links">';
+    for (var i = 0; i < item.files.length; i++) {
+      h += '<a href="' + CODE + '/' + item.path + '/' + item.files[i] + '">' + item.files[i] + '</a>';
+    }
+    h += '</div>';
+  }
+  h += '</div>';
+  return h;
+}
+
+function render(tab) {
+  var items = data[tab];
+  var html = '<h2 class="section-title">' + tab + '</h2><div class="grid">';
+  for (var i = 0; i < items.length; i++) {
+    html += showCard(items[i], tab === '程式碼');
+  }
+  html += '</div>';
+  document.getElementById('content').innerHTML = html;
+}
+
+function doSearch() {
+  var q = document.getElementById('search').value.toLowerCase();
+  var cards = document.querySelectorAll('.card');
+  for (var i = 0; i < cards.length; i++) {
+    cards[i].style.display = cards[i].textContent.toLowerCase().indexOf(q) === -1 ? 'none' : '';
+  }
+}
+
+var cur = '概念';
+render(cur);
+var tabs = document.querySelectorAll('.tab');
+for (var i = 0; i < tabs.length; i++) {
+  tabs[i].onclick = function() {
+    for (var j = 0; j < tabs.length; j++) tabs[j].classList.remove('active');
+    this.classList.add('active');
+    cur = this.getAttribute('data-tab');
+    document.getElementById('search').value = '';
+    render(cur);
+  };
+}
+</script>
+</body>
+</html>

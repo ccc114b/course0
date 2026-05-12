@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>數學 — 陳鍾誠的課程教材</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans TC", sans-serif; background: #f5f7fa; color: #333; line-height: 1.6; }
+header { background: linear-gradient(135deg, #3498db 0%, #2c3e50 100%); color: #fff; padding: 40px 20px; text-align: center; }
+header h1 { font-size: 2rem; margin-bottom: 8px; }
+.container { max-width: 1100px; margin: 0 auto; padding: 20px; }
+.tabs { display: flex; gap: 4px; background: #fff; border-radius: 10px; padding: 6px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); flex-wrap: wrap; }
+.tab { flex: 1; min-width: 80px; padding: 10px 16px; border: none; background: transparent; border-radius: 8px; cursor: pointer; font-size: 0.9rem; color: #666; }
+.tab:hover { background: #f0f0f5; }
+.tab.active { background: #3498db; color: #fff; }
+.search { width: 100%; padding: 10px 14px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 0.95rem; margin-bottom: 16px; }
+.search:focus { border-color: #3498db; outline: none; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; }
+.card { background: #fff; border-radius: 10px; padding: 16px; box-shadow: 0 2px 6px rgba(0,0,0,0.05); border: 1px solid #eee; }
+.card h3 { font-size: 1rem; margin-bottom: 4px; }
+.card h3 a { color: #333; text-decoration: none; }
+.card h3 a:hover { color: #3498db; }
+.card p { font-size: 0.85rem; color: #777; }
+.links { margin-top: 10px; padding-top: 10px; border-top: 1px solid #eee; display: flex; flex-wrap: wrap; gap: 6px; }
+.links a { font-size: 0.75rem; padding: 3px 10px; border-radius: 5px; text-decoration: none; color: #fff; background: #3498db; }
+.links a:hover { opacity: 0.85; }
+.section-title { font-size: 1.2rem; font-weight: 700; margin: 20px 0 12px; border-bottom: 2px solid #3498db; padding-bottom: 4px; }
+footer { text-align: center; padding: 20px; color: #999; font-size: 0.8rem; }
+footer a { color: #3498db; }
+.hidden { display: none; }
+</style>
+</head>
+<body>
+<header>
+  <h1>數學</h1>
+  <p>電腦科學涉及的數學基礎</p>
+</header>
+<div class="container">
+<div class="tabs">
+  <button class="tab active" data-tab="基礎數學">基礎數學 <span id="c0">0</span></button>
+  <button class="tab" data-tab="線性代數">線性代數 <span id="c1">0</span></button>
+  <button class="tab" data-tab="微分方程">微分方程 <span id="c2">0</span></button>
+  <button class="tab" data-tab="離散數學">離散數學 <span id="c3">0</span></button>
+  <button class="tab" data-tab="物理數學">物理數學 <span id="c4">0</span></button>
+  <button class="tab" data-tab="程式碼">程式碼 <span id="c5">0</span></button>
+</div>
+<input class="search" id="search" placeholder="搜尋..." oninput="doSearch()">
+<div id="content"></div>
+<footer><a href="index.md">index.md</a></footer>
+</div>
+<script>
+var CODE = '../../code/數學';
+
+var data = {
+  '基礎數學': [
+    {name:'數學的歷史', file:'數學的歷史.md'},
+    {name:'代數學', file:'代數學.md', code:['02-代數']},
+    {name:'幾何學', file:'幾何學.md'},
+    {name:'微積分', file:'微積分.md', code:['04-微積分']},
+    {name:'機率統計', file:'機率統計.md'},
+  ],
+  '線性代數': [
+    {name:'線性代數', file:'線性代數.md', code:['07-線性代數']},
+    {name:'傅立葉', file:'傅立葉.md', code:['08-傅立葉']},
+    {name:'向量微積分', file:'向量微積分.md', code:['09-向量微積分']},
+  ],
+  '微分方程': [
+    {name:'微分方程', file:'微分方程.md'},
+    {name:'微分幾何', file:'微分幾何.md'},
+    {name:'複變函數', file:'複變函數.md'},
+    {name:'泛函分析', file:'泛函分析.md'},
+  ],
+  '離散數學': [
+    {name:'集合論', file:'集合論.md'},
+    {name:'數值分析', file:'數值分析.md'},
+    {name:'數論', file:'數論.md', code:['02-代數']},
+    {name:'密碼學', file:'密碼學.md', code:['02-代數']},
+    {name:'拓撲學', file:'拓撲學.md', code:['09d-拓樸學']},
+    {name:'變分學', file:'變分學.md'},
+  ],
+  '物理數學': [
+    {name:'物理數學', file:'物理數學.md'},
+    {name:'量子力學', file:'量子力學.md', code:['05b-隨機微積分']},
+    {name:'量子電腦', file:'量子電腦.md'},
+    {name:'狹義相對論', file:'狹義相對論.md'},
+    {name:'廣義相對論', file:'廣義相對論.md'},
+  ],
+  '程式碼': [
+    {name:'代數', path:'02-代數/_ccc', files:['group.py','group_axioms.py','field_axioms.py','rational_number.py']},
+    {name:'微積分', path:'04-微積分/_ccc', files:['calculus.py','diff.py','diff2.py']},
+    {name:'梯度優化', path:'04-微積分/_ccc/02-梯度優化/04-反傳遞算法/01-原理', files:['engine.py']},
+    {name:'隨機微積分', path:'05b-隨機微積分', files:['main.py','stoc4py/ito.py','stoc4py/process.py']},
+    {name:'資訊理論', path:'06-資訊理論/_ccc', files:['entropy1.py','huffmanCode1.py','hammingCode1.py']},
+    {name:'線性代數', path:'07-線性代數/_ccc', files:['det_np.py','eig1.py','svd1.py','pca_with_svd1.py']},
+    {name:'傅立葉', path:'08-傅立葉/_ccc', files:['euler.py','dft.py']},
+    {name:'向量微積分', path:'09-向量微積分', files:['vector_field.py','div_theorem.py','curl_theorem.py']},
+    {name:'拓撲學', path:'09d-拓樸學', files:['mobius_tape.py','klein_bottle.py']},
+  ]
+};
+
+document.getElementById('c0').textContent = data['基礎數學'].length;
+document.getElementById('c1').textContent = data['線性代數'].length;
+document.getElementById('c2').textContent = data['微分方程'].length;
+document.getElementById('c3').textContent = data['離散數學'].length;
+document.getElementById('c4').textContent = data['物理數學'].length;
+document.getElementById('c5').textContent = data['程式碼'].length;
+
+function showCard(item, isCode) {
+  var h = '<div class="card"><h3>';
+  if (item.file) h += '<a href="./' + item.file + '">' + item.name + '</a>';
+  else h += item.name;
+  h += '</h3>';
+  if (item.code && !isCode) {
+    for (var i = 0; i < item.code.length; i++) {
+      h += '<div class="links"><a href="' + CODE + '/' + item.code[i] + '">📁 ' + item.code[i] + '</a></div>';
+    }
+  }
+  if (item.files) {
+    h += '<div class="links">';
+    for (var i = 0; i < item.files.length; i++) {
+      h += '<a href="' + CODE + '/' + item.path + '/' + item.files[i] + '">' + item.files[i] + '</a>';
+    }
+    h += '</div>';
+  }
+  h += '</div>';
+  return h;
+}
+
+function render(tab) {
+  var items = data[tab];
+  var html = '<h2 class="section-title">' + tab + '</h2><div class="grid">';
+  for (var i = 0; i < items.length; i++) {
+    html += showCard(items[i], tab === '程式碼');
+  }
+  html += '</div>';
+  document.getElementById('content').innerHTML = html;
+}
+
+function doSearch() {
+  var q = document.getElementById('search').value.toLowerCase();
+  var cards = document.querySelectorAll('.card');
+  for (var i = 0; i < cards.length; i++) {
+    cards[i].style.display = cards[i].textContent.toLowerCase().indexOf(q) === -1 ? 'none' : '';
+  }
+}
+
+var cur = '基礎數學';
+render(cur);
+var tabs = document.querySelectorAll('.tab');
+for (var i = 0; i < tabs.length; i++) {
+  tabs[i].onclick = function() {
+    for (var j = 0; j < tabs.length; j++) tabs[j].classList.remove('active');
+    this.classList.add('active');
+    cur = this.getAttribute('data-tab');
+    document.getElementById('search').value = '';
+    render(cur);
+  };
+}
+</script>
+</body>
+</html>

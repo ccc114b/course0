@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>軟體工程 — 陳鍾誠的課程教材</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans TC", sans-serif; background: #f5f7fa; color: #333; line-height: 1.6; }
+header { background: linear-gradient(135deg, #27ae60 0%, #1e8449 100%); color: #fff; padding: 40px 20px; text-align: center; }
+header h1 { font-size: 2rem; margin-bottom: 8px; }
+.container { max-width: 1100px; margin: 0 auto; padding: 20px; }
+.tabs { display: flex; gap: 4px; background: #fff; border-radius: 10px; padding: 6px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); flex-wrap: wrap; }
+.tab { flex: 1; min-width: 80px; padding: 10px 16px; border: none; background: transparent; border-radius: 8px; cursor: pointer; font-size: 0.9rem; color: #666; }
+.tab:hover { background: #f0f0f5; }
+.tab.active { background: #27ae60; color: #fff; }
+.search { width: 100%; padding: 10px 14px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 0.95rem; margin-bottom: 16px; }
+.search:focus { border-color: #27ae60; outline: none; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; }
+.card { background: #fff; border-radius: 10px; padding: 16px; box-shadow: 0 2px 6px rgba(0,0,0,0.05); border: 1px solid #eee; }
+.card h3 { font-size: 1rem; margin-bottom: 4px; }
+.card h3 a { color: #333; text-decoration: none; }
+.card h3 a:hover { color: #27ae60; }
+.card p { font-size: 0.85rem; color: #777; }
+.links { margin-top: 10px; padding-top: 10px; border-top: 1px solid #eee; display: flex; flex-wrap: wrap; gap: 6px; }
+.links a { font-size: 0.75rem; padding: 3px 10px; border-radius: 5px; text-decoration: none; color: #fff; background: #27ae60; }
+.links a:hover { opacity: 0.85; }
+.section-title { font-size: 1.2rem; font-weight: 700; margin: 20px 0 12px; border-bottom: 2px solid #27ae60; padding-bottom: 4px; }
+footer { text-align: center; padding: 20px; color: #999; font-size: 0.8rem; }
+footer a { color: #27ae60; }
+.hidden { display: none; }
+</style>
+</head>
+<body>
+<header>
+  <h1>軟體工程</h1>
+  <p>軟體開發流程與最佳實踐</p>
+</header>
+<div class="container">
+<div class="tabs">
+  <button class="tab active" data-tab="概念">概念 <span id="c0">0</span></button>
+  <button class="tab" data-tab="主題">主題 <span id="c1">0</span></button>
+  <button class="tab" data-tab="工具">工具 <span id="c2">0</span></button>
+  <button class="tab" data-tab="程式碼">程式碼 <span id="c3">0</span></button>
+</div>
+<input class="search" id="search" placeholder="搜尋..." oninput="doSearch()">
+<div id="content"></div>
+<footer><a href="index.md">index.md</a></footer>
+</div>
+<script>
+var CODE = '../../code/軟體工程';
+
+var data = {
+  '概念': [
+    {name:'軟體工程歷史', file:'軟體工程的歷史.md'},
+    {name:'軟體生命週期', file:'軟體生命週期.md'},
+    {name:'版本控制', file:'版本控制.md', code:['git']},
+    {name:'測試', file:'測試.md'},
+    {name:'DevOps', file:'DevOps.md'},
+    {name:'軟體度量', file:'軟體度量.md'},
+    {name:'程式碼品質', file:'程式碼品質.md'},
+    {name:'技術債', file:'技術債.md'},
+  ],
+  '主題': [
+    {name:'需求工程', file:'需求工程.md'},
+    {name:'領域驅動設計', file:'領域驅動設計.md'},
+    {name:'微服務架構', file:'微服務架構.md'},
+    {name:'雲端架構', file:'雲端架構.md'},
+    {name:'訊息佇列', file:'訊息佇列.md'},
+    {name:'災難復原', file:'災難復原.md'},
+    {name:'敏捷開發', file:'敏捷開發.md'},
+    {name:'持續整合', file:'持續整合.md'},
+    {name:'持續部署', file:'持續部署.md'},
+    {name:'軟體架構', file:'軟體架構.md'},
+    {name:'設計模式', file:'設計模式.md'},
+    {name:'雲端原生', file:'雲端原生.md'},
+    {name:'安全開發', file:'安全開發.md'},
+    {name:'效能優化', file:'效能優化.md'},
+    {name:'監控與日誌', file:'監控與日誌.md'},
+    {name:'容器編排', file:'容器編排.md'},
+    {name:'Prompt工程', file:'Prompt工程.md'},
+    {name:'Context工程', file:'Context工程.md'},
+    {name:'Harness工程', file:'Harness工程.md'},
+    {name:'Agent發展史', file:'Agent發展史.md'},
+    {name:'Skill文檔', file:'Skill文檔.md'},
+    {name:'KarpathySkill', file:'KarpathySkill.md'},
+    {name:'karpathy', file:'karpathy.md', code:['agent']},
+  ],
+  '工具': [
+    {name:'Git', file:'Git.md', code:['git']},
+    {name:'Jenkins', file:'Jenkins.md'},
+    {name:'Docker', file:'Docker.md'},
+  ],
+  '程式碼': [
+    {name:'Git操作', path:'git', files:['git0.py','git0lib.py']},
+    {name:'CI/CD', path:'cicd', files:['jenkinsfile0']},
+  ]
+};
+
+document.getElementById('c0').textContent = data['概念'].length;
+document.getElementById('c1').textContent = data['主題'].length;
+document.getElementById('c2').textContent = data['工具'].length;
+document.getElementById('c3').textContent = data['程式碼'].length;
+
+function showCard(item, isCode) {
+  var h = '<div class="card"><h3>';
+  if (item.file) h += '<a href="./' + item.file + '">' + item.name + '</a>';
+  else h += item.name;
+  h += '</h3>';
+  if (item.code && !isCode) {
+    for (var i = 0; i < item.code.length; i++) {
+      h += '<div class="links"><a href="' + CODE + '/' + item.code[i] + '">📁 ' + item.code[i] + '</a></div>';
+    }
+  }
+  if (item.files) {
+    h += '<div class="links">';
+    for (var i = 0; i < item.files.length; i++) {
+      h += '<a href="' + CODE + '/' + item.path + '/' + item.files[i] + '">' + item.files[i] + '</a>';
+    }
+    h += '</div>';
+  }
+  h += '</div>';
+  return h;
+}
+
+function render(tab) {
+  var items = data[tab];
+  var html = '<h2 class="section-title">' + tab + '</h2><div class="grid">';
+  for (var i = 0; i < items.length; i++) {
+    html += showCard(items[i], tab === '程式碼');
+  }
+  html += '</div>';
+  document.getElementById('content').innerHTML = html;
+}
+
+function doSearch() {
+  var q = document.getElementById('search').value.toLowerCase();
+  var cards = document.querySelectorAll('.card');
+  for (var i = 0; i < cards.length; i++) {
+    cards[i].style.display = cards[i].textContent.toLowerCase().indexOf(q) === -1 ? 'none' : '';
+  }
+}
+
+var cur = '概念';
+render(cur);
+var tabs = document.querySelectorAll('.tab');
+for (var i = 0; i < tabs.length; i++) {
+  tabs[i].onclick = function() {
+    for (var j = 0; j < tabs.length; j++) tabs[j].classList.remove('active');
+    this.classList.add('active');
+    cur = this.getAttribute('data-tab');
+    document.getElementById('search').value = '';
+    render(cur);
+  };
+}
+</script>
+</body>
+</html>
