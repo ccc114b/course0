@@ -1,4 +1,14 @@
+# 告訴 Jekyll 忽略這些資料夾，不要去掃描它們
 exclude:
+  - code/          # 這是目前報錯的地方
+  - node_modules/
   - .github/
   - .git/
+  - vendor/
+
+# 如果你希望保留 wiki 目錄，可以確保它被包含（通常預設就會包含）
+include:
+  - wiki/
+
+# 修正中文路徑編碼
 encoding: "utf-8"
