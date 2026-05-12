@@ -6,7 +6,7 @@
 
 ## 網頁入口
 
-* [](./docs/html/index.html)
+* https://ccckmit.github.io/course0/docs/html/index.html
 
 ## 課程列表
 
