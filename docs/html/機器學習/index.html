@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>機器學習 — 陳鍾誠的課程教材</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans TC", sans-serif; background: #f5f7fa; color: #333; line-height: 1.6; }
+header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #fff; padding: 40px 20px; text-align: center; }
+header h1 { font-size: 2rem; margin-bottom: 8px; }
+.container { max-width: 1100px; margin: 0 auto; padding: 20px; }
+.tabs { display: flex; gap: 4px; background: #fff; border-radius: 10px; padding: 6px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); flex-wrap: wrap; }
+.tab { flex: 1; min-width: 80px; padding: 10px 16px; border: none; background: transparent; border-radius: 8px; cursor: pointer; font-size: 0.9rem; color: #666; }
+.tab:hover { background: #f0f0f5; }
+.tab.active { background: #667eea; color: #fff; }
+.search { width: 100%; padding: 10px 14px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 0.95rem; margin-bottom: 16px; }
+.search:focus { border-color: #667eea; outline: none; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; }
+.card { background: #fff; border-radius: 10px; padding: 16px; box-shadow: 0 2px 6px rgba(0,0,0,0.05); border: 1px solid #eee; }
+.card h3 { font-size: 1rem; margin-bottom: 4px; }
+.card h3 a { color: #333; text-decoration: none; }
+.card h3 a:hover { color: #667eea; }
+.card p { font-size: 0.85rem; color: #777; }
+.links { margin-top: 10px; padding-top: 10px; border-top: 1px solid #eee; display: flex; flex-wrap: wrap; gap: 6px; }
+.links a { font-size: 0.75rem; padding: 3px 10px; border-radius: 5px; text-decoration: none; color: #fff; background: #667eea; }
+.links a:hover { opacity: 0.85; }
+.section-title { font-size: 1.2rem; font-weight: 700; margin: 20px 0 12px; border-bottom: 2px solid #667eea; padding-bottom: 4px; }
+footer { text-align: center; padding: 20px; color: #999; font-size: 0.8rem; }
+footer a { color: #667eea; }
+.hidden { display: none; }
+</style>
+</head>
+<body>
+<header>
+  <h1>機器學習</h1>
+  <p>讓電腦從資料中學習的演算法</p>
+</header>
+<div class="container">
+<div class="tabs">
+  <button class="tab active" data-tab="概念">概念 <span id="c0">0</span></button>
+  <button class="tab" data-tab="主題">主題 <span id="c1">0</span></button>
+  <button class="tab" data-tab="工具">工具 <span id="c2">0</span></button>
+  <button class="tab" data-tab="程式碼">程式碼 <span id="c3">0</span></button>
+</div>
+<input class="search" id="search" placeholder="搜尋..." oninput="doSearch()">
+<div id="content"></div>
+<footer><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E6%A9%9F%E5%99%A8%E5%AD%B8%E7%BF%92/index.md">index.md</a></footer>
+</div>
+<script>
+var WIKI = 'https://github.com/ccckmit/course0/blob/main/wiki/%E6%A9%9F%E5%99%A8%E5%AD%B8%E7%BF%92';
+var CODE = 'https://github.com/ccckmit/course0/blob/main/code/%E6%A9%9F%E5%99%A8%E5%AD%B8%E7%BF%92';
+
+var CODE_MAP = {
+  '監督式學習': ['ml/classify/knn', 'ml/classify/svm', 'ml/classify/decision_tree', 'ml/classify/logistic', 'ml/classify/naive_bayes', 'ml/regression/linear'],
+  '非監督式學習': ['ml/cluster/kmean', 'ml/cluster/dbscan', 'ml/cluster/gmm', 'ml/cluster/hierarchical', 'ml/pca/pca'],
+  '深度學習': ['nn/nn0/nn0py/nn0', 'nn/nn1tensor/nn', 'nn/nn1tensor/tensor'],
+  '強化學習': ['reinforce/cartpole/cartpoleVgp', 'reinforce/qtable/frozenlake', 'reinforce/walker2d/train'],
+  '神經網路': ['nn/nn0/nn0py/nn0', 'nn/nn1tensor/nn'],
+  '梯度下降法': ['nn/nn0/nn0py/examples/ex1-grad'],
+  '反傳遞演算法': ['nn/nn0/nn0py/nn0', 'nn/nn1tensor/nn'],
+  '分類演算法': ['ml/classify/knn', 'ml/classify/svm', 'ml/classify/decision_tree'],
+  'K-近鄰': ['ml/classify/knn'],
+  '樸素貝葉斯': ['ml/classify/naive_bayes'],
+  '支持向量機': ['ml/classify/svm'],
+  '決策樹': ['ml/classify/decision_tree'],
+  'K-均值': ['ml/cluster/kmean'],
+  '主成分分析': ['ml/pca/pca'],
+  'EM演算法': ['prob_model/em/em_coin', 'prob_model/em/em_gmm'],
+  '馬可夫鏈': ['prob_model/markov/markov_sentence', 'prob_model/markov/markov_pagerank'],
+  '隱馬可夫模型': ['prob_model/hmm/viterbi_pos_tagging'],
+  '貝氏網路': ['prob_model/bayesnet/bayesnet'],
+  '線性回歸': ['ml/regression/linear'],
+  '卷積神經網路': ['nn/nn0/nn0py/cnn0', 'image/mnistRecognize/train'],
+  '循環神經網路': ['nn/nn0/nn0py/examples/ex5-charpredicate'],
+  'Transformer': ['nn/nn1tensor/gpt', 'nn/nn0/nn0py/gpt0'],
+  '大型語言模型': ['nn/microgpt/microgpt'],
+  '生成對抗網路': ['image/mnistGanGen/train'],
+  '電腦視覺': ['image/mnistRecognize/train'],
+  '語音處理與識別': ['music/musicgen'],
+  'GPT': ['nn/nn1tensor/gpt', 'nn/nn0/nn0py/gpt0'],
+  'microgpt': ['nn/microgpt/microgpt'],
+  'mini-openclaw': ['agent/_more/mini-openclaw'],
+  'scikit-learn': ['ml/sklearn/classify', 'ml/sklearn/cluster'],
+  'Gym': ['reinforce/cartpole/cartpoleVgp'],
+};
+
+function findCode(name) {
+  var keys = Object.keys(CODE_MAP);
+  for (var i = 0; i < keys.length; i++) {
+    if (name.indexOf(keys[i]) !== -1) {
+      var paths = CODE_MAP[keys[i]];
+      var links = '';
+      for (var j = 0; j < paths.length; j++) {
+        var p = paths[j];
+        var parts = p.split('/');
+        var dir = parts.slice(0, -1).join('/');
+        var fn = parts[parts.length - 1];
+        links += '<a class="py" href="' + CODE + '/' + dir + '/' + fn + '.py">' + fn + '.py</a>';
+        links += '<a class="md" href="' + CODE + '/' + dir + '/' + fn + '.md">' + fn + '.md</a>';
+      }
+      return links;
+    }
+  }
+  return '';
+}
+
+var data = {
+  '概念': [
+    {name:'機器學習的歷史', file:'機器學習的歷史.md'},
+    {name:'監督式學習', file:'監督式學習.md'},
+    {name:'非監督式學習', file:'非監督式學習.md'},
+    {name:'深度學習', file:'深度學習.md'},
+    {name:'強化學習', file:'強化學習.md'},
+    {name:'神經網路', file:'神經網路.md'},
+    {name:'梯度下降法', file:'梯度下降法.md'},
+    {name:'反傳遞演算法', file:'反傳遞演算法.md'},
+    {name:'Adam', file:'Adam.md'},
+    {name:'分類演算法', file:'分類演算法.md'},
+    {name:'K-近鄰', file:'K-近鄰.md'},
+    {name:'樸素貝葉斯', file:'樸素貝葉斯.md'},
+    {name:'支持向量機', file:'支持向量機.md'},
+    {name:'決策樹', file:'決策樹.md'},
+    {name:'隨機森林', file:'隨機森林.md'},
+    {name:'聚類演算法', file:'聚類演算法.md'},
+    {name:'K-均值', file:'K-均值.md'},
+    {name:'主成分分析', file:'主成分分析.md'},
+    {name:'散射網路', file:'散射網路.md'},
+    {name:'EM演算法', file:'EM演算法.md'},
+    {name:'馬可夫鏈', file:'馬可夫鏈.md'},
+    {name:'隱馬可夫模型', file:'隱馬可夫模型.md'},
+    {name:'貝氏網路', file:'貝氏網路.md'},
+  ],
+  '主題': [
+    {name:'模型評估', file:'模型評估.md'},
+    {name:'損失函數', file:'損失函數.md'},
+    {name:'正則化', file:'正則化.md'},
+    {name:'自然語言處理', file:'自然語言處理.md'},
+    {name:'電腦視覺', file:'電腦視覺.md'},
+    {name:'異常偵測', file:'異常偵測.md'},
+    {name:'推薦系統', file:'推薦系統.md'},
+    {name:'聯邦學習', file:'聯邦學習.md'},
+    {name:'線性回歸', file:'線性回歸.md'},
+    {name:'卷積神經網路', file:'卷積神經網路.md'},
+    {name:'循環神經網路', file:'循環神經網路.md'},
+    {name:'Transformer', file:'Transformer.md'},
+    {name:'大型語言模型', file:'大型語言模型.md'},
+    {name:'生成對抗網路', file:'生成對抗網路.md'},
+    {name:'語音處理與識別', file:'語音處理與識別.md'},
+    {name:'影像處理與識別', file:'影像處理與識別.md'},
+    {name:'多模態模型', file:'多模態模型.md'},
+    {name:'搜尋法', file:'搜尋法.md'},
+    {name:'爬山演算法', file:'爬山演算法.md'},
+    {name:'生成式AI', file:'生成式AI.md'},
+    {name:'電腦下棋', file:'電腦下棋.md'},
+    {name:'世界模型', file:'世界模型.md'},
+    {name:'GPT', file:'GPT.md'},
+    {name:'microgpt', file:'microgpt.md'},
+    {name:'mini-openclaw', file:'mini-openclaw.md'},
+  ],
+  '工具': [
+    {name:'PyTorch', file:'PyTorch.md'},
+    {name:'TensorFlow', file:'TensorFlow.md'},
+    {name:'scikit-learn', file:'scikit-learn.md'},
+    {name:'Gym', file:'Gym.md'},
+  ],
+  '程式碼': [
+    {name:'線性回歸', path:'ml/regression', py:['linear.py'], md:['linear.md']},
+    {name:'多項式回歸', path:'ml/regression', py:['polynomial.py'], md:['polynomial.md']},
+    {name:'KNN分類', path:'ml/classify', py:['knn.py']},
+    {name:'SVM分類', path:'ml/classify', py:['svm.py']},
+    {name:'決策樹', path:'ml/classify', py:['decision_tree.py']},
+    {name:'K-Means', path:'ml/cluster', py:['kmean.py']},
+    {name:'PCA', path:'ml/pca', py:['pca.py'], md:['pca.md']},
+    {name:'nn0神經網路', path:'nn/nn0/nn0py', py:['nn0.py'], md:['nn0.md']},
+    {name:'Tensor+NN+GPT', path:'nn/nn1tensor', py:['tensor.py','nn.py','gpt.py','main.py'], md:['tensor.md','nn.md','gpt.md','main.md']},
+    {name:'microgpt', path:'nn/microgpt', py:['microgpt.py']},
+    {name:'EM硬幣', path:'prob_model/em', py:['em_coin.py'], md:['em_coin.md']},
+    {name:'HMM詞性', path:'prob_model/hmm', py:['viterbi_pos_tagging.py']},
+    {name:'CartPole', path:'reinforce/cartpole', py:['cartpoleVgp.py'], md:['cartpoleVgp.md']},
+    {name:'FrozenLake', path:'reinforce/qtable', py:['frozenlake.py'], md:['frozenlake.md']},
+    {name:'Walker2D', path:'reinforce/walker2d', py:['train.py','run.py','model.py'], md:['train.md','run.md','model.md']},
+    {name:'MNIST CNN', path:'image/mnistRecognize', py:['train.py','predict.py']},
+    {name:'MNIST GAN', path:'image/mnistGanGen', py:['train.py','generate.py']},
+    {name:'mini-openclaw', path:'agent/_more', py:['mini-openclaw.py'], md:['mini-openclaw.md']},
+    {name:'MusicGen', path:'music', py:['musicgen.py','play.py'], md:['musicgen.md','play.md']},
+  ]
+};
+
+document.getElementById('c0').textContent = data['概念'].length;
+document.getElementById('c1').textContent = data['主題'].length;
+document.getElementById('c2').textContent = data['工具'].length;
+document.getElementById('c3').textContent = data['程式碼'].length;
+
+function getCodeLinks(item) {
+  var links = '';
+  if (item.py) {
+    for (var i = 0; i < item.py.length; i++) {
+      links += '<a href="' + CODE + '/' + item.path + '/' + item.py[i] + '">' + item.py[i] + '</a>';
+    }
+  }
+  if (item.md) {
+    for (var i = 0; i < item.md.length; i++) {
+      links += '<a href="' + CODE + '/' + item.path + '/' + item.md[i] + '">' + item.md[i] + '</a>';
+    }
+  }
+  return links;
+}
+
+function showCard(item, isCode) {
+  var h = '<div class="card"><h3>';
+  if (item.file) h += '<a href="' + WIKI + '/' + item.file + '">' + item.name + '</a>';
+  else h += item.name;
+  h += '</h3>';
+  var links = getCodeLinks(item);
+  if (!links && item.name) links = findCode(item.name);
+  if (links) h += '<div class="links">' + links + '</div>';
+  h += '</div>';
+  return h;
+}
+
+function render(tab) {
+  var items = data[tab];
+  var html = '<h2 class="section-title">' + tab + '</h2><div class="grid">';
+  for (var i = 0; i < items.length; i++) {
+    html += showCard(items[i], tab === '程式碼');
+  }
+  html += '</div>';
+  document.getElementById('content').innerHTML = html;
+}
+
+function doSearch() {
+  var q = document.getElementById('search').value.toLowerCase();
+  var cards = document.querySelectorAll('.card');
+  for (var i = 0; i < cards.length; i++) {
+    cards[i].style.display = cards[i].textContent.toLowerCase().indexOf(q) === -1 ? 'none' : '';
+  }
+}
+
+var cur = '概念';
+render(cur);
+var tabs = document.querySelectorAll('.tab');
+for (var i = 0; i < tabs.length; i++) {
+  tabs[i].onclick = function() {
+    for (var j = 0; j < tabs.length; j++) tabs[j].classList.remove('active');
+    this.classList.add('active');
+    cur = this.getAttribute('data-tab');
+    document.getElementById('search').value = '';
+    render(cur);
+  };
+}
+</script>
+</body>
+</html>
