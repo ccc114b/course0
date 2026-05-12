@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>陳鍾誠的課程教材 — 目錄</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans TC", sans-serif; background: #f5f7fa; color: #333; line-height: 1.6; }
+header { background: linear-gradient(135deg, #2c3e50 0%, #1a252f 100%); color: #fff; padding: 60px 20px; text-align: center; }
+header h1 { font-size: 2.5rem; margin-bottom: 12px; }
+header p { font-size: 1.1rem; opacity: 0.9; }
+.container { max-width: 900px; margin: 0 auto; padding: 30px 20px; }
+.subjects { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+.subject { background: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); text-decoration: none; color: inherit; transition: transform .15s, box-shadow .15s; border: 1px solid #eee; }
+.subject:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.12); }
+.subject h2 { font-size: 1.2rem; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+.subject p { font-size: 0.9rem; color: #666; }
+.subject .count { display: inline-block; background: #f0f0f5; color: #666; font-size: 0.75rem; padding: 2px 8px; border-radius: 10px; margin-left: auto; }
+.subject.math { border-left: 4px solid #3498db; }
+.subject.cs { border-left: 4px solid #e74c3c; }
+.subject.theory { border-left: 4px solid #9b59b6; }
+.subject.ml { border-left: 4px solid #667eea; }
+.subject.se { border-left: 4px solid #27ae60; }
+.subject.algo { border-left: 4px solid #e67e22; }
+.subject.arch { border-left: 4px solid #16a085; }
+.subject.web { border-left: 4px solid #f39c12; }
+footer { text-align: center; padding: 30px; color: #999; font-size: 0.85rem; }
+footer a { color: #667eea; }
+</style>
+</head>
+<body>
+<header>
+  <h1>📚 陳鍾誠的課程教材</h1>
+  <p>金門大學資訊工程系 — 電腦科學與人工智慧課程</p>
+</header>
+<div class="container">
+<div class="subjects">
+  <a href="數學/index.html" class="subject math">
+    <h2>🧮 數學</h2>
+    <p>代數、幾何、微積分、機率統計、線性代數、密碼學</p>
+  </a>
+  <a href="系統程式/index.html" class="subject cs">
+    <h2>⚙️ 系統程式</h2>
+    <p>編譯器、作業系統、虛擬機、網路、LLVM、RISC-V</p>
+  </a>
+  <a href="計算理論/index.html" class="subject theory">
+    <h2>🔣 計算理論</h2>
+    <p>圖靈機、NP完全性、Lambda演算、形式文法、自動機</p>
+  </a>
+  <a href="機器學習/index.html" class="subject ml">
+    <h2>🤖 機器學習</h2>
+    <p>神經網路、深度學習、Transformer、LLM、強化學習</p>
+  </a>
+  <a href="軟體工程/index.html" class="subject se">
+    <h2>📦 軟體工程</h2>
+    <p>開發流程、DevOps、敏捷、架構、Agent、Prompt工程</p>
+  </a>
+  <a href="演算法/index.html" class="subject algo">
+    <h2>📊 演算法</h2>
+    <p>時間複雜度、排序、搜尋、動態規劃、貪婪、圖論</p>
+  </a>
+  <a href="計算機結構/index.html" class="subject arch">
+    <h2>🖥️ 計算機結構</h2>
+    <p>數位邏輯、CPU、記憶體、管線、GPU、CUDA、Nand2Tetris</p>
+  </a>
+  <a href="網頁設計/index.html" class="subject web">
+    <h2>🌐 網頁設計</h2>
+    <p>HTML、CSS、JavaScript、React、FastAPI、資料庫</p>
+  </a>
+</div>
+</div>
+<footer>
+  <p><a href="https://github.com/ccckmit/course0">GitHub 原始碼</a> · <a href="https://github.com/ccckmit/course0/blob/main/README.md">課程總覽</a></p>
+  <p>金門大學資訊工程系 · 陳鍾誠</p>
+</footer>
+</body>
+</html>
