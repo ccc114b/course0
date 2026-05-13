@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wiki 知識庫 — 陳鍾誠的課程教材</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans TC", sans-serif; background: #f5f7fa; color: #333; line-height: 1.6; }
+header { background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%); color: #fff; padding: 50px 20px; text-align: center; }
+header h1 { font-size: 2rem; margin-bottom: 8px; }
+header p { font-size: 1rem; opacity: 0.9; }
+.container { max-width: 900px; margin: 0 auto; padding: 30px 20px; }
+.intro { background: #fff; padding: 20px; border-radius: 10px; margin-bottom: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+.intro h2 { font-size: 1.1rem; margin-bottom: 10px; color: #2c3e50; }
+.intro p { font-size: 0.9rem; color: #666; line-height: 1.7; }
+.wiki-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; }
+.wiki-item { background: #fff; border-radius: 10px; padding: 16px; box-shadow: 0 2px 6px rgba(0,0,0,0.05); text-decoration: none; color: inherit; transition: transform .15s, box-shadow .15s; border: 1px solid #eee; }
+.wiki-item:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,0.1); }
+.wiki-item h3 { font-size: 1rem; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+.wiki-item p { font-size: 0.8rem; color: #777; }
+.wiki-item .badge { display: inline-block; background: #f0f0f5; color: #666; font-size: 0.7rem; padding: 2px 8px; border-radius: 8px; margin-top: 6px; }
+.wiki-item.math { border-left: 4px solid #3498db; }
+.wiki-item.cs { border-left: 4px solid #e74c3c; }
+.wiki-item.theory { border-left: 4px solid #9b59b6; }
+.wiki-item.ml { border-left: 4px solid #667eea; }
+.wiki-item.se { border-left: 4px solid #27ae60; }
+.wiki-item.algo { border-left: 4px solid #e67e22; }
+.wiki-item.arch { border-left: 4px solid #16a085; }
+.wiki-item.web { border-left: 4px solid #f39c12; }
+footer { text-align: center; padding: 30px; color: #999; font-size: 0.85rem; }
+footer a { color: #667eea; }
+</style>
+</head>
+<body>
+<header>
+  <h1>📖 Wiki 知識庫</h1>
+  <p>互動式課程教材 — 連結 wiki 文章與程式碼</p>
+</header>
+<div class="container">
+<div class="intro">
+  <h2>關於 Wiki 知識庫</h2>
+  <p>這裡是陳鍾誠老師的課程教材 Wiki，每個科目都有互動式網頁，整合了理論筆記與程式碼範例。點擊下方任一科目即可進入該領域的互動指南。</p>
+</div>
+<div class="wiki-list">
+  <a href="數學/index.html" class="wiki-item math">
+    <h3>🧮 數學</h3>
+    <p>電腦科學涉及的數學基礎，包含代數、幾何、微積分、機率統計、線性代數、密碼學等主題。</p>
+    <span class="badge">44+ 篇文章</span>
+  </a>
+  <a href="系統程式/index.html" class="wiki-item cs">
+    <h3>⚙️ 系統程式</h3>
+    <p>從高階語言到機器碼的完整轉換，包括編譯器、作業系統、虛擬機、網路等主題。</p>
+    <span class="badge">36+ 篇文章</span>
+  </a>
+  <a href="計算理論/index.html" class="wiki-item theory">
+    <h3>🔣 計算理論</h3>
+    <p>計算的本質、能力與極限，包含圖靈機、NP完全性、Lambda演算、形式文法等。</p>
+    <span class="badge">10+ 篇文章</span>
+  </a>
+  <a href="機器學習/index.html" class="wiki-item ml">
+    <h3>🤖 機器學習</h3>
+    <p>讓電腦從資料中學習的演算法，包含神經網路、深度學習、Transformer、LLM、強化學習等。</p>
+    <span class="badge">58+ 篇文章</span>
+  </a>
+  <a href="軟體工程/index.html" class="wiki-item se">
+    <h3>📦 軟體工程</h3>
+    <p>軟體開發流程與最佳實踐，包含開發方法論、DevOps、敏捷、架構、Agent 等主題。</p>
+    <span class="badge">29+ 篇文章</span>
+  </a>
+  <a href="演算法/index.html" class="wiki-item algo">
+    <h3>📊 演算法</h3>
+    <p>解決問題的計算方法與效率分析，包含時間複雜度、排序、搜尋、動態規劃、貪婪法等。</p>
+    <span class="badge">13+ 篇文章</span>
+  </a>
+  <a href="計算機結構/index.html" class="wiki-item arch">
+    <h3>🖥️ 計算機結構</h3>
+    <p>計算機的硬體設計與組織，包含數位邏輯、CPU、記憶體、管線、GPU 等主題。</p>
+    <span class="badge">20+ 篇文章</span>
+  </a>
+  <a href="網頁設計/index.html" class="wiki-item web">
+    <h3>🌐 網頁設計</h3>
+    <p>前端與後端開發技術，包含 HTML、CSS、JavaScript、React、FastAPI、資料庫等。</p>
+    <span class="badge">26+ 篇文章</span>
+  </a>
+</div>
+</div>
+<footer>
+  <p><a href="https://github.com/ccckmit/course0">GitHub</a> · <a href="https://github.com/ccckmit/course0/blob/main/README.md">課程總覽</a></p>
+  <p>金門大學資訊工程系 · 陳鍾誠</p>
+</footer>
+</body>
+</html>
