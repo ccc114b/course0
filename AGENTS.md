@@ -1,5 +1,6 @@
 # course0 - 陳鍾誠的課程教材
 
+
 ## Structure
 ```
 course0/
