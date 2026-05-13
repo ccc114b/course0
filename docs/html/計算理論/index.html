@@ -10,8 +10,8 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto
 header { background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%); color: #fff; padding: 40px 20px; text-align: center; }
 header h1 { font-size: 2rem; margin-bottom: 8px; }
 .container { max-width: 1100px; margin: 0 auto; padding: 20px; }
-.tabs { display: flex; gap: 4px; background: #fff; border-radius: 10px; padding: 6px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); flex-wrap: wrap; }
-.tab { flex: 1; min-width: 80px; padding: 10px 16px; border: none; background: transparent; border-radius: 8px; cursor: pointer; font-size: 0.9rem; color: #666; }
+.tabs { display: flex; gap: 4px; background: #fff; border-radius: 10px; padding: 6px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+.tab { flex: 1; padding: 12px 20px; border: none; background: transparent; border-radius: 8px; cursor: pointer; font-size: 1rem; color: #666; }
 .tab:hover { background: #f0f0f5; }
 .tab.active { background: #9b59b6; color: #fff; }
 .search { width: 100%; padding: 10px 14px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 0.95rem; margin-bottom: 16px; }
@@ -25,10 +25,10 @@ header h1 { font-size: 2rem; margin-bottom: 8px; }
 .links { margin-top: 10px; padding-top: 10px; border-top: 1px solid #eee; display: flex; flex-wrap: wrap; gap: 6px; }
 .links a { font-size: 0.75rem; padding: 3px 10px; border-radius: 5px; text-decoration: none; color: #fff; background: #9b59b6; }
 .links a:hover { opacity: 0.85; }
-.section-title { font-size: 1.2rem; font-weight: 700; margin: 20px 0 12px; border-bottom: 2px solid #9b59b6; padding-bottom: 4px; }
+.section-title { font-size: 1.1rem; font-weight: 700; margin: 24px 0 12px; border-bottom: 2px solid #9b59b6; padding-bottom: 4px; }
+.section-title:first-of-type { margin-top: 0; }
 footer { text-align: center; padding: 20px; color: #999; font-size: 0.8rem; }
 footer a { color: #9b59b6; }
-.hidden { display: none; }
 </style>
 </head>
 <body>
@@ -38,9 +38,8 @@ footer a { color: #9b59b6; }
 </header>
 <div class="container">
 <div class="tabs">
-  <button class="tab active" data-tab="概念">概念 <span id="c0">0</span></button>
-  <button class="tab" data-tab="主題">主題 <span id="c1">0</span></button>
-  <button class="tab" data-tab="程式碼">程式碼 <span id="c2">0</span></button>
+  <button class="tab active" data-tab="概念">📖 概念 <span id="c0">0</span></button>
+  <button class="tab" data-tab="程式碼">💻 程式碼 <span id="c1">0</span></button>
 </div>
 <input class="search" id="search" placeholder="搜尋..." oninput="doSearch()">
 <div id="content"></div>
@@ -50,8 +49,8 @@ footer a { color: #9b59b6; }
 var WIKI = 'https://github.com/ccckmit/course0/blob/main/wiki/%E8%A8%88%E7%AE%97%E7%90%86%E8%AB%96';
 var CODE = 'https://github.com/ccckmit/course0/blob/main/code/%E8%A8%88%E7%AE%97%E7%90%86%E8%AB%96';
 
-var data = {
-  '概念': [
+var concepts = {
+  '核心理論': [
     {name:'計算理論', file:'計算理論.md'},
     {name:'NP完全性', file:'NP完全性.md'},
     {name:'圖靈機', file:'圖靈機.md'},
@@ -59,52 +58,65 @@ var data = {
     {name:'形式文法', file:'形式文法.md'},
     {name:'Lambda演算', file:'Lambda演算.md'},
     {name:'自動機理論', file:'自動機理論.md'},
-    {name:'資訊理論', file:'資訊理論.md', code:['06-資訊理論']},
+    {name:'資訊理論', file:'資訊理論.md'},
     {name:'Noam Chomsky', file:'Noam_Chomsky.md'},
   ],
   '主題': [
-    {name:'函數式編程', file:'函數式編程.md', code:['functional']},
+    {name:'函數式編程', file:'函數式編程.md'},
   ],
-  '程式碼': [
-    {name:'Lambda演算', path:'lambda', files:['lambda0.py']},
-    {name:'圖靈機', path:'turing', files:['turing0.py']},
-    {name:'自動機', path:'automaton', files:['fa0.py']},
-  ]
 };
 
-document.getElementById('c0').textContent = data['概念'].length;
-document.getElementById('c1').textContent = data['主題'].length;
-document.getElementById('c2').textContent = data['程式碼'].length;
+var codes = [
+  {name:'Lambda演算', path:'lambda', files:['lambda0.py']},
+  {name:'圖靈機', path:'turing', files:['turing0.py']},
+  {name:'自動機', path:'automaton', files:['fa0.py']},
+];
 
-function showCard(item, isCode) {
+document.getElementById('c0').textContent = Object.keys(concepts).length + ' 區塊';
+document.getElementById('c1').textContent = codes.length;
+
+function showCard(item) {
   var h = '<div class="card"><h3>';
   if (item.file) h += '<a href="' + WIKI + '/' + item.file + '">' + item.name + '</a>';
   else h += item.name;
   h += '</h3>';
-  if (item.code && !isCode) {
-    for (var i = 0; i < item.code.length; i++) {
-      h += '<div class="links"><a href="' + CODE + '/' + item.code[i] + '">📁 ' + item.code[i] + '</a></div>';
-    }
-  }
-  if (item.files) {
-    h += '<div class="links">';
-    for (var i = 0; i < item.files.length; i++) {
-      h += '<a href="' + CODE + '/' + item.path + '/' + item.files[i] + '">' + item.files[i] + '</a>';
-    }
-    h += '</div>';
-  }
+  if (item.desc) h += '<p>' + item.desc + '</p>';
   h += '</div>';
   return h;
 }
 
-function render(tab) {
-  var items = data[tab];
-  var html = '<h2 class="section-title">' + tab + '</h2><div class="grid">';
-  for (var i = 0; i < items.length; i++) {
-    html += showCard(items[i], tab === '程式碼');
+function renderConcept() {
+  var html = '';
+  var keys = Object.keys(concepts);
+  for (var k = 0; k < keys.length; k++) {
+    var key = keys[k];
+    var items = concepts[key];
+    html += '<h2 class="section-title">' + key + '</h2><div class="grid">';
+    for (var i = 0; i < items.length; i++) {
+      html += showCard(items[i]);
+    }
+    html += '</div>';
+  }
+  document.getElementById('content').innerHTML = html;
+}
+
+function renderCode() {
+  var html = '<h2 class="section-title">💻 程式碼</h2><div class="grid">';
+  for (var i = 0; i < codes.length; i++) {
+    var c = codes[i];
+    html += '<div class="card"><h3>' + c.name + '</h3><div class="links">';
+    for (var j = 0; j < c.files.length; j++) {
+      html += '<a href="' + CODE + '/' + c.path + '/' + c.files[j] + '">' + c.files[j] + '</a>';
+    }
+    html += '</div></div>';
   }
   html += '</div>';
   document.getElementById('content').innerHTML = html;
+}
+
+function render(tab) {
+  if (tab === '概念') renderConcept();
+  else renderCode();
 }
 
 function doSearch() {

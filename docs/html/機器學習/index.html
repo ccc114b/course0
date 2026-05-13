@@ -10,8 +10,8 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto
 header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #fff; padding: 40px 20px; text-align: center; }
 header h1 { font-size: 2rem; margin-bottom: 8px; }
 .container { max-width: 1100px; margin: 0 auto; padding: 20px; }
-.tabs { display: flex; gap: 4px; background: #fff; border-radius: 10px; padding: 6px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); flex-wrap: wrap; }
-.tab { flex: 1; min-width: 80px; padding: 10px 16px; border: none; background: transparent; border-radius: 8px; cursor: pointer; font-size: 0.9rem; color: #666; }
+.tabs { display: flex; gap: 4px; background: #fff; border-radius: 10px; padding: 6px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+.tab { flex: 1; padding: 12px 20px; border: none; background: transparent; border-radius: 8px; cursor: pointer; font-size: 1rem; color: #666; }
 .tab:hover { background: #f0f0f5; }
 .tab.active { background: #667eea; color: #fff; }
 .search { width: 100%; padding: 10px 14px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 0.95rem; margin-bottom: 16px; }
@@ -25,7 +25,9 @@ header h1 { font-size: 2rem; margin-bottom: 8px; }
 .links { margin-top: 10px; padding-top: 10px; border-top: 1px solid #eee; display: flex; flex-wrap: wrap; gap: 6px; }
 .links a { font-size: 0.75rem; padding: 3px 10px; border-radius: 5px; text-decoration: none; color: #fff; background: #667eea; }
 .links a:hover { opacity: 0.85; }
-.section-title { font-size: 1.2rem; font-weight: 700; margin: 20px 0 12px; border-bottom: 2px solid #667eea; padding-bottom: 4px; }
+.section-title { font-size: 1.1rem; font-weight: 700; margin: 24px 0 12px; border-bottom: 2px solid #667eea; padding-bottom: 4px; display: flex; align-items: center; gap: 8px; }
+.section-title:first-of-type { margin-top: 0; }
+.sub-title { font-size: 0.85rem; color: #666; font-weight: normal; }
 footer { text-align: center; padding: 20px; color: #999; font-size: 0.8rem; }
 footer a { color: #667eea; }
 .hidden { display: none; }
@@ -38,10 +40,8 @@ footer a { color: #667eea; }
 </header>
 <div class="container">
 <div class="tabs">
-  <button class="tab active" data-tab="概念">概念 <span id="c0">0</span></button>
-  <button class="tab" data-tab="主題">主題 <span id="c1">0</span></button>
-  <button class="tab" data-tab="工具">工具 <span id="c2">0</span></button>
-  <button class="tab" data-tab="程式碼">程式碼 <span id="c3">0</span></button>
+  <button class="tab active" data-tab="概念">📖 概念 <span id="c0">0</span></button>
+  <button class="tab" data-tab="程式碼">💻 程式碼 <span id="c1">0</span></button>
 </div>
 <input class="search" id="search" placeholder="搜尋..." oninput="doSearch()">
 <div id="content"></div>
@@ -96,8 +96,8 @@ function findCode(name) {
         var parts = p.split('/');
         var dir = parts.slice(0, -1).join('/');
         var fn = parts[parts.length - 1];
-        links += '<a class="py" href="' + CODE + '/' + dir + '/' + fn + '.py">' + fn + '.py</a>';
-        links += '<a class="md" href="' + CODE + '/' + dir + '/' + fn + '.md">' + fn + '.md</a>';
+        links += '<a href="' + CODE + '/' + dir + '/' + fn + '.py">' + fn + '.py</a>';
+        links += '<a href="' + CODE + '/' + dir + '/' + fn + '.md">' + fn + '.md</a>';
       }
       return links;
     }
@@ -105,8 +105,9 @@ function findCode(name) {
   return '';
 }
 
-var data = {
-  '概念': [
+// 概念資料：包含 概念、主題、工具、人物 四個區塊
+var concepts = {
+  '核心概念': [
     {name:'機器學習的歷史', file:'機器學習的歷史.md'},
     {name:'監督式學習', file:'監督式學習.md'},
     {name:'非監督式學習', file:'非監督式學習.md'},
@@ -116,6 +117,8 @@ var data = {
     {name:'梯度下降法', file:'梯度下降法.md'},
     {name:'反傳遞演算法', file:'反傳遞演算法.md'},
     {name:'Adam', file:'Adam.md'},
+  ],
+  '分類與聚類': [
     {name:'分類演算法', file:'分類演算法.md'},
     {name:'K-近鄰', file:'K-近鄰.md'},
     {name:'樸素貝葉斯', file:'樸素貝葉斯.md'},
@@ -125,13 +128,15 @@ var data = {
     {name:'聚類演算法', file:'聚類演算法.md'},
     {name:'K-均值', file:'K-均值.md'},
     {name:'主成分分析', file:'主成分分析.md'},
+  ],
+  '進階主題': [
     {name:'散射網路', file:'散射網路.md'},
     {name:'EM演算法', file:'EM演算法.md'},
     {name:'馬可夫鏈', file:'馬可夫鏈.md'},
     {name:'隱馬可夫模型', file:'隱馬可夫模型.md'},
     {name:'貝氏網路', file:'貝氏網路.md'},
   ],
-  '主題': [
+  '應用領域': [
     {name:'模型評估', file:'模型評估.md'},
     {name:'損失函數', file:'損失函數.md'},
     {name:'正則化', file:'正則化.md'},
@@ -141,6 +146,8 @@ var data = {
     {name:'推薦系統', file:'推薦系統.md'},
     {name:'聯邦學習', file:'聯邦學習.md'},
     {name:'線性回歸', file:'線性回歸.md'},
+  ],
+  '深度學習': [
     {name:'卷積神經網路', file:'卷積神經網路.md'},
     {name:'循環神經網路', file:'循環神經網路.md'},
     {name:'Transformer', file:'Transformer.md'},
@@ -149,6 +156,8 @@ var data = {
     {name:'語音處理與識別', file:'語音處理與識別.md'},
     {name:'影像處理與識別', file:'影像處理與識別.md'},
     {name:'多模態模型', file:'多模態模型.md'},
+  ],
+  'AI 應用': [
     {name:'搜尋法', file:'搜尋法.md'},
     {name:'爬山演算法', file:'爬山演算法.md'},
     {name:'生成式AI', file:'生成式AI.md'},
@@ -164,33 +173,38 @@ var data = {
     {name:'scikit-learn', file:'scikit-learn.md'},
     {name:'Gym', file:'Gym.md'},
   ],
-  '程式碼': [
-    {name:'線性回歸', path:'ml/regression', py:['linear.py'], md:['linear.md']},
-    {name:'多項式回歸', path:'ml/regression', py:['polynomial.py'], md:['polynomial.md']},
-    {name:'KNN分類', path:'ml/classify', py:['knn.py']},
-    {name:'SVM分類', path:'ml/classify', py:['svm.py']},
-    {name:'決策樹', path:'ml/classify', py:['decision_tree.py']},
-    {name:'K-Means', path:'ml/cluster', py:['kmean.py']},
-    {name:'PCA', path:'ml/pca', py:['pca.py'], md:['pca.md']},
-    {name:'nn0神經網路', path:'nn/nn0/nn0py', py:['nn0.py'], md:['nn0.md']},
-    {name:'Tensor+NN+GPT', path:'nn/nn1tensor', py:['tensor.py','nn.py','gpt.py','main.py'], md:['tensor.md','nn.md','gpt.md','main.md']},
-    {name:'microgpt', path:'nn/microgpt', py:['microgpt.py']},
-    {name:'EM硬幣', path:'prob_model/em', py:['em_coin.py'], md:['em_coin.md']},
-    {name:'HMM詞性', path:'prob_model/hmm', py:['viterbi_pos_tagging.py']},
-    {name:'CartPole', path:'reinforce/cartpole', py:['cartpoleVgp.py'], md:['cartpoleVgp.md']},
-    {name:'FrozenLake', path:'reinforce/qtable', py:['frozenlake.py'], md:['frozenlake.md']},
-    {name:'Walker2D', path:'reinforce/walker2d', py:['train.py','run.py','model.py'], md:['train.md','run.md','model.md']},
-    {name:'MNIST CNN', path:'image/mnistRecognize', py:['train.py','predict.py']},
-    {name:'MNIST GAN', path:'image/mnistGanGen', py:['train.py','generate.py']},
-    {name:'mini-openclaw', path:'agent/_more', py:['mini-openclaw.py'], md:['mini-openclaw.md']},
-    {name:'MusicGen', path:'music', py:['musicgen.py','play.py'], md:['musicgen.md','play.md']},
+  '人物': [
+    {name:'Geoffrey Hinton', file:'Geoffrey_Hinton.md', desc:'深度學習之父'},
+    {name:'Yann LeCun', file:'Yann_LeCun.md', desc:'卷積網路之父'},
+    {name:'Yoshua Bengio', file:'Yoshua_Bengio.md', desc:'深度學習先驅'},
+    {name:'Andrej Karpathy', file:'Andrej_Karpathy.md', desc:'Tesla AI 總監'},
   ]
 };
 
-document.getElementById('c0').textContent = data['概念'].length;
-document.getElementById('c1').textContent = data['主題'].length;
-document.getElementById('c2').textContent = data['工具'].length;
-document.getElementById('c3').textContent = data['程式碼'].length;
+var codes = [
+  {name:'線性回歸', path:'ml/regression', py:['linear.py'], md:['linear.md']},
+  {name:'多項式回歸', path:'ml/regression', py:['polynomial.py'], md:['polynomial.md']},
+  {name:'KNN分類', path:'ml/classify', py:['knn.py']},
+  {name:'SVM分類', path:'ml/classify', py:['svm.py']},
+  {name:'決策樹', path:'ml/classify', py:['decision_tree.py']},
+  {name:'K-Means', path:'ml/cluster', py:['kmean.py']},
+  {name:'PCA', path:'ml/pca', py:['pca.py'], md:['pca.md']},
+  {name:'nn0神經網路', path:'nn/nn0/nn0py', py:['nn0.py'], md:['nn0.md']},
+  {name:'Tensor+NN+GPT', path:'nn/nn1tensor', py:['tensor.py','nn.py','gpt.py','main.py'], md:['tensor.md','nn.md','gpt.md','main.md']},
+  {name:'microgpt', path:'nn/microgpt', py:['microgpt.py']},
+  {name:'EM硬幣', path:'prob_model/em', py:['em_coin.py'], md:['em_coin.md']},
+  {name:'HMM詞性', path:'prob_model/hmm', py:['viterbi_pos_tagging.py']},
+  {name:'CartPole', path:'reinforce/cartpole', py:['cartpoleVgp.py'], md:['cartpoleVgp.md']},
+  {name:'FrozenLake', path:'reinforce/qtable', py:['frozenlake.py'], md:['frozenlake.md']},
+  {name:'Walker2D', path:'reinforce/walker2d', py:['train.py','run.py','model.py'], md:['train.md','run.md','model.md']},
+  {name:'MNIST CNN', path:'image/mnistRecognize', py:['train.py','predict.py']},
+  {name:'MNIST GAN', path:'image/mnistGanGen', py:['train.py','generate.py']},
+  {name:'mini-openclaw', path:'agent/_more', py:['mini-openclaw.py'], md:['mini-openclaw.md']},
+  {name:'MusicGen', path:'music', py:['musicgen.py','play.py'], md:['musicgen.md','play.md']},
+];
+
+document.getElementById('c0').textContent = Object.keys(concepts).length + ' 區塊';
+document.getElementById('c1').textContent = codes.length;
 
 function getCodeLinks(item) {
   var links = '';
@@ -207,26 +221,47 @@ function getCodeLinks(item) {
   return links;
 }
 
-function showCard(item, isCode) {
+function showCard(item) {
   var h = '<div class="card"><h3>';
   if (item.file) h += '<a href="' + WIKI + '/' + item.file + '">' + item.name + '</a>';
   else h += item.name;
   h += '</h3>';
-  var links = getCodeLinks(item);
-  if (!links && item.name) links = findCode(item.name);
+  if (item.desc) h += '<p>' + item.desc + '</p>';
+  var links = findCode(item.name);
   if (links) h += '<div class="links">' + links + '</div>';
   h += '</div>';
   return h;
 }
 
-function render(tab) {
-  var items = data[tab];
-  var html = '<h2 class="section-title">' + tab + '</h2><div class="grid">';
-  for (var i = 0; i < items.length; i++) {
-    html += showCard(items[i], tab === '程式碼');
+function renderConcept() {
+  var html = '';
+  var keys = Object.keys(concepts);
+  for (var k = 0; k < keys.length; k++) {
+    var key = keys[k];
+    var items = concepts[key];
+    html += '<h2 class="section-title">' + key + '</h2><div class="grid">';
+    for (var i = 0; i < items.length; i++) {
+      html += showCard(items[i]);
+    }
+    html += '</div>';
+  }
+  document.getElementById('content').innerHTML = html;
+}
+
+function renderCode() {
+  var html = '<h2 class="section-title">💻 程式碼範例</h2><div class="grid">';
+  for (var i = 0; i < codes.length; i++) {
+    var item = codes[i];
+    html += '<div class="card"><h3>' + item.name + '</h3>';
+    html += '<div class="links">' + getCodeLinks(item) + '</div></div>';
   }
   html += '</div>';
   document.getElementById('content').innerHTML = html;
+}
+
+function render(tab) {
+  if (tab === '概念') renderConcept();
+  else renderCode();
 }
 
 function doSearch() {
