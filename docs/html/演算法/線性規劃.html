@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>線性規劃 — 演算法</title>
+<link rel="stylesheet" href="../main.css">
+</head>
+<body>
+<header>
+  <div class="back-link"><a href="main.html">← 回入口</a></div>
+  <h1>線性規劃 (Linear Programming)</h1>
+  <p>在線性約束下最佳化線性目標函數</p>
+</header>
+<div class="container">
+<div class="section">
+<h2>概述</h2>
+<p>線性規劃研究在線性約束下最大化或最小化線性目標函數的問題。廣泛應用於資源調配、生產計劃、投資組合優化、網路流等領域。1947 年 George Dantzig 發明的單形法（Simplex Method）是第一個實用演算法。</p>
+</div>
+<div class="section">
+<h2>標準形式</h2>
+<p>最大化 cᵀx，滿足 Ax ≤ b, x ≥ 0。其中 c 為目標係數向量，A 為約束矩陣，b 為約束常數向量，x 為決策變數向量。</p>
+</div>
+<div class="section">
+<h2>單形法</h2>
+<p>單形法從一個可行解開始，沿約束邊界移動，每次迭代改善目標函數值，直到達到最優解。雖然最壞情況為指數時間，但實際表現非常優異。</p>
+</div>
+<div class="section">
+<h2>對偶性</h2>
+<p>每個線性規劃問題都有對應的對偶問題。原問題與對偶問題的最優目標值相等（強對偶定理）。對偶性提供了問題的另一种視角，並可用於敏感度分析。</p>
+</div>
+<div class="section">
+<h2>本課程範例</h2>
+<ul>
+<li><a href="https://github.com/ccckmit/course0/tree/main/code/演算法/method/15a-委託法" target="_blank"><strong>委託法</strong></a>：線性規劃相關範例</li>
+<li><a href="https://github.com/ccckmit/course0/tree/main/code/演算法/method/15c-化約法" target="_blank"><strong>化約法</strong></a>：問題化約</li>
+</ul>
+</div>
+<div class="section">
+<h2>相關連結</h2>
+<ul>
+<li><a href="main.html">回到演算法入口</a></li>
+<li><a href="index.html">回到演算法 index</a></li>
+<li><a href="https://github.com/ccckmit/course0/blob/main/wiki/演算法/線性規劃.md" target="_blank">原始 Wiki 文章</a></li>
+<li><a href="網路流.html">網路流</a></li>
+<li><a href="貪婪演算法.html">貪婪演算法</a></li>
+</ul>
+</div>
+</div>
+<footer><a href="main.html">演算法</a> | <a href="../index.html">回首頁</a></footer>
+</body>
+</html>

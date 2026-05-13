@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>近似演算法 — 演算法</title>
+<link rel="stylesheet" href="../main.css">
+</head>
+<body>
+<header>
+  <div class="back-link"><a href="main.html">← 回入口</a></div>
+  <h1>近似演算法 (Approximation Algorithm)</h1>
+  <p>NP 難題的近似求解方法</p>
+</header>
+<div class="container">
+<div class="section">
+<h2>概述</h2>
+<p>對於 NP 完全問題，多項式時間內無法求得精確最優解。近似演算法在多項式時間內尋找近似最優解，並保證解的品質在理論界限內。</p>
+</div>
+<div class="section">
+<h2>近似比</h2>
+<p>近似演算法的好壞用近似比衡量：對於最小化問題，演算法解 / 最優解 ≤ ρ；對於最大化問題，最優解 / 演算法解 ≤ ρ。ρ 越接近 1 表示演算法越好。</p>
+</div>
+<div class="section">
+<h2>經典近似演算法</h2>
+<p><strong>頂點覆蓋</strong>：貪婪法可得 2-近似解。</p>
+<p><strong>旅行推銷員 (TSP)</strong>：滿足三角不等式時，MST-based 演算法可得 2-近似解。</p>
+<p><strong>集合覆蓋</strong>：貪婪法可得 ln(n)-近似解。</p>
+<p><strong>背包問題</strong>：FPTAS（完全多項式時間近似方案）。</p>
+</div>
+<div class="section">
+<h2>本課程範例</h2>
+<ul>
+<li><a href="https://github.com/ccckmit/course0/tree/main/code/演算法/method/16-逼近法" target="_blank"><strong>逼近法</strong></a>：各種逼近方法</li>
+<li><a href="https://github.com/ccckmit/course0/tree/main/code/演算法/method/05f-貪婪法" target="_blank"><strong>貪婪法</strong></a>：貪婪近似範例</li>
+</ul>
+</div>
+<div class="section">
+<h2>相關連結</h2>
+<ul>
+<li><a href="main.html">回到演算法入口</a></li>
+<li><a href="index.html">回到演算法 index</a></li>
+<li><a href="https://github.com/ccckmit/course0/blob/main/wiki/演算法/近似演算法.md" target="_blank">原始 Wiki 文章</a></li>
+<li><a href="貪婪演算法.html">貪婪演算法</a></li>
+<li><a href="隨機演算法.html">隨機演算法</a></li>
+</ul>
+</div>
+</div>
+<footer><a href="main.html">演算法</a> | <a href="../index.html">回首頁</a></footer>
+</body>
+</html>

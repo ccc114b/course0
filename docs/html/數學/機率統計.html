@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>機率統計 — 數學 — 陳鍾誠的課程教材</title>
+<link rel="stylesheet" href="../main.css">
+</head>
+<body>
+<header>
+  <div class="back-link"><a href="main.html">← 回到數學入口</a></div>
+  <h1>機率統計</h1>
+  <p>隨機現象與數據推論</p>
+</header>
+<div class="container">
+
+<div class="section">
+<h2>機率論基礎</h2>
+<p>機率統計研究隨機現象的規律性。機率論研究隨機事件的機率規律，統計學從數據中推斷規律。</p>
+<p><strong>樣本空間</strong> S 是所有可能結果的集合。事件是樣本空間的子集。機率函數 P 滿足：非負性、規範性 P(S)=1、可加性。</p>
+<p><strong>貝葉斯定理</strong>：P(A|B) = P(B|A)P(A) / P(B)，是機器學習和統計推論的核心公式。</p>
+</div>
+
+<div class="section">
+<h2>離散隨機變數</h2>
+<p>離散隨機變數的機率質量函數 p(x) = P(X=x)。常見離散分佈包括：</p>
+<ul>
+<li><strong>伯努利分佈</strong> Bernoulli(p)：X ∈ {0,1}，P(X=1)=p</li>
+<li><strong>二項分佈</strong> Binomial(n,p)：P(X=k) = C(n,k)pᵏ(1-p)ⁿ⁻ᵏ</li>
+<li><strong>卜瓦松分佈</strong> Poisson(λ)：P(X=k) = λᵏe⁻λ / k!</li>
+<li><strong>幾何分佈</strong> Geometric(p)：首次成功所需的試驗次數</li>
+</ul>
+<p><strong>期望值</strong> E[X] = Σx·p(x)，<strong>變異數</strong> Var(X) = E[(X-μ)²] = E[X²] - μ²。</p>
+</div>
+
+<div class="section">
+<h2>連續隨機變數</h2>
+<p>連續隨機變數的機率密度函數 f(x) 滿足 ∫f(x)dx = 1。累積分佈函數 F(x) = P(X ≤ x) = ∫₋∞ˣ f(t)dt。</p>
+<p>常見連續分佈：</p>
+<ul>
+<li><strong>均勻分佈</strong> Uniform(a,b)：f(x) = 1/(b-a)</li>
+<li><strong>指數分佈</strong> Exponential(λ)：f(x) = λe⁻λˣ，無記憶性</li>
+<li><strong>常態分佈</strong> Normal(μ,σ²)：f(x) = (1/σ√(2π))e^{-(x-μ)²/(2σ²)}，自然界最常見的分佈</li>
+</ul>
+</div>
+
+<div class="section">
+<h2>多變數機率分佈</h2>
+<p><strong>聯合分佈</strong>描述多個隨機變數的關係。邊際分佈透過對聯合分佈求和（離散）或積分（連續）得到。</p>
+<p><strong>共變異數</strong> Cov(X,Y) = E[(X-μₓ)(Y-μᵧ)] 衡量兩個變數的線性相關程度。<strong>相關係數</strong> ρ = Cov(X,Y) / (σₓσᵧ) 歸一化到 [-1, 1]。</p>
+</div>
+
+<div class="section">
+<h2>本課程範例</h2>
+<p>相關程式碼在 <a href="https://github.com/ccckmit/course0/tree/main/code/數學/06-資訊理論/_ccc" target="_blank">code/數學/06-資訊理論/_ccc</a>：</p>
+<ul>
+<li><a href="https://github.com/ccckmit/course0/blob/main/code/數學/06-資訊理論/_ccc/entropy1.py" target="_blank">entropy1.py</a> — 資訊熵的計算</li>
+</ul>
+</div>
+
+<div class="section">
+<h2>相關連結</h2>
+<ul>
+<li><a href="https://github.com/ccckmit/course0/blob/main/wiki/數學/機率統計.md" target="_blank">Wiki: 機率統計</a></li>
+<li><a href="https://github.com/ccckmit/course0/blob/main/wiki/數學/隨機微積分.md" target="_blank">Wiki: 隨機微積分</a></li>
+<li><a href="main.html">回到數學入口</a></li>
+</ul>
+</div>
+
+</div>
+<footer>
+<a href="https://github.com/ccckmit/course0">回到課程首頁</a>
+</footer>
+</body>
+</html>

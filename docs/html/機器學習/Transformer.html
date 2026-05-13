@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Transformer — 機器學習</title>
+<link rel="stylesheet" href="../main.css">
+</head>
+<body>
+<header>
+  <div class="back-link"><a href="main.html">← 回到機器學習</a></div>
+  <h1>Transformer</h1>
+  <p>完全基於注意力機制的革命性深度學習架構</p>
+</header>
+<div class="container">
+
+<div class="section">
+  <h2>概述</h2>
+  <p>Transformer 是 2017 年由 Google 團隊在論文「Attention Is All You Need」中提出的深度學習架構。其核心創新是完全拋棄傳統的循環和卷積結構，僅依賴注意力機制（Attention Mechanism）來處理序列資料。這種設計使得模型可以並行處理序列中的所有位置，解決了 RNN 的長期依賴問題和訓練速度限制。Transformer 的出現催生了 BERT、GPT、T5 等一系列大型語言模型，奠定了現代 AI 的基礎。</p>
+</div>
+
+<div class="section">
+  <h2>架構總覽</h2>
+  <p>Transformer 最初作為 Sequence-to-Sequence 模型設計，包含編碼器和解碼器兩部分。編碼器將輸入序列編碼為連續表示，解碼器根據編碼器輸出和已生成的 tokens 逐步生成輸出序列。每個編碼器/解碼器層包含兩個核心子層：多頭自注意力機制和前饋神經網路，每個子層後跟隨殘差連接和層歸一化。</p>
+  <h3>編碼器 (Encoder)</h3>
+  <p>由 N 個相同層堆疊而成，每層包含多頭自注意力機制和前饋神經網路。輸入序列通過詞嵌入和位置編碼後送入編碼器。</p>
+  <h3>解碼器 (Decoder)</h3>
+  <p>同樣由 N 個相同層堆疊，但每層多了一個交叉注意力層用於關注編碼器輸出。解碼器的自注意力使用遮罩防止看到未來位置。</p>
+</div>
+
+<div class="section">
+  <h2>自注意力機制</h2>
+  <p>自注意力是 Transformer 的核心。對於序列中的每個位置，計算其與所有其他位置的相關性權重，然後加權聚合所有位置的資訊。每個位置的 Query 與所有位置的 Key 計算相似度得到注意力權重，再與對應的 Value 加權求和。</p>
+  <div class="code">
+def attention(query, key, value):
+    scores = query @ key.T / sqrt(d_k)
+    weights = softmax(scores, dim=-1)
+    output = weights @ value
+    return output
+  </div>
+  <p><strong>多頭注意力</strong>：將 Query、Key、Value 線性投影到 h 個不同的子空間，分別計算注意力後拼接，使模型能從不同表示子空間關注資訊。</p>
+</div>
+
+<div class="section">
+  <h2>位置編碼</h2>
+  <p>由於 Transformer 沒有循環結構，需要額外注入位置資訊。使用不同頻率的正弦和餘弦函數生成位置編碼，使模型能感知序列中詞語的順序關係。</p>
+</div>
+
+<div class="section">
+  <h2>本課程範例</h2>
+  <ul>
+    <li><a href="https://github.com/ccckmit/course0/blob/main/code/%E6%A9%9F%E5%99%A8%E5%AD%B8%E7%BF%92/nn/nn1tensor/gpt.py">gpt.py</a> — 基於 Tensor 的 GPT 實作</li>
+    <li><a href="https://github.com/ccckmit/course0/blob/main/code/%E6%A9%9F%E5%99%A8%E5%AD%B8%E7%BF%92/nn/nn0/nn0py/gpt0.py">gpt0.py</a> — 簡化版 GPT 實作</li>
+    <li><a href="https://github.com/ccckmit/course0/blob/main/code/%E6%A9%9F%E5%99%A8%E5%AD%B8%E7%BF%92/nn/microgpt/microgpt.py">microgpt.py</a> — 微型 GPT 實作</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h2>相關連結</h2>
+  <ul>
+    <li><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E6%A9%9F%E5%99%A8%E5%AD%B8%E7%BF%92/Transformer.md">Wiki: Transformer</a></li>
+    <li><a href="大型語言模型.html">大型語言模型 (LLM)</a></li>
+    <li><a href="深度學習.html">深度學習</a></li>
+    <li><a href="神經網路.html">神經網路</a></li>
+  </ul>
+</div>
+
+</div>
+<footer><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E6%A9%9F%E5%99%A8%E5%AD%B8%E7%BF%92/Transformer.md">編輯此頁</a></footer>
+</body>
+</html>

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>單元測試 — 軟體工程</title>
+<link rel="stylesheet" href="../main.css">
+</head>
+<body>
+<header>
+  <div class="back-link"><a href="main.html">← 回入口</a></div>
+  <h1>單元測試</h1>
+  <p>確保軟體品質的關鍵活動</p>
+</header>
+<div class="container">
+
+<div class="section">
+  <h2>測試的價值</h2>
+  <ul>
+    <li><strong>發現缺陷</strong>：在軟體上線前發現錯誤</li>
+    <li><strong>防止回歸</strong>：確保新變更不會破壞現有功能</li>
+    <li><strong>文件化行為</strong>：測試案例作為軟體行為的文件</li>
+    <li><strong>重構信心</strong>：有充分測試覆蓋才能安全重構</li>
+    <li><strong>持續交付基礎</strong>：自動化測試是 CI/CD 的基石</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h2>測試金字塔</h2>
+  <p>測試金字塔是指導測試策略的重要原則：</p>
+  <ul>
+    <li><strong>底部（單元測試）</strong>：數量多、執行快、成本低，測試最小可測試單元（函數或類別）</li>
+    <li><strong>中部（整合測試）</strong>：數量適中、驗證組件協作</li>
+    <li><strong>頂部（E2E測試）</strong>：數量少、執行慢、接近真實使用</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h2>單元測試特性</h2>
+  <ul>
+    <li><strong>隔離性</strong>：每個測試獨立運行，不依賴其他測試</li>
+    <li><strong>快速</strong>：執行時間通常在毫秒級</li>
+    <li><strong>確定性</strong>：相同的輸入總是產生相同的輸出</li>
+    <li><strong>可維護性</strong>：測試代碼應該與被測試代碼一樣整潔</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h2>測試驅動開發（TDD）</h2>
+  <p>TDD 的循環：紅（寫一個失敗的測試）→ 綠（寫最簡單的程式碼讓測試通過）→ 重構（改善程式碼品質）。這個循環確保了測試覆蓋率，也驅動了更好的設計。</p>
+</div>
+
+<div class="section">
+  <h2>測試範例</h2>
+  <div class="code">
+# 測試對象：簡單的計算器函數
+def add(a, b):
+    return a + b
+
+def subtract(a, b):
+    return a - b
+
+# 測試案例
+def test_add():
+    assert add(2, 3) == 5
+    assert add(-1, 1) == 0
+
+def test_subtract():
+    assert subtract(5, 3) == 2
+  </div>
+</div>
+
+<div class="section">
+  <h2>本課程範例</h2>
+  <ul>
+    <li><a href="https://github.com/ccckmit/course0/tree/main/code/軟體工程/agtw/tests">AgTW 測試</a></li>
+  </ul>
+</div>
+
+<div class="section">
+  <h2>相關連結</h2>
+  <ul>
+    <li><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E8%BD%AF%E9%AB%94%E5%B7%A5%E7%A8%8B/%E6%B8%AC%E8%A9%A6.md">Wiki: 測試</a></li>
+    <li><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E8%BD%AF%E9%AB%94%E5%B7%A5%E7%A8%8B/%E7%A8%8B%E5%BC%8F%E7%A2%BC%E5%93%81%E8%B3%AA.md">Wiki: 程式碼品質</a></li>
+  </ul>
+</div>
+
+</div>
+</body>
+</html>

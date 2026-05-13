@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>圖靈機 — 計算理論</title>
+<link rel="stylesheet" href="../main.css">
+<style>
+  .back-link a { color: #fff; }
+  .section h2 { color: #9b59b6; }
+  footer a { color: #9b59b6; }
+  pre { background: #2d2d2d; color: #f8f8f2; padding: 16px; border-radius: 8px; overflow-x: auto; font-family: "Consolas", "Monaco", monospace; font-size: 0.9rem; margin: 12px 0; }
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; }
+  table th, table td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+  table th { background: #f5f5f5; }
+</style>
+</head>
+<body>
+<header>
+  <div class="back-link"><a href="main.html">← 回入口</a></div>
+  <h1>圖靈機 (Turing Machine)</h1>
+  <p>通用計算模型，可計算性的數學定義</p>
+</header>
+<div class="container">
+  <div class="section">
+    <h2>什麼是圖靈機？</h2>
+    <p>圖靈機是艾倫·圖靈（Alan Turing）在 1936 年提出的抽象計算模型，被認為是電腦科學的理論基石。圖靈機不僅解決了判定問題，也定義了「可計算性」的數學意義，是所有現代電腦的理論原型。圖靈在論文《論可計算數及其在判定問題中的應用》中提出了圖靈機模型，並證明了不存在一個演算法可以判定任意數學命題的真假——這就是著名的停機問題。</p>
+  </div>
+
+  <div class="section">
+    <h2>形式定義與結構</h2>
+    <p>圖靈機是一個七元組 M = (Q, Σ, Γ, δ, q₀, q_accept, q_reject)：</p>
+    <table>
+      <tr><th>符號</th><th>意義</th></tr>
+      <tr><td>Q</td><td>有限的非空狀態集合</td></tr>
+      <tr><td>Σ</td><td>輸入字母表（不含空白符號）</td></tr>
+      <tr><td>Γ</td><td>磁帶字母表（包含 Σ 和空白符號 □）</td></tr>
+      <tr><td>δ</td><td>轉移函數 Q × Γ → Q × Γ × {L, R}</td></tr>
+      <tr><td>q₀</td><td>起始狀態，q₀ ∈ Q</td></tr>
+      <tr><td>q_accept</td><td>接受狀態</td></tr>
+      <tr><td>q_reject</td><td>拒絕狀態</td></tr>
+    </table>
+    <pre>┌─────────────────────────────────────────────────────────────┐
+│                      圖靈機結構                              │
+├─────────────────────────────────────────────────────────────┤
+│                                                              │
+│  ┌─────────┐    ┌─────────┐    ┌─────────────────────────┐ │
+│  │ 狀態寄存器 │───▶│ 轉移函數 │───▶│  無限磁帶              │ │
+│  └─────────┘    └─────────┘    │ ┌───┬───┬───┬───┬───┐  │ │
+│                                 │ │ □ │ a │ b │ c │ □ │  │ │
+│                                 │ └───┴───┴───┴───┴───┘  │ │
+│                                 │     ↑                  │ │
+│                                 │   讀寫頭                │ │
+│                                 └─────────────────────────┘ │
+└─────────────────────────────────────────────────────────────┘</pre>
+  </div>
+
+  <div class="section">
+    <h2>圖靈機 vs 有限狀態機</h2>
+    <table>
+      <tr><th>特性</th><th>有限狀態機 (FSM)</th><th>圖靈機</th></tr>
+      <tr><td>磁帶</td><td>無</td><td>無限</td></tr>
+      <tr><td>寫入能力</td><td>否</td><td>是</td></tr>
+      <tr><td>移動方向</td><td>只能前進</td><td>左/右</td></tr>
+      <tr><td>記憶能力</td><td>有限狀態</td><td>無限（磁帶）</td></tr>
+      <tr><td>計算能力</td><td>正規語言</td><td>任何可計算問題</td></tr>
+    </table>
+    <p>圖靈機比有限狀態機更強大之處在於：它可以寫入和修改磁帶，這使其具有了真正的「記憶能力」，能夠解決有限狀態機無法解決的問題，如識別語言 {aⁿbⁿ | n ≥ 1}。</p>
+  </div>
+
+  <div class="section">
+    <h2>停機問題</h2>
+    <p>停機問題是計算機科學中最重要的不可判定問題。它詢問：是否存在一個圖靈機 H，能夠判斷任意圖靈機 M 在任意輸入 w 上是否會停止？</p>
+    <p>證明使用反證法。假設存在這樣的 H，構造悖論機器 P：</p>
+    <pre>構造 P 如下：
+當輸入是 &lt;P&gt; 時：
+   如果 H(&lt;P&gt;, &lt;P&gt;) 說「會停機」
+    则进入无限循环
+  否則
+    停止</pre>
+    <p>如果 H 說 P(P) 會停機，則 P 會進入無限迴圈；如果 H 說 P(P) 不會停機，則 P 會停止。無論哪種情況都產生矛盾。因此，這樣的 H 不可能存在。這意味著存在無法用演算法解決的問題，電腦有本質上的限制。</p>
+  </div>
+
+  <div class="section">
+    <h2>Church-Turing 論點</h2>
+    <p>Church-Turing 論點是計算理論中最基本的假設：任何可有效計算的函數都可以由圖靈機計算。這不是一個定理，而是一個「論點」，因為「可有效計算」這個概念本身並非數學定義。論點得到以下支持：圖靈機可以模擬任何已知的計算模型；所有提出用於描述「可計算性」的數學模型都被證明與圖靈機等價；沒有任何已知的計算問題是圖靈機無法解決但其他模型可以解決的。</p>
+  </div>
+
+  <div class="section">
+    <h2>本課程範例</h2>
+    <ul>
+      <li><a href="https://github.com/ccckmit/course0/blob/main/code/%E8%A8%88%E7%AE%97%E7%90%86%E8%AB%96/turingMachine/TuringMachine.py">turingMachine/TuringMachine.py</a> — 圖靈機模擬器</li>
+      <li><a href="https://github.com/ccckmit/course0/blob/main/code/%E8%A8%88%E7%AE%97%E7%90%86%E8%AB%96/turingMachine/run.md">turingMachine/run.md</a> — 執行說明</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>相關連結</h2>
+    <ul>
+      <li><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E8%A8%88%E7%AE%97%E7%90%86%E8%AB%96/%E5%9C%96%E9%9D%88%E6%A9%9F.md">Wiki: 圖靈機</a></li>
+      <li><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E8%A8%88%E7%AE%97%E7%90%86%E8%AB%96/%E8%A8%88%E7%AE%97%E7%90%86%E8%AB%96.md">Wiki: 計算理論</a></li>
+      <li><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E8%A8%88%E7%AE%97%E7%90%86%E8%AB%96/%E6%9C%89%E9%99%90%E7%8A%B6%E6%85%8B%E6%A9%9F.md">Wiki: 有限狀態機</a></li>
+      <li><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E8%A8%88%E7%AE%97%E7%90%86%E8%AB%96/Lambda%E6%BC%94%E7%AE%97.md">Wiki: Lambda 演算</a></li>
+    </ul>
+  </div>
+
+  <footer>
+    <a href="main.html">← 回入口</a> ·
+    <a href="https://github.com/ccckmit/course0">GitHub</a>
+  </footer>
+</div>
+</body>
+</html>

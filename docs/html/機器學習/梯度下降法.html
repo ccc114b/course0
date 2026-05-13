@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>梯度下降法 — 機器學習</title>
+<link rel="stylesheet" href="../main.css">
+</head>
+<body>
+<header>
+  <div class="back-link"><a href="main.html">← 回到機器學習</a></div>
+  <h1>梯度下降法 (Gradient Descent)</h1>
+  <p>最優化的核心演算法，沿著梯度反方向迭代更新參數以找到最小值</p>
+</header>
+<div class="container">
+
+<div class="section">
+  <h2>概述</h2>
+  <p>梯度下降法是最優化的核心演算法，通過沿著函數梯度的反方向迭代更新參數，以找到函數的局部或全域最小值。對於函數 J(θ)，梯度下降更新規則為：θ_new = θ_old - α · ∇J(θ_old)，其中 α 為學習率 (learning rate)。</p>
+</div>
+
+<div class="section">
+  <h2>梯度下降類型</h2>
+  <p><strong>批量梯度下降 (Batch GD)</strong>：使用全部資料計算梯度，收斂穩定但每次迭代計算量大。</p>
+  <p><strong>隨機梯度下降 (SGD)</strong>：使用單一範例計算梯度，速度快且可逃離局部最小值，但收斂震盪不穩定。</p>
+  <p><strong>小批量梯度下降 (Mini-batch GD)</strong>：使用小批量資料計算梯度，平衡速度和穩定性，是深度學習的主流方法。</p>
+  <div class="code">
+# 小批量梯度下降
+batch_size = 32
+for _ in range(epochs):
+    indices = random.sample(range(len(X)), batch_size)
+    X_batch = X[indices]
+    y_batch = y[indices]
+    gradient = compute_gradient(X_batch, y_batch, theta)
+    theta = theta - learning_rate * gradient
+  </div>
+</div>
+
+<div class="section">
+  <h2>學習率與動量</h2>
+  <p>學習率過大會導致震盪發散，過小則收斂太慢。常見的學習率排程包括 Step Decay、Exponential Decay、Cosine 和 Warmup 策略。動量 (Momentum) 累積過去的梯度方向，加速收斂並減少震盪。Adam 優化器結合了動量和適應性學習率，是目前最廣泛使用的優化方法。</p>
+</div>
+
+<div class="section">
+  <h2>進階優化器</h2>
+  <p><strong>AdaGrad</strong>：針對稀疏特徵設計適應性學習率，但學習率會過早衰減。 <strong>RMSProp</strong>：解決 AdaGrad 學習率過早衰減的問題，使用指數衰減平均。 <strong>Adam</strong>：結合 Momentum 和 RMSProp，是目前最常用的深度學習優化器。收斂判斷可通過監控 loss 變化來實現，當損失變化小於閾值時停止訓練。</p>
+</div>
+
+<div class="section">
+  <h2>限制與挑戰</h2>
+  <p>梯度下降面臨局部最小值、鞍點、峽谷地形震盪和學習率選擇等挑戰。解決方法包括使用動量、隨機性、學習率排程以及 Adam 等進階優化器。梯度裁剪 (Gradient Clipping) 可防止梯度爆炸，而 Xavier/He 初始化則有助於緩解梯度消失問題。</p>
+</div>
+
+<div class="section">
+  <h2>相關連結</h2>
+  <ul>
+    <li><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E6%A9%9F%E5%99%A8%E5%AD%B8%E7%BF%92/%E6%A2%AF%E5%BA%A6%E4%B8%8B%E9%99%8D%E6%B3%95.md">Wiki: 梯度下降法</a></li>
+    <li><a href="反傳遞演算法.html">反傳遞演算法</a></li>
+    <li><a href="深度學習.html">深度學習</a></li>
+    <li><a href="神經網路.html">神經網路</a></li>
+  </ul>
+</div>
+
+</div>
+<footer><a href="main.html">機器學習</a> | <a href="../main.html">回首頁</a></footer>
+</body>
+</html>

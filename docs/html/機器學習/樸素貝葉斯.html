@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>樸素貝葉斯 — 機器學習</title>
+<link rel="stylesheet" href="../main.css">
+</head>
+<body>
+<header>
+  <div class="back-link"><a href="main.html">← 回到機器學習</a></div>
+  <h1>樸素貝葉斯 (Naive Bayes)</h1>
+  <p>基於貝葉斯定理的分類演算法，假設特徵之間相互獨立</p>
+</header>
+<div class="container">
+
+<div class="section">
+  <h2>原理</h2>
+  <p>樸素貝葉斯分類器基於貝葉斯定理：P(y|x) = P(x|y)P(y)/P(x)。由於 P(x) 對所有類別相同，預測時選擇使 P(x|y)P(y) 最大的類別：ŷ = argmax_y P(y) ∏ P(x_i|y)。儘管特徵獨立假設在現實中很少成立，但樸素貝葉斯在許多實際應用中表現出人意料的好效果，且具有訓練和預測速度快、對缺失值不敏感等優點。</p>
+</div>
+
+<div class="section">
+  <h2>高斯樸素貝葉斯</h2>
+  <p>假設連續特徵服從高斯分佈：P(x_i|y) = N(x_i; μ_y, σ_y²)。訓練時計算每個類別的均值和方差，預測時計算每個特徵在高斯分佈下的機率密度。高斯樸素貝葉斯適合處理連續特徵的資料集，如花朵特徵分類。實作上需注意方差不能為零，通常添加一個小常數 (1e-9) 以避免數值問題。</p>
+  <div class="code">
+class GaussianNB:
+    def fit(self, X, y):
+        for c in self.classes:
+            X_c = X[y == c]
+            self.mean[c] = X_c.mean(axis=0)
+            self.var[c] = X_c.var(axis=0) + 1e-9
+    def predict(self, X):
+        posteriors = [np.log(prior) + np.sum(np.log(gaussian_pdf(x, mean, var)))
+                      for mean, var in zip(self.mean, self.var)]
+        return self.classes[np.argmax(posteriors)]
+  </div>
+</div>
+
+<div class="section">
+  <h2>sklearn 實作</h2>
+  <p>sklearn.naive_bayes 提供了多種樸素貝葉斯變體： <strong>GaussianNB</strong>：連續特徵，假設高斯分佈。 <strong>MultinomialNB</strong>：計數特徵，適合文本分類（詞頻）。 <strong>CategoricalNB</strong>：類別特徵。 <strong>ComplementNB</strong>：對類別不平衡資料更魯棒的 Complement NB。MultinomialNB 常與 CountVectorizer 搭配使用進行文本分類，參數 alpha 控制拉普拉斯平滑強度，避免零機率問題。</p>
+</div>
+
+<div class="section">
+  <h2>拉普拉斯平滑</h2>
+  <p>拉普拉斯平滑用於避免零機率問題：P(x_i|y) = (count(x_i, y) + α) / (count(y) + α·|V|)。其中 α 為平滑參數，通常設為 1（加一平滑）。平滑確保即使某個特徵值在訓練集中未出現，其預測機率也不會為零。這對文本分類特別重要，因為測試文本可能包含訓練集中未見過的詞彙。</p>
+</div>
+
+<div class="section">
+  <h2>相關連結</h2>
+  <ul>
+    <li><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E6%A9%9F%E5%99%A8%E5%AD%B8%E7%BF%92/%E6%A8%B8%E7%B4%A0%E8%B2%9D%E8%91%89%E6%96%AF.md">Wiki: 樸素貝葉斯</a></li>
+    <li><a href="分類演算法.html">分類演算法</a></li>
+    <li><a href="監督式學習.html">監督式學習</a></li>
+  </ul>
+</div>
+
+</div>
+<footer><a href="main.html">機器學習</a> | <a href="../main.html">回首頁</a></footer>
+</body>
+</html>

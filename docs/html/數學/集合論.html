@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>集合論 — 數學 — 陳鍾誠的課程教材</title>
+<link rel="stylesheet" href="../main.css">
+</head>
+<body>
+<header>
+  <div class="back-link"><a href="main.html">← 回到數學入口</a></div>
+  <h1>集合論</h1>
+  <p>離散數學的基礎</p>
+</header>
+<div class="container">
+
+<div class="section">
+<h2>概述</h2>
+<p>集合論是現代數學的基礎，研究對象的集合及其運算。集合論的概念滲透到計算機科學的各個角落：從資料庫的關係模型到程式語言的類型系統，從演算法的複雜度分析到機器學習的特徵空間。</p>
+<p>集合是一些確定且互不相同的對象（稱為元素）的整體。集合的基本性質包括：確定性、互異性、無序性。</p>
+</div>
+
+<div class="section">
+<h2>集合運算</h2>
+<p>給定兩個集合 A 和 B：</p>
+<ul>
+<li><strong>聯集</strong> A ∪ B：屬於 A 或屬於 B 的所有元素</li>
+<li><strong>交集</strong> A ∩ B：同時屬於 A 和 B 的所有元素</li>
+<li><strong>差集</strong> A - B：屬於 A 但不屬於 B 的元素</li>
+<li><strong>對稱差</strong> A △ B = (A-B) ∪ (B-A)</li>
+<li><strong>笛卡爾積</strong> A × B：所有有序對 (a,b) 組成的集合</li>
+<li><strong>冪集</strong> 𝒫(A)：A 的所有子集組成的集合，|𝒫(A)| = 2ⁿ</li>
+</ul>
+<p><strong>集合恒等式</strong>：德摩根定律 (A∪B)' = A'∩B'、(A∩B)' = A'∪B'；分配律、吸收律、冪等律等構成集合代數的基礎。</p>
+</div>
+
+<div class="section">
+<h2>關係與函數</h2>
+<p><strong>關係</strong>是笛卡爾積的子集 R ⊆ A × B。重要的關係性質包括：自反性、對稱性、反對稱性、傳遞性。<strong>等價關係</strong>同時滿足自反、對稱、傳遞，可將集合劃分為等價類。</p>
+<p><strong>函數</strong>是一種特殊的關係，每個輸入對應唯一輸出。函數可以分為單射、滿射、雙射。雙射函數（一一對應）的逆函數存在。</p>
+</div>
+
+<div class="section">
+<h2>ZFC 公理系統</h2>
+<p>樸素集合論存在羅素悖論等邏輯困境，因此需要公理化的集合論。ZFC（Zermelo-Fraenkel + 選擇公理）是目前最廣泛使用的公理系統：</p>
+<ul>
+<li><strong>外延公理</strong>：兩個集合相等若且唯若它們有相同的元素</li>
+<li><strong>空集公理</strong>：存在不包含任何元素的集合</li>
+<li><strong>配對公理</strong>、<strong>聯集公理</strong>、<strong>冪集公理</strong></li>
+<li><strong>無窮公理</strong>：承認無窮集合的存在</li>
+<li><strong>選擇公理</strong>：可以從一族非空集合中各選一個元素</li>
+</ul>
+</div>
+
+<div class="section">
+<h2>相關連結</h2>
+<ul>
+<li><a href="https://github.com/ccckmit/course0/blob/main/wiki/數學/集合論.md" target="_blank">Wiki: 集合論</a></li>
+<li><a href="https://github.com/ccckmit/course0/blob/main/wiki/數學/數論.md" target="_blank">Wiki: 數論</a></li>
+<li><a href="https://github.com/ccckmit/course0/blob/main/wiki/數學/邏輯學.md" target="_blank">Wiki: 邏輯學</a></li>
+<li><a href="main.html">回到數學入口</a></li>
+</ul>
+</div>
+
+</div>
+<footer>
+<a href="https://github.com/ccckmit/course0">回到課程首頁</a>
+</footer>
+</body>
+</html>

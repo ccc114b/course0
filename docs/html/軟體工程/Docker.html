@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Docker — 軟體工程</title>
+<link rel="stylesheet" href="../main.css">
+</head>
+<body>
+<header>
+  <div class="back-link"><a href="main.html">← 回入口</a></div>
+  <h1>Docker</h1>
+  <p>開源容器化平台，實現「建置一次，到處執行」</p>
+</header>
+<div class="container">
+
+<div class="section">
+  <h2>容器 vs 虛擬機</h2>
+  <p>傳統虛擬機包含 Guest OS，需要 Hypervisor，啟動慢、資源佔用高。容器共享 Host Kernel，僅包含應用程式與相依函式庫，啟動快、資源使用更有效率。</p>
+</div>
+
+<div class="section">
+  <h2>核心元件</h2>
+  <ul>
+    <li><strong>Image（映像檔）</strong>：唯讀模板，定義容器內容</li>
+    <li><strong>Container（容器）</strong>：Image 的執行實例</li>
+    <li><strong>Registry（倉庫）</strong>：存放和分發 Image（Docker Hub、ECR、GCR）</li>
+    <li><strong>Dockerfile</strong>：定義 Image 建置指令</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h2>基本指令</h2>
+  <div class="code">
+# Image 操作
+docker pull ubuntu:22.04
+docker images
+docker build -t my-app:1.0 .
+docker push registry.example.com/my-app:1.0
+
+# Container 操作
+docker run -d --name my-container -p 8080:80 nginx
+docker ps
+docker ps -a
+docker stop my-container
+docker rm my-container
+
+# 其他
+docker exec -it my-container bash
+docker logs my-container
+docker compose up -d
+  </div>
+</div>
+
+<div class="section">
+  <h2>Dockerfile 範例</h2>
+  <div class="code">
+FROM python:3.11-slim
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+COPY . .
+EXPOSE 8000
+CMD ["python", "app.py"]
+  </div>
+</div>
+
+<div class="section">
+  <h2>Docker Compose</h2>
+  <p>使用 YAML 定義多容器應用，適合本地開發環境。可一次啟動多個服務（Web、資料庫、快取等），並配置網路與磁碟掛載。</p>
+</div>
+
+<div class="section">
+  <h2>本課程範例</h2>
+  <ul>
+    <li><a href="https://github.com/ccckmit/course0/tree/main/code/軟體工程/agtw">AgTW — Docker 整合範例</a></li>
+  </ul>
+</div>
+
+<div class="section">
+  <h2>相關連結</h2>
+  <ul>
+    <li><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E8%BD%AF%E9%AB%94%E5%B7%A5%E7%A8%8B/Docker.md">Wiki: Docker</a></li>
+    <li><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E8%BD%AF%E9%AB%94%E5%B7%A5%E7%A8%8B/%E6%8C%81%E7%BA%8C%E6%95%B4%E5%90%88.md">Wiki: 持續整合</a></li>
+    <li><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E8%BD%AF%E9%AB%94%E5%B7%A5%E7%A8%8B/%E5%AE%B9%E5%99%A8%E7%B7%A8%E6%8E%92.md">Wiki: 容器編排</a></li>
+  </ul>
+</div>
+
+</div>
+</body>
+</html>

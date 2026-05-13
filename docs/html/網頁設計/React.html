@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>React — 網頁設計</title>
+<link rel="stylesheet" href="../main.css">
+</head>
+<body>
+<header>
+  <div class="back-link"><a href="./index.html">← 回網頁設計</a></div>
+  <h1>React</h1>
+  <p>前端 UI 函式庫</p>
+</header>
+<div class="container">
+  <div class="section">
+    <h2>React 核心概念</h2>
+    <p>React 是 Facebook (Meta) 於 2013 年發布的 JavaScript UI 函式庫，採用元件化開發與虛擬 DOM 機制。開發者以宣告式方式描述 UI，React 自動處理更新邏輯。</p>
+    <ul>
+      <li><strong>虛擬 DOM</strong> — 透過差異比對最小化實際 DOM 操作</li>
+      <li><strong>宣告式設計</strong> — 描述 UI 應有的樣子，而非操作步驟</li>
+      <li><strong>單向資料流</strong> — 資料從上往下傳遞，易於追蹤</li>
+    </ul>
+  </div>
+  <div class="section">
+    <h2>JSX 語法</h2>
+    <p>JSX 是 JavaScript 的語法擴展，允許在 JS 中撰寫 HTML 類似的語法。</p>
+    <div class="code">function Welcome({ name }) {<br>    return &lt;h1&gt;Hello, {name}!&lt;/h1&gt;;<br>}<br><br>const element = (<br>    &lt;div&gt;<br>        {showMessage && &lt;p&gt;Message&lt;/p&gt;}<br>        {items.map(item =&gt; &lt;li key={item}&gt;{item}&lt;/li&gt;)}<br>    &lt;/div&gt;<br>);</div>
+  </div>
+  <div class="section">
+    <h2>狀態管理與 Hooks</h2>
+    <p>React Hooks 是函式元件中管理狀態與副作用的方式。</p>
+    <div class="code">import { useState, useEffect } from 'react';<br><br>function Counter() {<br>    const [count, setCount] = useState(0);<br>    return &lt;button onClick={() =&gt; setCount(count+1)}&gt;{count}&lt;/button&gt;;<br>}<br><br>function DataFetcher() {<br>    const [data, setData] = useState(null);<br>    useEffect(() => {<br>        fetch('/api/data').then(res => res.json()).then(setData);<br>    }, []);<br>    return &lt;div&gt;{data}&lt;/div&gt;;<br>}</div>
+  </div>
+  <div class="section">
+    <h2>元件組合</h2>
+    <p>React 應用程式由多個獨立元件組合而成，每個元件負責一部分 UI。</p>
+    <div class="code">function App() {<br>    return (<br>        &lt;div className="app"&gt;<br>            &lt;Header title="My App" /&gt;<br>            &lt;main&gt;&lt;Content /&gt;&lt;/main&gt;<br>            &lt;Footer /&gt;<br>        &lt;/div&gt;<br>    );<br>}</div>
+  </div>
+  <div class="section">
+    <h2>本課程範例</h2>
+    <ul>
+      <li><a href="https://github.com/ccckmit/course0/blob/main/code/%E7%B6%B2%E7%AB%99%E8%A8%AD%E8%A8%88/08-react">08-react/</a> — React 範例</li>
+    </ul>
+  </div>
+  <div class="section">
+    <h2>相關連結</h2>
+    <ul>
+      <li><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E7%B6%B2%E9%A0%81%E8%A8%AD%E8%A8%88/React.md">Wiki: React</a></li>
+      <li><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E7%B6%B2%E9%A0%81%E8%A8%AD%E8%A8%88/%E5%89%8D%E7%AB%AF%E6%A1%86%E6%9E%B6.md">Wiki: 前端框架</a></li>
+      <li><a href="JavaScript.html">JavaScript — 基礎語言</a></li>
+    </ul>
+  </div>
+  <footer><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E7%B6%B2%E9%A0%81%E8%A8%AD%E8%A8%88/React.md">React.md</a></footer>
+</div>
+</body>
+</html>

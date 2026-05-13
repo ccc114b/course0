@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>分類演算法 — 機器學習</title>
+<link rel="stylesheet" href="../main.css">
+</head>
+<body>
+<header>
+  <div class="back-link"><a href="main.html">← 回到機器學習</a></div>
+  <h1>分類演算法 (Classification Algorithms)</h1>
+  <p>根據輸入特徵將樣本分配到預定義類別的監督式學習方法</p>
+</header>
+<div class="container">
+
+<div class="section">
+  <h2>概述</h2>
+  <p>分類是機器學習中最常見的監督式學習任務，目標是根據輸入特徵將樣本分配到預定義的類別中。廣泛應用於垃圾郵件檢測、疾病診斷、圖像識別、信用風險評估等場景。根據類別數量可分為二分類和多分類，根據類別是否互斥可分為單標籤和多標籤分類。分類演算法的發展從 1960 年代的感知機到現代深度學習，經歷了漫長的演進歷程。</p>
+</div>
+
+<div class="section">
+  <h2>邏輯回歸</h2>
+  <p>邏輯回歸 (Logistic Regression) 雖名稱包含「回歸」，但實際上是分類演算法。它使用 Sigmoid 函數將線性組合映射到 [0, 1] 區間表示類別機率：P(y=1|x) = 1/(1 + e^-(w^T x + b))。Softmax 回歸將邏輯回歸推廣到多分類，透過 Softmax 函數輸出每個類別的機率分佈。邏輯回歸簡單、快速、可解釋性強，是分類任務的優秀基線模型。</p>
+</div>
+
+<div class="section">
+  <h2>支持向量機 (SVM)</h2>
+  <p>SVM 找到一個最大化類別間隔的超平面。支援線性核、多項式核、RBF 核和 Sigmoid 核，其中 RBF 核最常用。核技巧 (Kernel Trick) 將數據映射到高維空間，使線性不可分的數據在高維空間中變得線性可分。SVM 在高維度數據上表現優秀、泛化能力強，但大資料集訓練較慢。參數 C 控制正則化強度，gamma 控制 RBF 核的影響範圍。</p>
+</div>
+
+<div class="section">
+  <h2>決策樹與集成學習</h2>
+  <p>決策樹透過遞迴分割特徵空間來建立分類規則，使用 Gini 不純度或熵作為分裂標準。隨機森林透過自助採樣和隨機特徵選擇建構多棵決策樹，通過投票匯總預測，有效降低過擬合。梯度提升 (Gradient Boosting) 逐步添加決策樹來修正前一步的殘差，精度高但在 Kaggle 競賽和生產環境中廣泛使用。</p>
+</div>
+
+<div class="section">
+  <h2>演算法比較與評估</h2>
+  <p>邏輯回歸：簡單快速適合線性問題；SVM：高維度表現好但大資料集慢；決策樹：可解釋但易過擬合；隨機森林：抗過擬合適合大型資料集；梯度提升：精度高但訓練時間長。分類評估使用混淆矩陣、精確率、召回率、F1 分數和 ROC-AUC。多分類評估可使用 macro/micro/weighted 平均策略。</p>
+</div>
+
+<div class="section">
+  <h2>相關連結</h2>
+  <ul>
+    <li><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E6%A9%9F%E5%99%A8%E5%AD%B8%E7%BF%92/%E5%88%86%E9%A1%9E%E6%BC%94%E7%AE%97%E6%B3%95.md">Wiki: 分類演算法</a></li>
+    <li><a href="樸素貝葉斯.html">樸素貝葉斯</a></li>
+    <li><a href="K-近鄰.html">K-近鄰</a></li>
+    <li><a href="隨機森林.html">隨機森林</a></li>
+  </ul>
+</div>
+
+</div>
+<footer><a href="main.html">機器學習</a> | <a href="../main.html">回首頁</a></footer>
+</body>
+</html>

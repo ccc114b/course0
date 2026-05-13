@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>搜尋法 — 演算法</title>
+<link rel="stylesheet" href="../main.css">
+</head>
+<body>
+<header>
+  <div class="back-link"><a href="main.html">← 回入口</a></div>
+  <h1>搜尋法 (Search Algorithms)</h1>
+  <p>在資料結構中尋找特定元素的計算方法</p>
+</header>
+<div class="container">
+<div class="section">
+<h2>線性搜尋</h2>
+<p>線性搜尋從頭到尾遍歷每個元素，時間複雜度 O(n)。是最簡單的搜尋方法，適用於未排序資料。</p>
+<div class="code">def linear_search(arr, target):
+    for i, x in enumerate(arr):
+        if x == target:
+            return i
+    return -1</div>
+</div>
+<div class="section">
+<h2>二分搜尋</h2>
+<p>二分搜尋要求資料已排序，每次將搜尋範圍縮小一半。時間複雜度 O(log n)，是搜尋有序資料的首選。</p>
+<div class="code">def binary_search(arr, target):
+    left, right = 0, len(arr) - 1
+    while left <= right:
+        mid = (left + right) // 2
+        if arr[mid] == target:
+            return mid
+        elif arr[mid] < target:
+            left = mid + 1
+        else:
+            right = mid - 1
+    return -1</div>
+</div>
+<div class="section">
+<h2>進階搜尋演算法</h2>
+<p><strong>A* 搜尋</strong>：結合啟發式函數的最短路徑搜尋演算法，廣泛用於遊戲和地圖導航。</p>
+<p><strong>廣度優先搜尋 (BFS)</strong>：逐層走訪，用於無權圖的最短路徑。</p>
+<p><strong>深度優先搜尋 (DFS)</strong>：深入走訪，用於拓墣排序、連通分量檢測。</p>
+</div>
+<div class="section">
+<h2>本課程範例</h2>
+<ul>
+<li><a href="https://github.com/ccckmit/course0/tree/main/code/演算法/method/00-bigO/lsearch.py" target="_blank"><strong>lsearch.py</strong></a>：線性搜尋實作</li>
+<li><a href="https://github.com/ccckmit/course0/tree/main/code/演算法/method/06-搜尋法/astar.py" target="_blank"><strong>astar.py</strong></a>：A* 搜尋實作</li>
+<li><a href="https://github.com/ccckmit/course0/tree/main/code/演算法/method/06-搜尋法/binSearch.py" target="_blank"><strong>binSearch.py</strong></a>：二分搜尋實作</li>
+</ul>
+</div>
+<div class="section">
+<h2>相關連結</h2>
+<ul>
+<li><a href="main.html">回到演算法入口</a></li>
+<li><a href="index.html">回到演算法 index</a></li>
+<li><a href="https://github.com/ccckmit/course0/blob/main/wiki/演算法/搜尋法.md" target="_blank">原始 Wiki 文章</a></li>
+<li><a href="排序演算法.html">排序演算法</a></li>
+<li><a href="圖論.html">圖論</a></li>
+</ul>
+</div>
+</div>
+<footer><a href="main.html">演算法</a> | <a href="../index.html">回首頁</a></footer>
+</body>
+</html>

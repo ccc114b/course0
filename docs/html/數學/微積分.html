@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>微積分 — 數學 — 陳鍾誠的課程教材</title>
+<link rel="stylesheet" href="../main.css">
+</head>
+<body>
+<header>
+  <div class="back-link"><a href="main.html">← 回到數學入口</a></div>
+  <h1>微積分</h1>
+  <p>微分、積分與最佳化</p>
+</header>
+<div class="container">
+
+<div class="section">
+<h2>微分的基礎</h2>
+<p>一個函數 f(x) 在點 x 的導數定義為極限：f'(x) = lim_{h→0} (f(x+h) - f(x)) / h，代表函數圖形在該點切線的斜率。</p>
+<p><strong>基本微分法則</strong>：常數微分為 0，冪函數微分 d/dx(xⁿ) = nxⁿ⁻¹，鏈式法則 d/dx(f(g(x))) = f'(g(x))·g'(x)。常見導數包括 d/dx(sin x) = cos x、d/dx(eˣ) = eˣ、d/dx(ln x) = 1/x。</p>
+</div>
+
+<div class="section">
+<h2>積分的基礎</h2>
+<p>積分是微分的逆運算。不定積分 ∫f(x)dx = F(x) + C 其中 F'(x) = f(x)。定積分 ∫ₐᵇ f(x)dx 計算函數曲線下的面積。</p>
+<p><strong>微積分基本定理</strong>建立了微分和積分之間的深刻聯繫：若 F(x) = ∫ₐˣ f(t)dt，則 F'(x) = f(x)。若 F 是 f 的反導數，則 ∫ₐᵇ f(x)dx = F(b) - F(a)。</p>
+</div>
+
+<div class="section">
+<h2>偏微分與梯度</h2>
+<p>對於多變數函數，偏導數是固定其他變數對某一變數的微分。梯度 ∇f = (∂f/∂x₁, ∂f/∂x₂, ..., ∂f/∂xₙ) 是由偏導數組成的向量，指向函數增長最快的方向。</p>
+<p><strong>Hessian 矩陣</strong>由二階偏導數組成，用於判斷極值點的性質（正定=極小值，負定=極大值）。</p>
+</div>
+
+<div class="section">
+<h2>梯度下降法</h2>
+<p>梯度下降法是最最佳化的核心演算法：x_{n+1} = x_n - α∇f(x_n)，其中 α 是學習率。對於凸函數，若學習率適當則保證收斂到全域極小值。</p>
+<p>常見變種包括：<strong>SGD</strong>（每次使用單個樣本）、<strong>小批量梯度下降</strong>、<strong>動量法</strong>、<strong>Adam</strong>（結合動量和自適應學習率）。</p>
+<p><strong>反向傳播</strong>是神經網路訓練的核心演算法，本質上是應用梯度下降法，利用多變數鏈式法則計算每個參數的梯度。</p>
+</div>
+
+<div class="section">
+<h2>本課程範例</h2>
+<p>相關程式碼在 <a href="https://github.com/ccckmit/course0/tree/main/code/數學/04-微積分/_ccc" target="_blank">code/數學/04-微積分/_ccc</a>：</p>
+<ul>
+<li><a href="https://github.com/ccckmit/course0/blob/main/code/數學/04-微積分/_ccc/calculus.py" target="_blank">calculus.py</a> — 微積分實作</li>
+<li><a href="https://github.com/ccckmit/course0/blob/main/code/數學/04-微積分/_ccc/diff.py" target="_blank">diff.py</a> — 微分實作</li>
+</ul>
+</div>
+
+<div class="section">
+<h2>相關連結</h2>
+<ul>
+<li><a href="https://github.com/ccckmit/course0/blob/main/wiki/數學/微積分.md" target="_blank">Wiki: 微積分</a></li>
+<li><a href="https://github.com/ccckmit/course0/blob/main/wiki/數學/物理數學.md" target="_blank">Wiki: 物理數學</a></li>
+<li><a href="main.html">回到數學入口</a></li>
+</ul>
+</div>
+
+</div>
+<footer>
+<a href="https://github.com/ccckmit/course0">回到課程首頁</a>
+</footer>
+</body>
+</html>

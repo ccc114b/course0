@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>資料結構 — 演算法</title>
+<link rel="stylesheet" href="../main.css">
+</head>
+<body>
+<header>
+  <div class="back-link"><a href="main.html">← 回入口</a></div>
+  <h1>資料結構 (Data Structures)</h1>
+  <p>組織、儲存和操作資料的基礎方法</p>
+</header>
+<div class="container">
+<div class="section">
+<h2>線性資料結構</h2>
+<p><strong>陣列 (Array)</strong>：連續記憶體，O(1) 隨機存取，O(n) 插入/刪除。</p>
+<p><strong>鏈結串列 (Linked List)</strong>：非連續記憶體，O(n) 存取，O(1) 插入/刪除。</p>
+<p><strong>堆疊 (Stack)</strong>：後進先出 (LIFO)，用於函數呼叫、括號匹配。</p>
+<p><strong>佇列 (Queue)</strong>：先進先出 (FIFO)，用於 BFS、工作排程。</p>
+</div>
+<div class="section">
+<h2>樹狀結構</h2>
+<p><strong>二元樹</strong>：每個節點最多兩個子節點。</p>
+<p><strong>堆積</strong>：完全二元樹實現優先佇列。</p>
+<p><strong>二元搜尋樹</strong>：左小右大，支援高效查找。</p>
+<p><strong>平衡樹</strong>：AVL、紅黑樹，保證 O(log n) 操作。</p>
+</div>
+<div class="section">
+<h2>圖結構</h2>
+<p><strong>鄰接矩陣</strong>：V×V 矩陣，適合稠密圖。</p>
+<p><strong>鄰接串列</strong>：每個頂點維護邊串列，適合稀疏圖。</p>
+</div>
+<div class="section">
+<h2>雜湊結構</h2>
+<p>雜湊表使用雜湊函數將鍵映射到陣列索引，實現平均 O(1) 的查找。搭配鏈結法或開放定址法處理碰撞。布隆過濾器是空間高效的機率性變體。</p>
+</div>
+<div class="section">
+<h2>本課程範例</h2>
+<ul>
+<li><a href="https://github.com/ccckmit/course0/tree/main/code/演算法/method/02b-雜湊法/hashtable/hash1.py" target="_blank"><strong>hash1.py</strong></a>：雜湊表實作</li>
+<li><a href="https://github.com/ccckmit/course0/tree/main/code/演算法/method/04a-遞迴法/01-basic/hanoi.py" target="_blank"><strong>hanoi.py</strong></a>：堆疊應用（漢諾塔）</li>
+<li><a href="https://github.com/ccckmit/course0/tree/main/code/演算法/method/00-bigO/bubbleSort.py" target="_blank"><strong>bubbleSort.py</strong></a>：陣列操作</li>
+</ul>
+</div>
+<div class="section">
+<h2>相關連結</h2>
+<ul>
+<li><a href="main.html">回到演算法入口</a></li>
+<li><a href="index.html">回到演算法 index</a></li>
+<li><a href="https://github.com/ccckmit/course0/blob/main/wiki/演算法/資料結構.md" target="_blank">原始 Wiki 文章</a></li>
+<li><a href="堆積.html">堆積</a></li>
+<li><a href="二元搜尋樹.html">二元搜尋樹</a></li>
+<li><a href="雜湊表.html">雜湊表</a></li>
+</ul>
+</div>
+</div>
+<footer><a href="main.html">演算法</a> | <a href="../index.html">回首頁</a></footer>
+</body>
+</html>

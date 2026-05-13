@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>作業系統 — 系統程式</title>
+<link rel="stylesheet" href="../main.css">
+</head>
+<body>
+<header>
+  <div class="back-link"><a href="main.html">← 回入口</a></div>
+  <h1>作業系統 (Operating System)</h1>
+  <p>資源管理與程序排程的核心系統軟體</p>
+</header>
+<div class="container">
+<div class="section">
+<h2>什麼是作業系統？</h2>
+<p>作業系統是管理電腦硬體與軟體資源的系統軟體，作為使用者與硬體之間的介面。它負責協調並管理電腦的各項資源，讓使用者與應用程式能夠有效率地使用這些資源。</p>
+</div>
+<div class="section">
+<h2>核心功能</h2>
+<h3>程序管理</h3>
+<p>建立、執行、暫停與終止程式行程。包括程序排程（決定哪個程序獲得 CPU）、行程切換、程序同步。</p>
+<h3>記憶體管理</h3>
+<p>分配與回收記憶體空間。包括虛擬記憶體、分頁/分段、記憶體保護。</p>
+<h3>檔案系統</h3>
+<p>管理儲存裝置上的資料，包含檔案管理、目錄管理、檔案保護。</p>
+<h3>設備管理</h3>
+<p>管理各種輸入輸出設備，包含驅動程式、緩衝管理、設備排程。</p>
+</div>
+<div class="section">
+<h2>主要元件</h2>
+<ul>
+<li><strong>核心（Kernel）</strong>：最基礎的系統功能，運行在特權模式</li>
+<li><strong>使用者介面（Shell）</strong>：CLI 或 GUI 互動介面</li>
+<li><strong>系統呼叫（System Call）</strong>：應用程式與核心溝通的橋樑</li>
+</ul>
+</div>
+<div class="section">
+<h2>經典作業系統</h2>
+<ul>
+<li><strong>Unix</strong>：現代作業系統的祖先</li>
+<li><strong>Linux</strong>：開源的 Unix-like 系統</li>
+<li><strong>Windows</strong>：微軟商業系統</li>
+<li><strong>macOS</strong>：蘋果系統</li>
+<li><strong>xv6</strong>：教育用的簡化 Unix v6</li>
+</ul>
+</div>
+<div class="section">
+<h2>本課程範例</h2>
+<ul>
+<li><a href="https://github.com/ccckmit/course0/tree/main/code/系統程式/os/mini-riscv-os2" target="_blank"><strong>mini-riscv-os2</strong></a>：RISC-V 精簡作業系統</li>
+<li><a href="https://github.com/ccckmit/course0/tree/main/code/系統程式/os/xv7" target="_blank"><strong>xv7</strong></a>：x86 教育作業系統</li>
+<li><a href="https://github.com/ccckmit/course0/tree/main/code/系統程式/os/xv6" target="_blank"><strong>xv6</strong></a>：Unix v6 移植版</li>
+<li><a href="https://github.com/ccckmit/course0/tree/main/code/系統程式/linux" target="_blank"><strong>linux</strong></a>：Linux 系統程式範例</li>
+</ul>
+</div>
+<div class="section">
+<h2>相關連結</h2>
+<ul>
+<li><a href="index.html">回到系統程式 index</a></li>
+<li><a href="main.html">回到入口</a></li>
+<li><a href="https://github.com/ccckmit/course0/blob/main/wiki/系統程式/作業系統.md" target="_blank">原始 Wiki 文章</a></li>
+<li><a href="https://github.com/ccckmit/course0/tree/main/code/系統程式/os" target="_blank">程式碼範例</a></li>
+</ul>
+</div>
+</div>
+<footer><a href="main.html">系統程式</a> | <a href="../index.html">回首頁</a></footer>
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>生成對抗網路 (GAN) — 機器學習</title>
+<link rel="stylesheet" href="../main.css">
+</head>
+<body>
+<header>
+  <div class="back-link"><a href="main.html">← 回到機器學習</a></div>
+  <h1>生成對抗網路 (GAN)</h1>
+  <p>生成器與判別器相互對抗的生成模型</p>
+</header>
+<div class="container">
+
+<div class="section">
+  <h2>概述</h2>
+  <p>生成對抗網路（Generative Adversarial Networks，GAN）由 Ian Goodfellow 等人於 2014 年提出，被譽為近年來最重要的生成模型之一。GAN 的核心思想源自博弈論中的「零和遊戲」，透過兩個神經網路相互對抗的方式，使生成器能夠學習產生高度逼真的資料。GAN 的出現徹底改變了生成式 AI 的發展方向，在圖像合成、藝術創作、醫學影像、資料增強等領域有廣泛應用。</p>
+</div>
+
+<div class="section">
+  <h2>核心概念</h2>
+  <p>GAN 由兩個核心组件組成：</p>
+  <ul>
+    <li><strong>生成器 (Generator)</strong>：從隨機噪音中生成假的樣本，目標是欺騙判別器</li>
+    <li><strong>判別器 (Discriminator)</strong>：區分輸入樣本的真假，目標是正確識別真假</li>
+  </ul>
+  <p>這兩個網路在訓練過程中相互競爭，生成器不斷提高生成品質以欺騙判別器，判別器不斷提高鑒別能力。最終達到納許均衡——生成器能產生判別器無法區分的逼真樣本。</p>
+</div>
+
+<div class="section">
+  <h2>發展演進</h2>
+  <ul>
+    <li><strong>2014</strong>：原始 GAN 提出</li>
+    <li><strong>2015</strong>：DCGAN，首次將卷積網路應用於 GAN</li>
+    <li><strong>2016</strong>：Conditional GAN，加入條件控制生成屬性</li>
+    <li><strong>2017</strong>：WGAN，改進訓練穩定性，解決模式崩潰</li>
+    <li><strong>2018-2020</strong>：StyleGAN 系列，實現高品質可控人臉生成</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h2>訓練挑戰</h2>
+  <p>GAN 的訓練極具挑戰性，常見問題包括：</p>
+  <ul>
+    <li><strong>模式崩潰</strong>：生成器只產生少量相似樣本，缺乏多樣性</li>
+    <li><strong>不收斂</strong>：生成器和判別器難以達到平衡</li>
+    <li><strong>梯度消失</strong>：判別器太強時生成器無法學到有用資訊</li>
+  </ul>
+  <p>WGAN 通過使用 Wasserstein 距離替代 JS 散度，顯著改善了訓練穩定性。其他技術如梯度懲罰、譜歸一化等也被廣泛使用。</p>
+</div>
+
+<div class="section">
+  <h2>本課程範例</h2>
+  <ul>
+    <li><a href="https://github.com/ccckmit/course0/blob/main/code/%E6%A9%9F%E5%99%A8%E5%AD%B8%E7%BF%92/image/mnistGanGen/train.py">train.py</a> — MNIST GAN 訓練</li>
+    <li><a href="https://github.com/ccckmit/course0/blob/main/code/%E6%A9%9F%E5%99%A8%E5%AD%B8%E7%BF%92/image/mnistGanGen/generate.py">generate.py</a> — MNIST GAN 生成</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h2>相關連結</h2>
+  <ul>
+    <li><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E6%A9%9F%E5%99%A8%E5%AD%B8%E7%BF%92/%E7%94%9F%E6%88%90%E5%B0%8D%E6%8A%97%E7%B6%B2%E8%B7%AF.md">Wiki: 生成對抗網路</a></li>
+    <li><a href="深度學習.html">深度學習</a></li>
+    <li><a href="卷積神經網路.html">卷積神經網路</a></li>
+  </ul>
+</div>
+
+</div>
+<footer><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E6%A9%9F%E5%99%A8%E5%AD%B8%E7%BF%92/%E7%94%9F%E6%88%90%E5%B0%8D%E6%8A%97%E7%B6%B2%E8%B7%AF.md">編輯此頁</a></footer>
+</body>
+</html>

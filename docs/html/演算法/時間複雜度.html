@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>時間複雜度 — 演算法</title>
+<link rel="stylesheet" href="../main.css">
+</head>
+<body>
+<header>
+  <div class="back-link"><a href="main.html">← 回入口</a></div>
+  <h1>時間複雜度 (Time Complexity)</h1>
+  <p>演算法執行時間隨輸入規模增長的趨勢分析</p>
+</header>
+<div class="container">
+<div class="section">
+<h2>大 O 標記法</h2>
+<p>大 O 標記法描述演算法的上界，即在最壞情況下執行時間的成長趨勢。若存在正數 c 和 n₀ 使得當 n ≥ n₀ 時 f(n) ≤ c × g(n)，則 f(n) = O(g(n))。</p>
+</div>
+<div class="section">
+<h2>常見複雜度等級</h2>
+<table>
+<tr><th>複雜度</th><th>名稱</th><th>典型演算法</th></tr>
+<tr><td>O(1)</td><td>常數</td><td>雜湊表查找、陣列存取</td></tr>
+<tr><td>O(log n)</td><td>對數</td><td>二分搜尋、平衡樹操作</td></tr>
+<tr><td>O(n)</td><td>線性</td><td>線性搜尋、走訪陣列</td></tr>
+<tr><td>O(n log n)</td><td>線性對數</td><td>合併排序、快速排序</td></tr>
+<tr><td>O(n²)</td><td>平方</td><td>氣泡排序、選擇排序</td></tr>
+<tr><td>O(n³)</td><td>立方</td><td>傳統矩陣乘法</td></tr>
+<tr><td>O(2ⁿ)</td><td>指數</td><td>子集生成、暴力遞迴</td></tr>
+</table>
+</div>
+<div class="section">
+<h2>複雜度分析技巧</h2>
+<ul>
+<li><strong>忽略常數係數</strong>：O(2n) = O(n)，O(1000n) = O(n)</li>
+<li><strong>忽略低階項</strong>：O(n² + n) = O(n²)，只保留最高階項</li>
+<li><strong>最壞 vs 平均 vs 最好</strong>：通常關注最壞情況複雜度</li>
+<li><strong>巢狀迴圈</strong>：雙層巢狀通常為 O(n²)，三層為 O(n³)</li>
+</ul>
+</div>
+<div class="section">
+<h2>實際應用建議</h2>
+<p>資料量小於 100 時 O(n²) 可接受；資料量 100-10,000 選擇 O(n log n)；資料量大於 1,000,000 必須 O(n) 或更好。</p>
+</div>
+<div class="section">
+<h2>本課程範例</h2>
+<ul>
+<li><a href="https://github.com/ccckmit/course0/tree/main/code/演算法/method/00-bigO/bubbleSort.py" target="_blank"><strong>bubbleSort.py</strong></a>：O(n²) 排序範例</li>
+<li><a href="https://github.com/ccckmit/course0/tree/main/code/演算法/method/00-bigO/lsearch.py" target="_blank"><strong>lsearch.py</strong></a>：O(n) 搜尋範例</li>
+<li><a href="https://github.com/ccckmit/course0/tree/main/code/演算法/method/00-bigO/matrixMul.py" target="_blank"><strong>matrixMul.py</strong></a>：O(n³) 矩陣乘法</li>
+</ul>
+</div>
+<div class="section">
+<h2>相關連結</h2>
+<ul>
+<li><a href="main.html">回到演算法入口</a></li>
+<li><a href="index.html">回到演算法 index</a></li>
+<li><a href="https://github.com/ccckmit/course0/blob/main/wiki/演算法/時間複雜度.md" target="_blank">原始 Wiki 文章</a></li>
+<li><a href="排序演算法.html">排序演算法</a></li>
+<li><a href="資料結構.html">資料結構</a></li>
+</ul>
+</div>
+</div>
+<footer><a href="main.html">演算法</a> | <a href="../index.html">回首頁</a></footer>
+</body>
+</html>

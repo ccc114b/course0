@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TensorFlow — 機器學習</title>
+<link rel="stylesheet" href="../main.css">
+</head>
+<body>
+<header>
+  <div class="back-link"><a href="main.html">← 回到機器學習</a></div>
+  <h1>TensorFlow</h1>
+  <p>Google 開發的開源深度學習框架，提供從訓練到部署的完整工具鏈</p>
+</header>
+<div class="container">
+
+<div class="section">
+  <h2>概述</h2>
+  <p>TensorFlow 是 Google 於 2015 年發布的開源深度學習框架，廣泛應用於機器學習和深度神經網路的研究與生產環境。TensorFlow 2.x 以 Eager Execution 為預設模式，Keras 成為官方高層 API。設計理念是使用資料流圖表示計算，節點代表運算、邊代表張量流動。提供從資料處理、模型建立、訓練、部署到推理的完整工具鏈，特別適合大規模分散式訓練和部署。</p>
+</div>
+
+<div class="section">
+  <h2>核心概念</h2>
+  <p>張量 (Tensor) 是 TensorFlow 的基本資料單元，支援標量、向量、矩陣和高維張量。TensorFlow 提供了豐富的張量操作：數學運算 (add、matmul)、形狀操作 (reshape、transpose)、聚合操作 (reduce_sum、reduce_mean)。自動微分通過 tf.GradientTape 實現，支援高階導數計算。Variable 是可訓練的張量，用於儲存模型參數。</p>
+  <div class="code">
+with tf.GradientTape() as tape:
+    y = x ** 2
+grad = tape.gradient(y, x)  # dy/dx = 2x
+  </div>
+</div>
+
+<div class="section">
+  <h2>Keras 高層 API</h2>
+  <p>Keras 提供三種模型建構方式： <strong>Sequential</strong>：最簡單的線性堆疊，適合標準網路。 <strong>Functional API</strong>：支援多輸入、多輸出、共享層等複雜拓撲結構。 <strong>Subclassing API</strong>：通過繼承 keras.Model 自訂前向傳播，提供最大彈性。模型通過 compile 設置優化器、損失函數和評估指標，使用 fit 進行訓練。支援 EarlyStopping、ModelCheckpoint、TensorBoard 等回調函數。</p>
+</div>
+
+<div class="section">
+  <h2>資料管道與部署</h2>
+  <p>tf.data 提供高效的資料管道，支援 shuffle、batch、map、cache、prefetch 等操作。tf.data.Dataset 可從 NumPy、CSV、TFRecord、圖片目錄等來源建立。TensorFlow Lite 支援行動裝置和邊緣部署，提供 Float16 量化和完整整數量化。TensorFlow Serving 使用 REST API 或 gRPC 提供生產級模型服務。TensorFlow.js 將模型部署到瀏覽器。</p>
+</div>
+
+<div class="section">
+  <h2>分散式訓練與效能優化</h2>
+  <p>MirroredStrategy 支援單機多 GPU 訓練，MultiWorkerMirroredStrategy 支援多機多 GPU，TPUStrategy 支援 Google Cloud TPU。混合精度訓練 (mixed_float16) 可在幾乎不損失精度的情況下加速訓練。XLA 編譯器 (jit_compile=True) 通過即時編譯優化計算圖。TensorBoard Profiler 提供詳細的效能分析，幫助識別訓練瓶頸。</p>
+</div>
+
+<div class="section">
+  <h2>相關連結</h2>
+  <ul>
+    <li><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E6%A9%9F%E5%99%A8%E5%AD%B8%E7%BF%92/TensorFlow.md">Wiki: TensorFlow</a></li>
+    <li><a href="PyTorch.html">PyTorch</a></li>
+    <li><a href="深度學習.html">深度學習</a></li>
+    <li><a href="卷積神經網路.html">卷積神經網路</a></li>
+  </ul>
+</div>
+
+</div>
+<footer><a href="main.html">機器學習</a> | <a href="../main.html">回首頁</a></footer>
+</body>
+</html>

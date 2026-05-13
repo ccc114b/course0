@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>損失函數 — 機器學習</title>
+<link rel="stylesheet" href="../main.css">
+</head>
+<body>
+<header>
+  <div class="back-link"><a href="main.html">← 回到機器學習</a></div>
+  <h1>損失函數 (Loss Function)</h1>
+  <p>衡量模型預測與實際值之間差距的優化目標函數</p>
+</header>
+<div class="container">
+
+<div class="section">
+  <h2>概述</h2>
+  <p>損失函數是機器學習中衡量模型預測與實際值之間差距的函數，是模型訓練過程中被最小化的目標函數。選擇正確的損失函數對於模型能否正確學習至關重要——它定義了學習的目標，直接影響模型的行為和最終性能。不同任務需要不同的損失函數：回歸任務通常使用 MSE 或 MAE，分類任務則常用交叉熵或 Focal Loss。</p>
+</div>
+
+<div class="section">
+  <h2>回歸損失函數</h2>
+  <p><strong>MSE (L2 Loss)</strong>：梯度平滑、處處可導，但對異常值敏感。 <strong>MAE (L1 Loss)</strong>：對異常值魯棒，但梯度在零點不連續。 <strong>Huber Loss</strong>：結合 MSE 和 MAE 的優點，誤差小於 δ 時使用 MSE，大於 δ 時使用 MAE。 <strong>Smooth L1 Loss</strong>：物體檢測中常用的邊界框回歸損失。 <strong>Quantile Loss</strong>：用於分位數回歸，可預測不確定性的上下界。 <strong>Log-Cosh Loss</strong>：平滑版本的 MAE，梯度計算比 Huber Loss 更穩定。</p>
+</div>
+
+<div class="section">
+  <h2>分類損失函數</h2>
+  <p><strong>二元交叉熵 (BCE)</strong>：用於二分類問題。 <strong>類別交叉熵 (CCE)</strong>：用於多分類問題。 <strong>Focal Loss</strong>：減少對易分類樣本的關注，增加對難分類樣本的關注，有效解決類別不平衡問題。 <strong>標籤平滑 (Label Smoothing)</strong>：防止模型對預測過度自信，提升泛化能力。 <strong>Class-Balanced Loss</strong>：基於有效樣本數的加權策略，解決類別不平衡問題。</p>
+</div>
+
+<div class="section">
+  <h2>對比損失與度量學習</h2>
+  <p><strong>Contrastive Loss</strong>：正樣本對距離越小越好，負樣本對距離大於 margin。 <strong>Triplet Loss</strong>：錨點到正樣本的距離小於到負樣本的距離加 margin，常用於人臉識別。 <strong>NT-Xent Loss</strong>：用於 SimCLR 對比學習，最大化正樣本對的相似度。 <strong>InfoNCE Loss</strong>：用於自監督學習，將正樣本從負樣本中區分出來。 <strong>Center Loss</strong>：增加類別內聚性，輔助交叉熵訓練。</p>
+</div>
+
+<div class="section">
+  <h2>損失函數選擇指南</h2>
+  <p>分類任務：二分類用 BCE，多分類用 CCE，不平衡用 Focal Loss。回歸任務：標準回歸用 MSE/MAE，異常值魯棒用 Huber，分位數預測用 Quantile Loss。度量學習：人臉識別用 Triplet Loss，對比學習用 NT-Xent。語義分割：通用用 Cross-Entropy + Dice Loss。目標檢測：邊界框回歸用 Smooth L1 或 IoU Loss，類別分類用 Focal Loss。</p>
+</div>
+
+<div class="section">
+  <h2>相關連結</h2>
+  <ul>
+    <li><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E6%A9%9F%E5%99%A8%E5%AD%B8%E7%BF%92/%E6%90%8D%E5%A4%B1%E5%87%BD%E6%95%B8.md">Wiki: 損失函數</a></li>
+    <li><a href="模型評估.html">模型評估</a></li>
+    <li><a href="正則化.html">正則化</a></li>
+    <li><a href="梯度下降法.html">梯度下降法</a></li>
+  </ul>
+</div>
+
+</div>
+<footer><a href="main.html">機器學習</a> | <a href="../main.html">回首頁</a></footer>
+</body>
+</html>

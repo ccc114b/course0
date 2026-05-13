@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>異常偵測 — 機器學習</title>
+<link rel="stylesheet" href="../main.css">
+</head>
+<body>
+<header>
+  <div class="back-link"><a href="main.html">← 回到機器學習</a></div>
+  <h1>異常偵測 (Anomaly Detection)</h1>
+  <p>識別偏離正常模式的數據點的技術</p>
+</header>
+<div class="container">
+
+<div class="section">
+  <h2>概述</h2>
+  <p>異常偵測是識別偏離預期行為或模式的數據點的技術。這些異常點可能表示欺詐行為、設備故障、網路入侵或疾病徵兆。異常偵測的挑戰在於異常樣本往往很少且缺乏標註，正常和異常的邊界可能不明顯。方法可分為三大類：有監督方法使用標註數據、半監督方法僅使用正常數據、無監督方法在無標籤數據中發現異常。</p>
+</div>
+
+<div class="section">
+  <h2>統計方法</h2>
+  <p><strong>Z-Score</strong>：計算樣本與均值的標準差倍數，超過閾值（通常為 3）視為異常。 <strong>IQR（四分位距）</strong>：低於 Q1-1.5×IQR 或高於 Q3+1.5×IQR 的樣本視為異常。 <strong>馬氏距離</strong>：考慮特徵間相關性的距離度量，適合多維數據的異常偵測。統計方法簡單快速，但通常假設數據服從特定分佈。</p>
+</div>
+
+<div class="section">
+  <h2>基於重建的方法</h2>
+  <p><strong>自編碼器 (Autoencoder)</strong>：訓練編碼器-解碼器網路重構正常數據，異常樣本的重構誤差會較大。 <strong>變分自編碼器 (VAE)</strong>：提供重構概率而非點估計，可結合重構誤差和 KL 散度作為異常分數。深度學習方法適合高維數據（如影像、序列），但需要較多正常數據進行訓練。</p>
+</div>
+
+<div class="section">
+  <h2>集成方法</h2>
+  <p><strong>隔離森林 (Isolation Forest)</strong>：通過隨機切割特徵空間來隔離異常點，異常點更容易被隔離（路徑更短）。 <strong>One-Class SVM</strong>：尋找將正常數據與原點分開的最大間隔超平面。 <strong>局部離群因子 (LOF)</strong>：比較樣本與其鄰居的密度，密度遠低於鄰居者為異常。這些方法在 sklearn 中都有現成實現，適合快速原型開發。</p>
+</div>
+
+<div class="section">
+  <h2>深度學習方法</h2>
+  <p><strong>Deep SVDD</strong>：學習將正常數據映射到一個緊湊的超球體內，異常點落在球外。 <strong>GANomaly</strong>：基於生成對抗網路的異常偵測，結合重構誤差和潛在空間誤差。選擇方法時需考慮數據規模（大規模用 Isolation Forest 或 Autoencoder）、數據維度（低維用統計方法，高維用深度學習）和計算資源（GPU 可用用深度學習，否則用傳統方法）。</p>
+</div>
+
+<div class="section">
+  <h2>相關連結</h2>
+  <ul>
+    <li><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E6%A9%9F%E5%99%A8%E5%AD%B8%E7%BF%92/%E7%95%B0%E5%B8%B8%E5%81%B5%E6%B8%AC.md">Wiki: 異常偵測</a></li>
+    <li><a href="模型評估.html">模型評估</a></li>
+    <li><a href="生成對抗網路.html">生成對抗網路</a></li>
+  </ul>
+</div>
+
+</div>
+<footer><a href="main.html">機器學習</a> | <a href="../main.html">回首頁</a></footer>
+</body>
+</html>

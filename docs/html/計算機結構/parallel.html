@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>平行運算</title>
+<link rel="stylesheet" href="../main.css">
+</head>
+<body>
+<header>
+  <div class="back-link"><a href="main.html">← 回入口</a></div>
+  <h1>平行運算</h1>
+</header>
+<div class="container">
+
+<div class="section">
+<h2>Flynn 分類法</h2>
+<table>
+<tr><th>分類</th><th>說明</th><th>範例</th></tr>
+<tr><td>SISD</td><td>單一指令流、單一資料流</td><td>傳統馮紐曼架構</td></tr>
+<tr><td>SIMD</td><td>單一指令流、多重資料流</td><td>GPU、SSE/AVX</td></tr>
+<tr><td>MISD</td><td>多重指令流、單一資料流</td><td>很少使用</td></tr>
+<tr><td>MIMD</td><td>多重指令流、多重資料流</td><td>多核 CPU、叢集</td></tr>
+</table>
+</div>
+
+<div class="section">
+<h2>平行化層級</h2>
+<ul>
+  <li><strong>Bit-level</strong> — 4 位 → 8 位 → 16 位 → 32 位 → 64 位</li>
+  <li><strong>Instruction-level</strong> — 一條指令多重運算（SIMD、SSE/AVX）</li>
+  <li><strong>Thread-level</strong> — 多執行緒共享記憶體（多核心 CPU）</li>
+  <li><strong>Process-level</strong> — 多程序獨立記憶體空間（叢集）</li>
+  <li><strong>Node-level</strong> — 多機器分散式計算（MPI、Hadoop）</li>
+</ul>
+</div>
+
+<div class="section">
+<h2>共享記憶體平行化</h2>
+<pre class="code">// POSIX Threads 範例
+#include &lt;pthread.h&gt;
+#define NUM_THREADS 4
+
+void *partial_sum(void *arg) {
+    // 每個執行緒計算部分和
+    return NULL;
+}
+
+int main() {
+    pthread_t threads[NUM_THREADS];
+    for (int i = 0; i < NUM_THREADS; i++)
+        pthread_create(&threads[i], NULL, partial_sum, &data[i]);
+    for (int i = 0; i < NUM_THREADS; i++)
+        pthread_join(threads[i], NULL);
+    return 0;
+}</pre>
+</div>
+
+<div class="section">
+<h2>分散式記憶體</h2>
+<p>MPI（Message Passing Interface）是分散式記憶體系統的標準。每個程序有獨立記憶體，透過訊息傳遞通訊。適合大規模叢集和超級電腦。OpenMP 則用於共享記憶體系統，透過編譯器指令（#pragma omp）簡化平行化。</p>
+</div>
+
+<div class="section">
+<h2>相關連結</h2>
+<ul>
+  <li><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E8%A8%88%E7%AE%97%E6%A9%9F%E7%B5%90%E6%A7%8B/%E5%B9%B3%E8%A1%8C%E9%81%8B%E7%AE%97.md">wiki: 平行運算</a></li>
+</ul>
+</div>
+
+</div>
+</body>
+</html>

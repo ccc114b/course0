@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>圖論 — 演算法</title>
+<link rel="stylesheet" href="../main.css">
+</head>
+<body>
+<header>
+  <div class="back-link"><a href="main.html">← 回入口</a></div>
+  <h1>圖論 (Graph Theory)</h1>
+  <p>研究圖結構中頂點與邊之間關係的演算法</p>
+</header>
+<div class="container">
+<div class="section">
+<h2>圖的基礎概念</h2>
+<p>圖 G 由頂點集合 V 和邊集合 E 組成，記作 G = (V, E)。可分為有向圖、無向圖、加權圖、無權圖。</p>
+<table>
+<tr><th>類型</th><th>說明</th><th>範例</th></tr>
+<tr><td>有向圖</td><td>邊有方向</td><td>網頁連結、道路單行道</td></tr>
+<tr><td>無向圖</td><td>邊無方向</td><td>社群關係、地鐵線路</td></tr>
+<tr><td>加權圖</td><td>邊有權重</td><td>道路距離、成本</td></tr>
+<tr><td>無權圖</td><td>邊無權重</td><td>社交連接</td></tr>
+</table>
+</div>
+<div class="section">
+<h2>圖的表示方法</h2>
+<p><strong>鄰接矩陣</strong>：二維陣列表示，適合稠密圖。空間 O(V²)，查詢邊 O(1)。</p>
+<p><strong>鄰接串列</strong>：每個頂點維護串列，適合稀疏圖。空間 O(V+E)，查詢邊 O(deg(V))。</p>
+</div>
+<div class="section">
+<h2>圖的走訪</h2>
+<p><strong>廣度優先搜尋 (BFS)</strong>：使用佇列，逐層走訪。時間 O(V+E)，用於無權圖最短路徑。</p>
+<p><strong>深度優先搜尋 (DFS)</strong>：使用堆疊或遞迴，深入走訪。時間 O(V+E)，用於拓墣排序、偵測環。</p>
+</div>
+<div class="section">
+<h2>常見圖論演算法</h2>
+<p><strong>Dijkstra</strong>：單源最短路徑，O((V+E) log V)。</p>
+<p><strong>Kruskal / Prim</strong>：最小生成樹，O(E log V)。</p>
+<p><strong>Floyd-Warshall</strong>：全源最短路徑，O(V³)。</p>
+<p><strong>Ford-Fulkerson</strong>：最大流，O(E × maxflow)。</p>
+</div>
+<div class="section">
+<h2>本課程範例</h2>
+<ul>
+<li><a href="https://github.com/ccckmit/course0/tree/main/code/演算法/method/06-搜尋法" target="_blank"><strong>搜尋法</strong></a>：BFS/DFS 相關實作</li>
+<li><a href="https://github.com/ccckmit/course0/tree/main/code/演算法/method/05c-爬山演算法" target="_blank"><strong>爬山演算法</strong></a>：圖上的最佳化搜尋</li>
+</ul>
+</div>
+<div class="section">
+<h2>相關連結</h2>
+<ul>
+<li><a href="main.html">回到演算法入口</a></li>
+<li><a href="index.html">回到演算法 index</a></li>
+<li><a href="https://github.com/ccckmit/course0/blob/main/wiki/演算法/圖形演算法.md" target="_blank">原始 Wiki 文章</a></li>
+<li><a href="最短路徑.html">最短路徑</a></li>
+<li><a href="最小生成樹.html">最小生成樹</a></li>
+<li><a href="網路流.html">網路流</a></li>
+</ul>
+</div>
+</div>
+<footer><a href="main.html">演算法</a> | <a href="../index.html">回首頁</a></footer>
+</body>
+</html>

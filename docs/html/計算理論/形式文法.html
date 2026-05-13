@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>形式文法 — 計算理論</title>
+<link rel="stylesheet" href="../main.css">
+<style>
+  .back-link a { color: #fff; }
+  .section h2 { color: #9b59b6; }
+  footer a { color: #9b59b6; }
+  pre { background: #2d2d2d; color: #f8f8f2; padding: 16px; border-radius: 8px; overflow-x: auto; font-family: "Consolas", "Monaco", monospace; font-size: 0.9rem; margin: 12px 0; }
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; }
+  table th, table td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+  table th { background: #f5f5f5; }
+</style>
+</head>
+<body>
+<header>
+  <div class="back-link"><a href="main.html">← 回入口</a></div>
+  <h1>形式文法 (Formal Grammar)</h1>
+  <p>描述語言語法的數學工具</p>
+</header>
+<div class="container">
+  <div class="section">
+    <h2>什麼是形式文法？</h2>
+    <p>形式文法是描述語言語法的數學工具，定義了如何產生合法的字串。形式文法是編譯器理論的基礎，用於精確地描述程式語言的語法結構，是語法分析的理論依據。形式文法的研究始於 1950 年代，諾姆·喬姆斯基（Noam Chomsky）在語言學研究中首次提出了形式文法的概念，產生了著名的 Chomsky 階層。</p>
+  </div>
+
+  <div class="section">
+    <h2>形式定義</h2>
+    <p>形式文法是一個四元組 G = (N, Σ, P, S)：</p>
+    <pre>G = (N, Σ, P, S)
+
+N  - 非終結符集合 (Non-terminals)
+     表示語法類別，如「句子」、「名詞片語」等
+
+Σ  - 終結符集合 (Terminals)
+     表示語言中的基本符號，如關鍵字、運算子等
+
+P  - 產生式規則集合 (Productions)
+     定義如何從非終結符產生字串的規則
+
+S  - 起始符號 (Start Symbol)
+     開始推導的頂層非終結符，S ∈ N</pre>
+    <p>產生式規則的形式為 α → β，表示「左邊可以推導出右邊」。</p>
+  </div>
+
+  <div class="section">
+    <h2>Chomsky 階層</h2>
+    <table>
+      <tr><th>類型</th><th>名稱</th><th>產生式規則</th><th>對應自動機</th></tr>
+      <tr><td>Type 0</td><td>無限制文法</td><td>α → β（任意字串）</td><td>圖靈機</td></tr>
+      <tr><td>Type 1</td><td>上下文敏感文法</td><td>αAβ → αγβ</td><td>線性有界自動機</td></tr>
+      <tr><td>Type 2</td><td>上下文無關文法</td><td>A → γ</td><td>下推自動機</td></tr>
+      <tr><td>Type 3</td><td>正規文法</td><td>A → aB 或 A → a</td><td>有限狀態機</td></tr>
+    </table>
+    <p>喬姆斯基發現，形式文法的類型與識別語言的自動機類型之間存在一一對應關係，這為編譯器的自動生成提供了理論基礎。</p>
+  </div>
+
+  <div class="section">
+    <h2>上下文無關文法範例</h2>
+    <p>算術表達式可以用 CFG 描述：</p>
+    <pre>E → T               # 表達式 → 項
+E → E + T           # 表達式 → 表達式 + 項
+T → F               # 項 → 因子
+T → T * F           # 項 → 項 * 因子
+F → ( E )           # 因子 → ( 表達式 )
+F → id              # 因子 → 識別符</pre>
+    <p>導出 "id + id * id" 的過程：</p>
+    <pre>E → E + T → T + T → F + T → id + T
+  → id + T * F → id + F * F → id + id * F → id + id * id</pre>
+    <p>分析樹直觀地展示了語法結構，是語法分析的基礎：</p>
+    <pre>        E
+       /|\
+      / | \
+     E  +  T
+     |     /|\
+     T    / | \
+     |   T  *  F
+     F   |     |
+     |   F     id
+    id  id</pre>
+  </div>
+
+  <div class="section">
+    <h2>正規文法</h2>
+    <p>正規文法是最簡單的文法類型，其產生式規則非常受限，只能產生正則語言。正規文法與有限狀態機、正則表達式等價。範例：識別以 01 結尾的二進位字串：</p>
+    <pre>S → 0A
+S → 1S
+A → 1B
+B → 0B | 1B | ε</pre>
+  </div>
+
+  <div class="section">
+    <h2>本課程範例</h2>
+    <ul>
+      <li><a href="https://github.com/ccckmit/course0/blob/main/code/%E8%A8%88%E7%AE%97%E7%90%86%E8%AB%96/grammar/grammar.py">grammar/grammar.py</a> — 文法引擎</li>
+      <li><a href="https://github.com/ccckmit/course0/blob/main/code/%E8%A8%88%E7%AE%97%E7%90%86%E8%AB%96/grammar/exp.py">grammar/exp.py</a> — 表達式文法</li>
+      <li><a href="https://github.com/ccckmit/course0/blob/main/code/%E8%A8%88%E7%AE%97%E7%90%86%E8%AB%96/grammar/english.py">grammar/english.py</a> — 英文文法</li>
+      <li><a href="https://github.com/ccckmit/course0/blob/main/code/%E8%A8%88%E7%AE%97%E7%90%86%E8%AB%96/grammar/anbn.py">grammar/anbn.py</a> — aⁿbⁿ 文法</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>相關連結</h2>
+    <ul>
+      <li><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E8%A8%88%E7%AE%97%E7%90%86%E8%AB%96/%E5%BD%A2%E5%BC%8F%E6%96%87%E6%B3%95.md">Wiki: 形式文法</a></li>
+      <li><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E8%A8%88%E7%AE%97%E7%90%86%E8%AB%96/Noam_Chomsky.md">Wiki: Noam Chomsky</a></li>
+      <li><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E8%A8%88%E7%AE%97%E7%90%86%E8%AB%96/%E6%9C%89%E9%99%90%E7%8A%B6%E6%85%8B%E6%A9%9F.md">Wiki: 有限狀態機</a></li>
+      <li><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E8%A8%88%E7%AE%97%E7%90%86%E8%AB%96/%E5%9C%96%E9%9D%88%E6%A9%9F.md">Wiki: 圖靈機</a></li>
+    </ul>
+  </div>
+
+  <footer>
+    <a href="main.html">← 回入口</a> ·
+    <a href="https://github.com/ccckmit/course0">GitHub</a>
+  </footer>
+</div>
+</body>
+</html>

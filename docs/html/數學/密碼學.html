@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>密碼學 — 數學 — 陳鍾誠的課程教材</title>
+<link rel="stylesheet" href="../main.css">
+</head>
+<body>
+<header>
+  <div class="back-link"><a href="main.html">← 回到數學入口</a></div>
+  <h1>密碼學</h1>
+  <p>資訊安全與加密技術</p>
+</header>
+<div class="container">
+
+<div class="section">
+<h2>概述</h2>
+<p>密碼學是研究資訊保密與安全的數學分支。在現代資訊社會中，密碼學是電子商務、線上銀行、區塊鏈等一切安全通訊的基礎。密碼學的發展經歷了三個主要階段：古典密碼學、現代密碼學、公鑰密碼學。</p>
+<p><strong>資訊安全目標</strong>：機密性、完整性、身份驗證、不可否認性。</p>
+<p><strong>柯克霍夫原則</strong>：密碼系統的安全性不應該依賴於演算法的保密性，而應該僅依賴於金鑰的保密性。</p>
+</div>
+
+<div class="section">
+<h2>對稱加密</h2>
+<p>對稱加密使用相同的金鑰進行加密和解密。分為兩類：</p>
+<ul>
+<li><strong>分組加密</strong>：將明文分成固定大小的區塊進行處理。經典演算法包括 DES 和 AES。</li>
+<li><strong>串流加密</strong>：將明文與金鑰流進行 XOR 運算。</li>
+</ul>
+<p><strong>AES</strong> 是目前最廣泛使用的對稱加密標準，支援 128/192/256 位元金鑰。AES 的核心操作基於有限域算術 GF(2⁸)，包含 SubBytes、ShiftRows、MixColumns、AddRoundKey 四種變換。</p>
+</div>
+
+<div class="section">
+<h2>公鑰密碼學</h2>
+<p><strong>RSA 加密系統</strong>是第一個公鑰密碼系統，安全性基於大整數分解的困難性。加密 c = mᵉ (mod n)，解密 m = cᵈ (mod n)。</p>
+<p><strong>橢圓曲線密碼學</strong>使用橢圓曲線上的代數結構，提供與 RSA 相似的安全性但使用更短的金鑰（256 位元 ECC ≈ 3072 位元 RSA）。橢圓曲線定義在有限域上，其點構成阿貝爾群。</p>
+</div>
+
+<div class="section">
+<h2>數位簽章與哈希函數</h2>
+<p><strong>數位簽章</strong>提供身份驗證和不可否認性。常見的數位簽章演算法包括 RSA 簽章、DSA、ECDSA。</p>
+<p><strong>哈希函數</strong>將任意長度的訊息映射為固定長度的摘要，具有單向性、抗碰撞性。常見的哈希函數包括 SHA-2、SHA-3。哈希函數廣泛應用於密碼儲存、資料完整性校驗、區塊鏈等。</p>
+</div>
+
+<div class="section">
+<h2>本課程範例</h2>
+<p>相關程式碼在 <a href="https://github.com/ccckmit/course0/tree/main/code/數學/02-代數/_ccc" target="_blank">code/數學/02-代數/_ccc</a>：</p>
+<ul>
+<li><a href="https://github.com/ccckmit/course0/blob/main/code/數學/02-代數/_ccc/group.py" target="_blank">group.py</a></li>
+<li><a href="https://github.com/ccckmit/course0/blob/main/code/數學/02-代數/_ccc/group_axioms.py" target="_blank">group_axioms.py</a></li>
+</ul>
+</div>
+
+<div class="section">
+<h2>相關連結</h2>
+<ul>
+<li><a href="https://github.com/ccckmit/course0/blob/main/wiki/數學/密碼學.md" target="_blank">Wiki: 密碼學</a></li>
+<li><a href="數論.html">數論</a> — 密碼學的數學基礎</li>
+<li><a href="代數學.html">代數學</a> — 有限體與密碼學</li>
+<li><a href="main.html">回到數學入口</a></li>
+</ul>
+</div>
+
+</div>
+<footer>
+<a href="https://github.com/ccckmit/course0">回到課程首頁</a>
+</footer>
+</body>
+</html>

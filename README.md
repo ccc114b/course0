@@ -6,7 +6,8 @@
 
 ## 網頁入口
 
-* https://ccckmit.github.io/course0/
+* https://ccckmit.github.io/course0/index.html
+* https://ccckmit.github.io/course0/main.html
 
 ## 課程列表
 

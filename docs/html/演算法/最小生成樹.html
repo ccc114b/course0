@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>最小生成樹 — 演算法</title>
+<link rel="stylesheet" href="../main.css">
+</head>
+<body>
+<header>
+  <div class="back-link"><a href="main.html">← 回入口</a></div>
+  <h1>最小生成樹 (Minimum Spanning Tree)</h1>
+  <p>連接所有頂點且總權重最小的樹</p>
+</header>
+<div class="container">
+<div class="section">
+<h2>生成樹定義</h2>
+<p>生成樹是包含圖中所有頂點的一棵樹（無環連通子圖）。最小生成樹則是在所有生成樹中邊權重總和最小的那棵。應用包括網路設計、管線佈局、叢集分析。</p>
+</div>
+<div class="section">
+<h2>Kruskal 演算法</h2>
+<p>貪婪演算法：按邊權重從小到大排序，依次選擇不會形成環的邊加入生成樹。使用並查集 (Union-Find) 判斷環。時間 O(E log E)。</p>
+<div class="code">def kruskal(edges, n):
+    parent = list(range(n))
+    edges.sort(key=lambda e: e[2])
+    mst = []
+    for u, v, w in edges:
+        if find(u) != find(v):
+            union(u, v)
+            mst.append((u, v, w))
+    return mst</div>
+</div>
+<div class="section">
+<h2>Prim 演算法</h2>
+<p>貪婪演算法：從任意頂點開始，每次選擇連接已選頂點集合與未選頂點集合的最小權重邊。使用優先佇列最佳化，時間 O((V+E) log V)。</p>
+</div>
+<div class="section">
+<h2>應用場景</h2>
+<p>電信網路鋪設、電路設計、運輸規劃、影像分割。最小生成樹也是許多進階演算法（如近似演算法）的基礎元件。</p>
+</div>
+<div class="section">
+<h2>本課程範例</h2>
+<ul>
+<li><a href="https://github.com/ccckmit/course0/tree/main/code/演算法/method/05f-貪婪法" target="_blank"><strong>貪婪法</strong></a>：貪婪演算法程式碼</li>
+<li><a href="https://github.com/ccckmit/course0/tree/main/code/演算法/method/06-搜尋法" target="_blank"><strong>搜尋法</strong></a>：圖搜尋相關</li>
+</ul>
+</div>
+<div class="section">
+<h2>相關連結</h2>
+<ul>
+<li><a href="main.html">回到演算法入口</a></li>
+<li><a href="index.html">回到演算法 index</a></li>
+<li><a href="https://github.com/ccckmit/course0/blob/main/wiki/演算法/圖形演算法.md" target="_blank">圖形演算法 Wiki</a></li>
+<li><a href="圖論.html">圖論</a></li>
+<li><a href="最短路徑.html">最短路徑</a></li>
+<li><a href="貪婪演算法.html">貪婪演算法</a></li>
+</ul>
+</div>
+</div>
+<footer><a href="main.html">演算法</a> | <a href="../index.html">回首頁</a></footer>
+</body>
+</html>

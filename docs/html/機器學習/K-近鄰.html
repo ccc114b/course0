@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>K-近鄰 — 機器學習</title>
+<link rel="stylesheet" href="../main.css">
+</head>
+<body>
+<header>
+  <div class="back-link"><a href="main.html">← 回到機器學習</a></div>
+  <h1>K-近鄰 (KNN)</h1>
+  <p>基於實例的惰性學習分類演算法，透過最近鄰居投票決定類別</p>
+</header>
+<div class="container">
+
+<div class="section">
+  <h2>原理</h2>
+  <p>K-近鄰（K-Nearest Neighbors）是一種基於實例的學習，屬於「惰性學習」(Lazy Learning)，沒有明顯的訓練階段。它通過計算輸入樣本與訓練樣本之間的距離，找出最近的 K 個鄰居，根據這些鄰居的類別進行投票來決定輸入樣本的類別。KNN 的核心假設是「相似的事物彼此相互關聯」，同類別的樣本在特徵空間中距離較近。公式為 P(y=c|x) = (1/K) Σ I(y_i=c)，其中 N_K(x) 是與 x 最近的 K 個樣本。</p>
+</div>
+
+<div class="section">
+  <h2>距離度量與 K 值選擇</h2>
+  <p>常見的距離度量包括：歐幾里德距離 (Euclidean)、曼哈頓距離 (Manhattan) 和餘弦相似度 (Cosine)。K 值太小容易受到噪音影響導致過擬合，K 值太大可能被遠距離樣本影響導致欠擬合。通常使用奇數 K 值避免平票，並使用交叉驗證選擇最佳 K 值。特徵標準化對 KNN 至關重要，因為 KNN 對特徵尺度敏感——若未標準化，量級大的特徵將主導距離計算。</p>
+  <div class="code">
+from sklearn.neighbors import KNeighborsClassifier
+knn = KNeighborsClassifier(n_neighbors=5, metric='euclidean', weights='distance')
+knn.fit(X_train, y_train)
+predictions = knn.predict(X_test)
+  </div>
+</div>
+
+<div class="section">
+  <h2>距離加權投票</h2>
+  <p>基本的 KNN 使用均勻投票（每個鄰居一票），但更常見的是距離加權投票（weights='distance'），距離越近的鄰居權重越大。加權投票可減少遠距離陌生樣本的影響，提高分類準確率。加權方式通常是距離的倒數（或高斯核權重）。KNN 還可進行迴歸（KNeighborsRegressor），取 K 個最近鄰居的目標值平均值作為預測。</p>
+</div>
+
+<div class="section">
+  <h2>優缺點與適用場景</h2>
+  <p><strong>優點</strong>：簡單直觀、無訓練階段、可處理非線性問題、理論成熟。 <strong>缺點</strong>：預測階段慢（需計算所有訓練樣本距離）、高維度資料失效（維度詛咒）、對特徵尺度敏感、儲存所有訓練資料記憶體開銷大。適用於小型資料集和簡單分類問題。在高維度場景下，特徵空間稀疏導致距離度量失去意義，應考慮降維或其他演算法。</p>
+</div>
+
+<div class="section">
+  <h2>相關連結</h2>
+  <ul>
+    <li><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E6%A9%9F%E5%99%A8%E5%AD%B8%E7%BF%92/K-%E8%BF%91%E9%84%B0.md">Wiki: K-近鄰</a></li>
+    <li><a href="分類演算法.html">分類演算法</a></li>
+    <li><a href="監督式學習.html">監督式學習</a></li>
+  </ul>
+</div>
+
+</div>
+<footer><a href="main.html">機器學習</a> | <a href="../main.html">回首頁</a></footer>
+</body>
+</html>

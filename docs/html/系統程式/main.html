@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>系統程式入口 — 陳鍾誠的課程教材</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans TC", sans-serif; background: #f5f7fa; color: #333; line-height: 1.6; }
+header { background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); color: #fff; padding: 40px 20px; text-align: center; }
+header h1 { font-size: 2rem; margin-bottom: 8px; }
+header p { font-size: 1.1rem; opacity: 0.9; }
+.back-link { position: absolute; left: 20px; top: 20px; }
+.back-link a { color: #fff; text-decoration: underline; font-size: 0.9rem; }
+.container { max-width: 1100px; margin: 0 auto; padding: 20px; }
+.section { background: #fff; border-radius: 12px; padding: 20px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+.section h2 { font-size: 1.2rem; margin-bottom: 12px; color: #e74c3c; border-bottom: 2px solid #eee; padding-bottom: 8px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
+.card { border: 1px solid #eee; border-radius: 8px; padding: 14px; transition: all 0.2s; }
+.card:hover { border-color: #e74c3c; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+.card a { color: #333; text-decoration: none; font-weight: 600; display: block; }
+.card span { display: block; font-size: 0.8rem; color: #777; margin-top: 4px; }
+footer { text-align: center; padding: 20px; color: #999; font-size: 0.8rem; }
+footer a { color: #e74c3c; }
+</style>
+</head>
+<body>
+<header>
+  <div class="back-link"><a href="../main.html">← 回首頁</a></div>
+  <h1>系統程式</h1>
+  <p>從高階語言到機器碼的完整轉換</p>
+</header>
+<div class="container">
+<div class="section">
+<h2>📖 核心概念</h2>
+<div class="grid">
+<div class="card"><a href="編譯器.html">編譯器<span>原始碼到執行檔的轉換</span></a></div>
+<div class="card"><a href="作業系統.html">作業系統<span>資源管理與程序排程</span></a></div>
+<div class="card"><a href="虛擬機.html">虛擬機<span>軟體模擬的計算機</span></a></div>
+<div class="card"><a href="C語言.html">C語言<span>系統程式設計的基礎</span></a></div>
+<div class="card"><a href="記憶體管理.html">記憶體管理<span>空間配置與回收</span></a></div>
+<div class="card"><a href="行程與執行緒.html">行程與執行緒<span>並發執行單位</span></a></div>
+<div class="card"><a href="高階語言.html">高階語言<span>從機器碼到人類可讀的抽象</span></a></div>
+</div>
+</div>
+
+<div class="section">
+<h2>🔧 硬體與架構</h2>
+<div class="grid">
+<div class="card"><a href="RISC-V.html">RISC-V<span>開放指令集架構</span></a></div>
+<div class="card"><a href="組合語言.html">組合語言<span>硬體層級編程</span></a></div>
+<div class="card"><a href="LLVM.html">LLVM<span>現代化編譯器框架</span></a></div>
+</div>
+</div>
+
+<div class="section">
+<h2>🌐 網路與通訊</h2>
+<div class="grid">
+<div class="card"><a href="TCP-IP協定.html">TCP/IP<span>網際網路基礎協定</span></a></div>
+<div class="card"><a href="Socket網路介面.html">Socket<span>行程間通訊介面</span></a></div>
+<div class="card"><a href="HTTP.html">HTTP<span>網頁傳輸協定</span></a></div>
+</div>
+</div>
+
+<div class="section">
+<h2>🛠️ 工具與技術</h2>
+<div class="grid">
+<div class="card"><a href="QEMU.html">QEMU<span>硬體虛擬化軟體</span></a></div>
+<div class="card"><a href="Docker.html">Docker<span>容器化平台</span></a></div>
+<div class="card"><a href="xv6.html">xv6<span>教育用作業系統</span></a></div>
+<div class="card"><a href="Rust.html">Rust<span>安全的系統語言</span></a></div>
+</div>
+</div>
+
+<div class="section">
+<h2>📚 主題索引</h2>
+<div class="grid">
+<div class="card"><a href="index.html">📚 完整主題列表<span>所有概念與程式碼</span></a></div>
+<div class="card"><a href="https://github.com/ccckmit/course0/blob/main/wiki/系統程式/index.md" target="_blank">📄 Wiki 原文<span>Markdown 原始檔</span></a></div>
+<div class="card"><a href="https://github.com/ccckmit/course0/tree/main/code/系統程式" target="_blank">💻 程式碼範例<span>GitHub 代码仓库</span></a></div>
+</div>
+</div>
+</div>
+<footer>
+<a href="https://github.com/ccckmit/course0">回到课程首页</a>
+</footer>
+</body>
+</html>

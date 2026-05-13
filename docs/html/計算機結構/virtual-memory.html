@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>虛擬記憶體</title>
+<link rel="stylesheet" href="../main.css">
+</head>
+<body>
+<header>
+  <div class="back-link"><a href="main.html">← 回入口</a></div>
+  <h1>虛擬記憶體</h1>
+</header>
+<div class="container">
+
+<div class="section">
+<h2>概述</h2>
+<p>虛擬記憶體是一種記憶體管理技術，讓每個程式擁有獨立的虛擬位址空間。作業系統透過分頁機制將虛擬位址映射到實體記憶體，提供隔離、保護和超額分配的能力。程式無需關心實際實體記憶體的位置和大小。</p>
+</div>
+
+<div class="section">
+<h2>分頁機制</h2>
+<p>x86-64 使用 4 層分頁結構：PML4 → PDPT → PD → PT → Offset（每層 9 位元，Offset 12 位元）。頁表條目（PTE）包含 Present、R/W、U/S、XD 等旗標，以及實體頁框號碼（PFN）。</p>
+<pre class="code">// 虛擬位址分解 (x86-64)
+// | PML4 (9) | PDPT (9) | PD (9) | PT (9) | Offset (12) |
+//  47:39      38:30      29:21    20:12    11:0</pre>
+</div>
+
+<div class="section">
+<h2>MMU 與 TLB</h2>
+<p>MMU（記憶體管理單元）負責位址轉換。TLB（Translation Lookaside Buffer）是快取最近使用的虛擬到實體位址映射的硬體，大幅加速轉換速度。TLB 缺失時需要查詢頁表（多層記憶體存取），代價高昂。</p>
+</div>
+
+<div class="section">
+<h2>頁面置換</h2>
+<p>當實體記憶體不足時，作業系統需將部分頁面換出到磁碟（Swap）。常見置換演算法：</p>
+<ul>
+  <li><strong>FIFO</strong> — 先進先出</li>
+  <li><strong>LRU</strong> — 最近最少使用（近似實作如 Clock 演算法）</li>
+  <li><strong>NRU</strong> — 最近未使用</li>
+</ul>
+</div>
+
+<div class="section">
+<h2>相關連結</h2>
+<ul>
+  <li><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E8%A8%88%E7%AE%97%E6%A9%9F%E7%B5%90%E6%A7%8B/%E8%99%9B%E6%93%AC%E8%A8%98%E6%86%B6%E9%AB%94.md">wiki: 虛擬記憶體</a></li>
+</ul>
+</div>
+
+</div>
+</body>
+</html>

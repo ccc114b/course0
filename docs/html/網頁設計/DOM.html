@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DOM — 網頁設計</title>
+<link rel="stylesheet" href="../main.css">
+</head>
+<body>
+<header>
+  <div class="back-link"><a href="./index.html">← 回網頁設計</a></div>
+  <h1>DOM</h1>
+  <p>文件物件模型</p>
+</header>
+<div class="container">
+  <div class="section">
+    <h2>DOM 概述</h2>
+    <p>DOM (Document Object Model) 是瀏覽器將 HTML 文件解析為的樹狀結構，允許 JavaScript 動態存取和修改網頁內容、結構與樣式。</p>
+  </div>
+  <div class="section">
+    <h2>選取元素</h2>
+    <div class="code">// 單一元素<br>const el = document.querySelector('#app');<br>const el = document.getElementById('app');<br><br>// 多個元素<br>const els = document.querySelectorAll('.item');<br>const els = document.getElementsByClassName('item');<br><br>// 走訪 DOM 樹<br>const parent = el.parentElement;<br>const children = el.children;<br>const next = el.nextElementSibling;</div>
+  </div>
+  <div class="section">
+    <h2>修改元素</h2>
+    <div class="code">// 修改內容<br>el.textContent = '新內容';<br>el.innerHTML = '&lt;strong&gt;HTML&lt;/strong&gt;';<br><br>// 修改屬性<br>el.setAttribute('data-id', '123');<br><br>// 修改類別<br>el.classList.add('active');<br>el.classList.remove('active');<br>el.classList.toggle('active');<br><br>// 修改樣式<br>el.style.color = 'red';</div>
+  </div>
+  <div class="section">
+    <h2>建立與插入元素</h2>
+    <div class="code">const newEl = document.createElement('div');<br>newEl.textContent = '新元素';<br>parent.appendChild(newEl);<br>parent.insertBefore(newEl, reference);<br>el.insertAdjacentHTML('beforeend', '&lt;span&gt;內容&lt;/span&gt;');<br>el.remove();</div>
+  </div>
+  <div class="section">
+    <h2>事件處理</h2>
+    <div class="code">el.addEventListener('click', (event) => {<br>    console.log('Clicked!', event.target);<br>});<br><br>// 事件委託<br>document.querySelector('.list').addEventListener('click', (e) => {<br>    if (e.target.matches('.item')) {<br>        console.log('Item clicked');<br>    }<br>});</div>
+  </div>
+  <div class="section">
+    <h2>本課程範例</h2>
+    <ul>
+      <li><a href="https://github.com/ccckmit/course0/blob/main/code/%E7%B6%B2%E7%AB%99%E8%A8%AD%E8%A8%88/03-javascript">03-javascript/</a> — JavaScript 範例包含 DOM 操作</li>
+    </ul>
+  </div>
+  <div class="section">
+    <h2>相關連結</h2>
+    <ul>
+      <li><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E7%B6%B2%E9%A0%81%E8%A8%AD%E8%A8%88/JavaScript.md">Wiki: JavaScript</a></li>
+      <li><a href="JavaScript.html">JavaScript — 互動程式設計</a></li>
+      <li><a href="AJAX.html">AJAX — 非同步請求</a></li>
+    </ul>
+  </div>
+  <footer><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E7%B6%B2%E9%A0%81%E8%A8%AD%E8%A8%88/JavaScript.md">JavaScript.md</a></footer>
+</div>
+</body>
+</html>

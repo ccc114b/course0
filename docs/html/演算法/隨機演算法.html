@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>隨機演算法 — 演算法</title>
+<link rel="stylesheet" href="../main.css">
+</head>
+<body>
+<header>
+  <div class="back-link"><a href="main.html">← 回入口</a></div>
+  <h1>隨機演算法 (Randomized Algorithm)</h1>
+  <p>利用隨機性解決問題的演算法</p>
+</header>
+<div class="container">
+<div class="section">
+<h2>概述</h2>
+<p>隨機演算法在執行過程中引入隨機性，通常可以簡化問題或獲得更好的平均效能。隨機演算法可分為 Las Vegas 演算法（結果一定正確，執行時間隨機）和 Monte Carlo 演算法（執行時間固定，結果以高機率正確）。</p>
+</div>
+<div class="section">
+<h2>蒙地卡羅法</h2>
+<p>蒙地卡羅法通過大量隨機採樣來估計數值結果。典型應用包括：</p>
+<ul>
+<li>計算圓周率 π</li>
+<li>數值積分</li>
+<li>物理模擬</li>
+<li>最優化問題</li>
+</ul>
+</div>
+<div class="section">
+<h2>隨機化演算法範例</h2>
+<p><strong>隨機化快速排序</strong>：隨機選擇 pivot，避免最壞情況 O(n²)。</p>
+<p><strong>隨機化最小割</strong>：Karger 隨機收縮演算法。</p>
+<p><strong>跳躍 Hash</strong>：一致性雜湊的隨機化方法。</p>
+</div>
+<div class="section">
+<h2>本課程範例</h2>
+<ul>
+<li><a href="https://github.com/ccckmit/course0/tree/main/code/演算法/method/09a-隨機法/random1.py" target="_blank"><strong>random1.py</strong></a>：隨機法實作</li>
+<li><a href="https://github.com/ccckmit/course0/tree/main/code/演算法/method/09b-蒙地卡羅法" target="_blank"><strong>蒙地卡羅法</strong></a>：蒙地卡羅模擬</li>
+<li><a href="https://github.com/ccckmit/course0/tree/main/code/演算法/method/09c-遺傳演算法/geneticAlgorithm.py" target="_blank"><strong>geneticAlgorithm.py</strong></a>：遺傳演算法</li>
+</ul>
+</div>
+<div class="section">
+<h2>相關連結</h2>
+<ul>
+<li><a href="main.html">回到演算法入口</a></li>
+<li><a href="index.html">回到演算法 index</a></li>
+<li><a href="https://github.com/ccckmit/course0/blob/main/wiki/演算法/隨機演算法.md" target="_blank">原始 Wiki 文章</a></li>
+<li><a href="https://github.com/ccckmit/course0/blob/main/wiki/演算法/蒙地卡羅法.md" target="_blank">蒙地卡羅法 Wiki</a></li>
+<li><a href="時間複雜度.html">時間複雜度</a></li>
+</ul>
+</div>
+</div>
+<footer><a href="main.html">演算法</a> | <a href="../index.html">回首頁</a></footer>
+</body>
+</html>

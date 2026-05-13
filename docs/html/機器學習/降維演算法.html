@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>降維演算法 (PCA) — 機器學習</title>
+<link rel="stylesheet" href="../main.css">
+</head>
+<body>
+<header>
+  <div class="back-link"><a href="main.html">← 回到機器學習</a></div>
+  <h1>降維演算法 — 主成分分析 (PCA)</h1>
+  <p>最常用的維度降低技術，用於簡化資料並提取關鍵特徵</p>
+</header>
+<div class="container">
+
+<div class="section">
+  <h2>概述</h2>
+  <p>主成分分析（Principal Component Analysis，PCA）是最常用的維度降低技術。在機器學習和資料分析中，高維資料往往包含冗餘資訊和雜訊，不僅增加計算成本，還可能導致過擬合。PCA 通過線性變換將原始高維資料投影到一個低維子空間，同時盡可能保留資料的變異性（資訊量）。</p>
+</div>
+
+<div class="section">
+  <h2>原理</h2>
+  <p>PCA 的核心步驟如下：</p>
+  <ol>
+    <li><strong>標準化</strong>：將資料標準化（均值為 0，標準差為 1）</li>
+    <li><strong>共變異數矩陣</strong>：計算特徵間的共變異數矩陣</li>
+    <li><strong>特徵分解</strong>：對共變異數矩陣進行特徵值分解，找出特徵值和特徵向量</li>
+    <li><strong>選擇主成分</strong>：選擇特徵值最大的 k 個特徵向量作為主成分</li>
+    <li><strong>投影</strong>：將原始資料投影到選擇的主成分上，得到降維後的表示</li>
+  </ol>
+</div>
+
+<div class="section">
+  <h2>優點與應用</h2>
+  <ul>
+    <li><strong>降低維度</strong>：減少計算成本和儲存空間</li>
+    <li><strong>去除雜訊</strong>：忽略變異較小的成分可去除雜訊</li>
+    <li><strong>視覺化</strong>：將高維資料降維到 2D 或 3D 以便可視化</li>
+    <li><strong>去除相關性</strong>：主成分之間彼此正交，去除特徵間的相關性</li>
+    <li><strong>特徵壓縮</strong>：用較少維度保留大部分資訊</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h2>其他降維方法</h2>
+  <ul>
+    <li><strong>t-SNE</strong>：非線性降維，特別適合視覺化高維資料的流形結構</li>
+    <li><strong>UMAP</strong>：基於流形學習的現代降維方法，速度快且效果好</li>
+    <li><strong>LDA</strong>：線性判別分析，有監督的降維方法</li>
+    <li><strong>Autoencoder</strong>：使用神經網路進行非線性降維</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h2>本課程範例</h2>
+  <ul>
+    <li><a href="https://github.com/ccckmit/course0/blob/main/code/%E6%A9%9F%E5%99%A8%E5%AD%B8%E7%BF%92/ml/pca/pca.py">pca.py</a> — PCA 實作</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h2>相關連結</h2>
+  <ul>
+    <li><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E6%A9%9F%E5%99%A8%E5%AD%B8%E7%BF%92/%E4%B8%BB%E6%88%90%E5%88%86%E5%88%86%E6%9E%90.md">Wiki: 主成分分析</a></li>
+    <li><a href="非監督式學習.html">非監督式學習</a></li>
+    <li><a href="聚類演算法.html">聚類演算法</a></li>
+  </ul>
+</div>
+
+</div>
+<footer><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E6%A9%9F%E5%99%A8%E5%AD%B8%E7%BF%92/%E4%B8%BB%E6%88%90%E5%88%86%E5%88%86%E6%9E%90.md">編輯此頁</a></footer>
+</body>
+</html>

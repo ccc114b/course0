@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>拓撲學 — 數學 — 陳鍾誠的課程教材</title>
+<link rel="stylesheet" href="../main.css">
+</head>
+<body>
+<header>
+  <div class="back-link"><a href="main.html">← 回到數學入口</a></div>
+  <h1>拓撲學</h1>
+  <p>連續變形下不變的性質</p>
+</header>
+<div class="container">
+
+<div class="section">
+<h2>概述</h2>
+<p>拓撲學是數學中最抽象且最根本的分支之一，被稱為「橡皮幾何學」——研究在連續變形下不變的幾何性質。與傳統幾何學測量距離和角度不同，拓撲學關心的是空間的「連通性」、「鄰近關係」和「整體結構」。</p>
+<p>拓撲學的核心問題是：「兩個空間在連續變形下是否相同？」例如，咖啡杯和甜甜圈在拓撲學意義下是「相同」的，因為兩者都只有一個孔。這就是同胚的概念。</p>
+</div>
+
+<div class="section">
+<h2>拓撲空間</h2>
+<p><strong>拓撲空間</strong>是拓撲學的基本研究對象，由集合 X 和滿足條件的開集族 𝒯 組成：空集和全集是開集，任意並集和有限交的開集仍是開集。</p>
+<p>常見拓撲包括離散拓撲（所有子集都是開集）、平凡拓撲、歐氏拓撲（ℝⁿ 中由開球生成的拓撲）、相對拓撲（子空間繼承的拓撲）。</p>
+<p><strong>鄰域</strong>：點 x 的鄰域 N 是包含一個包含 x 的開集的集合。<strong>內部</strong>、<strong>閉包</strong>、<strong>邊界</strong>是拓撲學的基本概念。</p>
+</div>
+
+<div class="section">
+<h2>連續映射與同胚</h2>
+<p><strong>連續映射</strong>：f: X → Y 在點 x 處連續的拓撲定義為開集的原像是開集。這與 ε-δ 定義等價但更通用。</p>
+<p><strong>同胚</strong>：若 f 是雙射且 f 和 f⁻¹ 都連續，則稱 X 和 Y 同胚。同胚的空間可以透過連續變形相互轉換。ℝ 和 (0,1) 同胚，但 ℝ 和 S¹（圓）不同胚。</p>
+</div>
+
+<div class="section">
+<h2>連通性與代數拓撲</h2>
+<p><strong>連通性</strong>是基本的拓撲不變量。空間 X 是連通的若它不能表示為兩個非空不相交開集的並集。<strong>路徑連通</strong>是更強的連通性概念：任意兩點可用連續曲線連接。路徑連通 ⇒ 連通。</p>
+<p><strong>代數拓撲</strong>：透過代數工具（如基本群、同調群）研究拓撲空間的整體性質。同倫群 π₁(X) 捕捉空間中的「洞」結構，著名的 Brouwer 不動點定理是代數拓撲的經典結果。</p>
+</div>
+
+<div class="section">
+<h2>本課程範例</h2>
+<p>相關程式碼在 <a href="https://github.com/ccckmit/course0/tree/main/code/數學/09d-拓樸學" target="_blank">code/數學/09d-拓樸學</a>：</p>
+<ul>
+<li><a href="https://github.com/ccckmit/course0/blob/main/code/數學/09d-拓樸學/mobius_tape.py" target="_blank">mobius_tape.py</a> — 莫比烏斯帶的實作</li>
+</ul>
+</div>
+
+<div class="section">
+<h2>相關連結</h2>
+<ul>
+<li><a href="https://github.com/ccckmit/course0/blob/main/wiki/數學/拓撲學.md" target="_blank">Wiki: 拓撲學</a></li>
+<li><a href="幾何學.html">幾何學</a> — 幾何與拓撲的關聯</li>
+<li><a href="https://github.com/ccckmit/course0/blob/main/wiki/數學/泛函分析.md" target="_blank">Wiki: 泛函分析</a></li>
+<li><a href="main.html">回到數學入口</a></li>
+</ul>
+</div>
+
+</div>
+<footer>
+<a href="https://github.com/ccckmit/course0">回到課程首頁</a>
+</footer>
+</body>
+</html>

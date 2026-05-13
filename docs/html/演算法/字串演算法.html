@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>字串演算法 — 演算法</title>
+<link rel="stylesheet" href="../main.css">
+</head>
+<body>
+<header>
+  <div class="back-link"><a href="main.html">← 回入口</a></div>
+  <h1>字串演算法 (String Algorithms)</h1>
+  <p>字串比對、搜尋與處理的演算法</p>
+</header>
+<div class="container">
+<div class="section">
+<h2>字串比對</h2>
+<p><strong>暴力比對</strong>：逐位元比較，時間 O(nm)。</p>
+<p><strong>KMP 演算法</strong>：利用前綴函數避免重複比對，時間 O(n+m)。</p>
+<p><strong>Rabin-Karp</strong>：使用雜湊進行快速比對，平均 O(n+m)。</p>
+<p><strong>Boyer-Moore</strong>：從右向左比對，利用壞字元和好後綴規則跳過無用比較。</p>
+</div>
+<div class="section">
+<h2>字串處理技術</h2>
+<p><strong>最長公共子序列 (LCS)</strong>：DP 方法，時間 O(nm)。</p>
+<p><strong>最長遞增子序列 (LIS)</strong>：O(n log n) 最佳化解法。</p>
+<p><strong>編輯距離 (Levenshtein)</strong>：計算兩個字串的最小編輯操作次數。</p>
+</div>
+<div class="section">
+<h2>Trie（前綴樹）</h2>
+<p>Trie 是一種樹狀資料結構，用於高效儲存和查找字串集合。每個節點代表一個前綴，路徑上的字元組成字串。常用於自動補全、拼寫檢查、IP 路由。</p>
+</div>
+<div class="section">
+<h2>本課程範例</h2>
+<ul>
+<li><a href="https://github.com/ccckmit/course0/tree/main/code/演算法/method/06-搜尋法" target="_blank"><strong>搜尋法</strong></a>：搜尋相關實作</li>
+<li><a href="https://github.com/ccckmit/course0/tree/main/code/演算法/method/04a-遞迴法/02a-bnf/gen_chinese1.py" target="_blank"><strong>gen_chinese1.py</strong></a>：字串生成範例</li>
+</ul>
+</div>
+<div class="section">
+<h2>相關連結</h2>
+<ul>
+<li><a href="main.html">回到演算法入口</a></li>
+<li><a href="index.html">回到演算法 index</a></li>
+<li><a href="https://github.com/ccckmit/course0/blob/main/wiki/演算法/字串演算法.md" target="_blank">原始 Wiki 文章</a></li>
+<li><a href="搜尋法.html">搜尋法</a></li>
+<li><a href="資料結構.html">資料結構</a></li>
+</ul>
+</div>
+</div>
+<footer><a href="main.html">演算法</a> | <a href="../index.html">回首頁</a></footer>
+</body>
+</html>

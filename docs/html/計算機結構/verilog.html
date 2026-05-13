@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Verilog 硬體描述語言</title>
+<link rel="stylesheet" href="../main.css">
+</head>
+<body>
+<header>
+  <div class="back-link"><a href="main.html">← 回入口</a></div>
+  <h1>Verilog</h1>
+</header>
+<div class="container">
+
+<div class="section">
+<h2>Verilog 基礎</h2>
+<p>Verilog 是一種硬體描述語言（HDL），廣泛用於數位電路的設計、模擬和驗證。1984 年由 Gateway Design Automation 開發，標準化為 IEEE 1364。Verilog 允許從行為級到閘級的多層次抽象描述硬體，是現代晶片設計的基礎工具。</p>
+</div>
+
+<div class="section">
+<h2>模組結構</h2>
+<pre class="code">module adder (
+    input  [7:0] a, b,
+    input        clk,
+    output reg [7:0] sum
+);
+    always @(posedge clk)
+        sum <= a + b;
+endmodule</pre>
+<p>模組是 Verilog 的基本設計單元，包含輸入/輸出埠宣告和內部邏輯描述。</p>
+</div>
+
+<div class="section">
+<h2>資料類型</h2>
+<ul>
+  <li><strong>wire</strong> — 連續指派訊號（組合邏輯）</li>
+  <li><strong>reg</strong> — 程序區塊中的變數（暫存器）</li>
+  <li><strong>integer</strong> — 整數</li>
+  <li><strong>parameter</strong> — 常數參數</li>
+</ul>
+</div>
+
+<div class="section">
+<h2>組合 vs 時序邏輯</h2>
+<pre class="code">// 組合邏輯：使用 assign
+assign y = (sel) ? b : a;
+
+// 時序邏輯：使用 always @(posedge clk)
+always @(posedge clk)
+    if (rst) q <= 0;
+    else     q <= d;</pre>
+</div>
+
+<div class="section">
+<h2>本課程範例</h2>
+<ul>
+  <li><a href="https://github.com/ccckmit/course0/tree/main/code/%E8%A8%88%E7%AE%97%E6%A9%9F%E7%B5%90%E6%A7%8B/verilog">Verilog 範例程式碼</a></li>
+</ul>
+</div>
+
+<div class="section">
+<h2>相關連結</h2>
+<ul>
+  <li><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E8%A8%88%E7%AE%97%E6%A9%9F%E7%B5%90%E6%A7%8B/Verilog.md">wiki: Verilog</a></li>
+  <li><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E8%A8%88%E7%AE%97%E6%A9%9F%E7%B5%90%E6%A7%8B/HDL.md">wiki: HDL</a></li>
+  <li><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E8%A8%88%E7%AE%97%E6%A9%9F%E7%B5%90%E6%A7%8B/IcarusVerilog.md">wiki: Icarus Verilog</a></li>
+</ul>
+</div>
+
+</div>
+</body>
+</html>

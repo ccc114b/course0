@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>記憶體管理 — 系統程式</title>
+<link rel="stylesheet" href="../main.css">
+</head>
+<body>
+<header>
+  <div class="back-link"><a href="main.html">← 回入口</a></div>
+  <h1>記憶體管理</h1>
+  <p>空間配置與回收的核心技術</p>
+</header>
+<div class="container">
+<div class="section">
+<h2>什麼是記憶體管理？</h2>
+<p>記憶體管理是作業系統與系統軟體的核心功能之一，負責分配、追蹤和回收記憶體資源。良好的記憶體管理策略顯著影響系統的效能、穩定性和安全性。</p>
+</div>
+<div class="section">
+<h2>歷史演進</h2>
+<ul>
+<li><strong>靜態分配時代</strong>：程式執行前分配所有記憶體</li>
+<li><strong>動態分配時代</strong>：引入堆積（Heap）管理</li>
+<li><strong>虛擬記憶體時代</strong>：提供比實際記憶體更大的位址空間</li>
+<li><strong>垃圾回收時代</strong>：自動管理在 LISP、Java、Python 中普及</li>
+</ul>
+</div>
+<div class="section">
+<h2>分配策略</h2>
+<ul>
+<li><strong>首次適應（First Fit）</strong>：使用第一個足夠大的區塊，最快但碎片多</li>
+<li><strong>最佳適應（Best Fit）</strong>：使用最接近需求大小的區塊，搜尋成本高</li>
+<li><strong>最差適應（Worst Fit）</strong>：使用最大的空閒區塊，減少小碎片</li>
+<li><strong>夥伴系統（Buddy System）</strong>：2 的冪次方大小區塊</li>
+</ul>
+</div>
+<div class="section">
+<h2>碎片問題</h2>
+<ul>
+<li><strong>外部碎片</strong>：總量足夠但不連續，無法滿足大請求</li>
+<li><strong>內部碎片</strong>：分配的區塊大於需求，空間浪費</li>
+</ul>
+</div>
+<div class="section">
+<h2>本課程範例</h2>
+<ul>
+<li><a href="https://github.com/ccckmit/course0/tree/main/code/系統程式/linux/04-fs" target="_blank"><strong>linux/04-fs</strong></a>：Linux 記憶體映射 mmap 範例</li>
+<li><a href="https://github.com/ccckmit/course0/tree/main/code/系統程式/os/xv7" target="_blank"><strong>xv7</strong></a>：xv7 記憶體管理實作</li>
+</ul>
+</div>
+<div class="section">
+<h2>相關連結</h2>
+<ul>
+<li><a href="index.html">回到系統程式 index</a></li>
+<li><a href="main.html">回到入口</a></li>
+<li><a href="https://github.com/ccckmit/course0/blob/main/wiki/系統程式/記憶體管理.md" target="_blank">原始 Wiki 文章</a></li>
+</ul>
+</div>
+</div>
+<footer><a href="main.html">系統程式</a> | <a href="../index.html">回首頁</a></footer>
+</body>
+</html>

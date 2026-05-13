@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>最短路徑 — 演算法</title>
+<link rel="stylesheet" href="../main.css">
+</head>
+<body>
+<header>
+  <div class="back-link"><a href="main.html">← 回入口</a></div>
+  <h1>最短路徑 (Shortest Path)</h1>
+  <p>在圖中尋找兩頂點之間權重最小的路徑</p>
+</header>
+<div class="container">
+<div class="section">
+<h2>問題定義</h2>
+<p>給定有向或無向加權圖，尋找從起點到終點總權重最小的路徑。根據起點數量可分為單源最短路徑與全源最短路徑。</p>
+</div>
+<div class="section">
+<h2>Dijkstra 演算法</h2>
+<p>適用於非負權重圖。使用優先佇列每次選取距離最小的未處理節點，放鬆其相鄰邊。時間 O((V+E) log V)。</p>
+<div class="code">def dijkstra(graph, start):
+    dist = {v: float('inf') for v in graph}
+    dist[start] = 0
+    pq = [(0, start)]
+    while pq:
+        d, u = heapq.heappop(pq)
+        if d > dist[u]:
+            continue
+        for v, w in graph[u]:
+            if dist[u] + w < dist[v]:
+                dist[v] = dist[u] + w
+                heapq.heappush(pq, (dist[v], v))
+    return dist</div>
+</div>
+<div class="section">
+<h2>Bellman-Ford 演算法</h2>
+<p>可處理負權重邊，並能偵測負權重環。時間 O(VE)。執行 V-1 次對所有邊進行放鬆操作。</p>
+</div>
+<div class="section">
+<h2>Floyd-Warshall 演算法</h2>
+<p>全源最短路徑，動態規劃方法。時間 O(V³)，空間 O(V²)。適用於密集圖。</p>
+</div>
+<div class="section">
+<h2>本課程範例</h2>
+<ul>
+<li><a href="https://github.com/ccckmit/course0/tree/main/code/演算法/method/06-搜尋法/astar.py" target="_blank"><strong>astar.py</strong></a>：A* 搜尋（啟發式最短路徑）</li>
+<li><a href="https://github.com/ccckmit/course0/tree/main/code/演算法/method/05c-爬山演算法" target="_blank"><strong>爬山演算法</strong></a>：圖上最佳化搜尋</li>
+</ul>
+</div>
+<div class="section">
+<h2>相關連結</h2>
+<ul>
+<li><a href="main.html">回到演算法入口</a></li>
+<li><a href="index.html">回到演算法 index</a></li>
+<li><a href="https://github.com/ccckmit/course0/blob/main/wiki/演算法/圖形演算法.md" target="_blank">圖形演算法 Wiki</a></li>
+<li><a href="圖論.html">圖論</a></li>
+<li><a href="最小生成樹.html">最小生成樹</a></li>
+</ul>
+</div>
+</div>
+<footer><a href="main.html">演算法</a> | <a href="../index.html">回首頁</a></footer>
+</body>
+</html>

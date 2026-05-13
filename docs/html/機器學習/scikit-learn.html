@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>scikit-learn — 機器學習</title>
+<link rel="stylesheet" href="../main.css">
+</head>
+<body>
+<header>
+  <div class="back-link"><a href="main.html">← 回到機器學習</a></div>
+  <h1>scikit-learn</h1>
+  <p>Python 生態系統中最廣泛使用的機器學習經典庫</p>
+</header>
+<div class="container">
+
+<div class="section">
+  <h2>概述</h2>
+  <p>scikit-learn 是 Python 生態系統中最廣泛使用的機器學習經典庫，於 2007 年發布，採用 NumPy/SciPy 陣列運算框架。設計簡潔優雅，API 統一一致，適合處理傳統機器學習任務。提供從資料預處理到模型訓練、評估、調參的完整工具鏈，支援監督式學習（分類、回歸）、非監督式學習（聚類、降維）和模型選擇。</p>
+</div>
+
+<div class="section">
+  <h2>監督式學習</h2>
+  <p><strong>分類</strong>：邏輯回歸 (LogisticRegression)、支援向量機 (SVC)、決策樹 (DecisionTreeClassifier)、隨機森林 (RandomForestClassifier)、梯度提升 (GradientBoostingClassifier)。 <strong>回歸</strong>：線性回歸 (LinearRegression)、嶺回歸 (Ridge)、Lasso (Lasso)、ElasticNet (ElasticNet)、支援向量回歸 (SVR)。scikit-learn 提供統一的 fit/predict API，所有模型都遵循相同的使用模式。</p>
+  <div class="code">
+model = RandomForestClassifier(n_estimators=100, random_state=42)
+model.fit(X_train, y_train)
+predictions = model.predict(X_test)
+  </div>
+</div>
+
+<div class="section">
+  <h2>非監督式學習</h2>
+  <p><strong>聚類</strong>：K-Means (KMeans)、DBSCAN (DBSCAN)、層次聚類 (AgglomerativeClustering)。 <strong>降維</strong>：主成分分析 (PCA)、t-SNE (TSNE)、UMAP（需安裝 umap-learn）。K-Means 使用肘部法 (Elbow Method) 選擇最佳聚類數，DBSCAN 無需指定聚類數且能發現任意形狀的聚類。PCA 用於線性降維，t-SNE 和 UMAP 用於高維數據的可視化。</p>
+</div>
+
+<div class="section">
+  <h2>模型評估與調參</h2>
+  <p>評估指標包括準確率 (accuracy)、精確率 (precision)、召回率 (recall)、F1 分數、混淆矩陣、ROC-AUC、MSE、R² 等。交叉驗證支援 K-Fold、StratifiedKFold、LeaveOneOut 等策略。超參數調參提供網格搜尋 (GridSearchCV) 和隨機搜尋 (RandomizedSearchCV)。Pipeline 可將預處理和模型訓練串聯為單一工作流。</p>
+</div>
+
+<div class="section">
+  <h2>資料預處理</h2>
+  <p>特徵縮放提供 StandardScaler（標準化）、MinMaxScaler（歸一化）、RobustScaler（魯棒縮放）。類別特徵編碼提供 LabelEncoder 和 OneHotEncoder。ColumnTransformer 可對不同特徵列應用不同的預處理。PolynomialFeatures 生成多項式互動特徵。scikit-learn 的預處理模組是建構機器學習管線的重要組成部分。</p>
+</div>
+
+<div class="section">
+  <h2>相關連結</h2>
+  <ul>
+    <li><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E6%A9%9F%E5%99%A8%E5%AD%B8%E7%BF%92/scikit-learn.md">Wiki: scikit-learn</a></li>
+    <li><a href="分類演算法.html">分類演算法</a></li>
+    <li><a href="模型評估.html">模型評估</a></li>
+    <li><a href="深度學習.html">深度學習</a></li>
+  </ul>
+</div>
+
+</div>
+<footer><a href="main.html">機器學習</a> | <a href="../main.html">回首頁</a></footer>
+</body>
+</html>

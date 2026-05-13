@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>資訊理論 — 計算理論</title>
+<link rel="stylesheet" href="../main.css">
+<style>
+  .back-link a { color: #fff; }
+  .section h2 { color: #9b59b6; }
+  footer a { color: #9b59b6; }
+  pre { background: #2d2d2d; color: #f8f8f2; padding: 16px; border-radius: 8px; overflow-x: auto; font-family: "Consolas", "Monaco", monospace; font-size: 0.9rem; margin: 12px 0; }
+</style>
+</head>
+<body>
+<header>
+  <div class="back-link"><a href="main.html">← 回入口</a></div>
+  <h1>資訊理論</h1>
+  <p>資訊的量化、儲存與傳輸</p>
+</header>
+<div class="container">
+  <div class="section">
+    <h2>什麼是資訊理論？</h2>
+    <p>資訊理論是由克勞德·夏農 (Claude Shannon) 在 1948 年創立的一門數學學科，主要研究資訊的量化、儲存、傳輸和處理。其核心目標是研究如何有效率且準確地在通訊系統中傳遞訊息。資訊理論對現代通訊、資料壓縮、機器學習等領域產生了深遠影響。</p>
+  </div>
+
+  <div class="section">
+    <h2>熵 (Entropy)</h2>
+    <p>熵是資訊理論中最核心的概念，用來衡量隨機變數或資訊源的不確定性。對於離散隨機變數 X，熵定義為 H(X) = -∑p(x) log₂ p(x)，單位是位元 (bit)。</p>
+    <p>熵的三個直覺意義：</p>
+    <ul>
+      <li><strong>不確定性</strong>：事件越不確定、發生機率越低，熵越高</li>
+      <li><strong>資訊量</strong>：熵越高，該訊息包含的資訊量越大</li>
+      <li><strong>編碼長度</strong>：熵代表無損壓縮時每個符號所需的平均最小編碼位元數</li>
+    </ul>
+    <h3>二元熵函數</h3>
+    <p>對於二元隨機變數，H(p) = -p log₂ p - (1-p) log₂(1-p)，在 p = 0.5 時達到最大值 1。</p>
+    <p><strong>範例</strong>：硬幣擲出正面機率 p = 0.7，H = -0.7 log₂(0.7) - 0.3 log₂(0.3) = 0.882 bits。若硬幣公平 (p = 0.5)，H = 1 bit。越不公平的硬幣，熵越低。</p>
+  </div>
+
+  <div class="section">
+    <h2>交叉熵與 KL 散度</h2>
+    <p><strong>交叉熵</strong>用來衡量兩個機率分佈之間的差異：H(p, q) = -∑p(x) log₂ q(x)。交叉熵 = 熵 + KL 散度：H(p, q) = H(p) + DKL(p ‖ q)。</p>
+    <p><strong>KL 散度</strong>（相對熵）用來衡量用一個分佈近似另一個分佈所付出的代價：DKL(p ‖ q) = ∑p(x) log₂(p(x)/q(x))。KL 散度是非對稱的：DKL(p ‖ q) ≠ DKL(q ‖ p)。</p>
+  </div>
+
+  <div class="section">
+    <h2>互資訊</h2>
+    <p>互資訊用來衡量兩個隨機變數之間的相互依賴程度：I(X; Y) = ∑∑p(x,y) log₂(p(x,y)/(p(x)p(y)))。也可寫成 I(X; Y) = H(X) - H(X|Y) = H(Y) - H(Y|X)。</p>
+  </div>
+
+  <div class="section">
+    <h2>霍夫曼編碼與信道容量</h2>
+    <p><strong>霍夫曼編碼</strong>是一種無損資料壓縮演算法，核心思想是給予高頻率的字元較短的編碼、低頻率的字元較長的編碼。熵是理論上的最小平均編碼長度。</p>
+    <p><strong>信道容量</strong>由夏農-哈特利定理給出：C = B log₂(1 + S/N)。若傳輸速率 R < C，則存在一種編碼方式可使錯誤機率任意小；若 R > C，則無法實現可靠傳輸。這就是著名的香農極限。</p>
+    <p><strong>應用領域</strong>：資料壓縮 (ZIP)、通訊系統 (5G)、機器學習 (損失函數)、密碼學 (金鑰長度設計)。</p>
+  </div>
+
+  <div class="section">
+    <h2>相關連結</h2>
+    <ul>
+      <li><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E8%A8%88%E7%AE%97%E7%90%86%E8%AB%96/%E8%B3%87%E8%A8%8A%E7%90%86%E8%AB%96.md">Wiki: 資訊理論</a></li>
+      <li><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E8%A8%88%E7%AE%97%E7%90%86%E8%AB%96/%E8%A8%88%E7%AE%97%E7%90%86%E8%AB%96.md">Wiki: 計算理論</a></li>
+      <li><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E8%A8%88%E7%AE%97%E7%90%86%E8%AB%96/NP%E5%AE%8C%E5%85%A8%E6%80%A7.md">Wiki: NP完全性</a></li>
+    </ul>
+  </div>
+
+  <footer>
+    <a href="main.html">← 回入口</a> ·
+    <a href="https://github.com/ccckmit/course0">GitHub</a>
+  </footer>
+</div>
+</body>
+</html>

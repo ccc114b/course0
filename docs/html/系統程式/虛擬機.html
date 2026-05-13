@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>虛擬機 — 系統程式</title>
+<link rel="stylesheet" href="../main.css">
+</head>
+<body>
+<header>
+  <div class="back-link"><a href="main.html">← 回入口</a></div>
+  <h1>虛擬機 (Virtual Machine)</h1>
+  <p>軟體模擬的計算機</p>
+</header>
+<div class="container">
+<div class="section">
+<h2>什麼是虛擬機？</h2>
+<p>虛擬機（Virtual Machine）是一種軟體模擬技術，通過軟體模擬硬體或特定指令集，在單一硬體平臺上執行多個獨立的作業系統與應用環境。虛擬化技術是雲端運算的基礎。</p>
+</div>
+<div class="section">
+<h2>虛擬化的類型</h2>
+<h3>系統虛擬化</h3>
+<p>模擬完整硬體平臺，讓客端作業系統在隔離環境中執行。代表：QEMU、VMware、VirtualBox、Hyper-V。</p>
+<h3>程序虛擬化</h3>
+<p>模擬特定指令集，讓同一平臺上執行不同架構的程式。代表：JVM、CLR、WebAssembly Runtime。</p>
+<h3>作業系統虛擬化</h3>
+<p>共享主機核心，隔離程序與資源。代表：Docker 容器。</p>
+</div>
+<div class="section">
+<h2>Hypervisor</h2>
+<ul>
+<li><strong>Type 1（裸機型）</strong>：直接運行在硬體上，如 VMware ESXi、KVM</li>
+<li><strong>Type 2（託管型）</strong>：運行在主機 OS 之上，如 VirtualBox</li>
+</ul>
+</div>
+<div class="section">
+<h2>本課程實作</h2>
+<ul>
+<li><strong>py0i</strong>：Python 簡易直譯器</li>
+<li><strong>qd0c</strong>：C 語言簡易虛擬機</li>
+<li><strong>ll0i</strong>：LLVM 風格虛擬機</li>
+<li><strong>rv0</strong>：RISC-V 風格虛擬機</li>
+<li><strong>docker0</strong>：Docker 容器範例</li>
+</ul>
+</div>
+<div class="section">
+<h2>相關連結</h2>
+<ul>
+<li><a href="index.html">回到系統程式 index</a></li>
+<li><a href="main.html">回到入口</a></li>
+<li><a href="https://github.com/ccckmit/course0/blob/main/wiki/系統程式/虛擬機.md" target="_blank">原始 Wiki 文章</a></li>
+<li><a href="https://github.com/ccckmit/course0/tree/main/code/系統程式/irvm" target="_blank">程式碼範例</a></li>
+</ul>
+</div>
+</div>
+<footer><a href="main.html">系統程式</a> | <a href="../index.html">回首頁</a></footer>
+</body>
+</html>

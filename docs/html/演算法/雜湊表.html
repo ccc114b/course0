@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>雜湊表 — 演算法</title>
+<link rel="stylesheet" href="../main.css">
+</head>
+<body>
+<header>
+  <div class="back-link"><a href="main.html">← 回入口</a></div>
+  <h1>雜湊表 (Hash Table)</h1>
+  <p>實現 O(1) 平均查找時間的鍵值對資料結構</p>
+</header>
+<div class="container">
+<div class="section">
+<h2>雜湊表原理</h2>
+<p>雜湊表通過雜湊函數將鍵映射到陣列索引，實現平均 O(1) 的查找、插入、刪除操作。核心是使用雜湊函數計算鍵的儲存位置。</p>
+</div>
+<div class="section">
+<h2>雜湊函數</h2>
+<p>好的雜湊函數應滿足：計算快速、均勻分佈、減少碰撞。常見方法包括：</p>
+<ul>
+<li><strong>除法雜湊</strong>：key % table_size</li>
+<li><strong>乘法雜湊</strong>：floor(table_size × (key × A mod 1))</li>
+<li><strong>字串雜湊</strong>：將字串視為基數表示法</li>
+</ul>
+</div>
+<div class="section">
+<h2>碰撞處理</h2>
+<p><strong>鏈結法 (Chaining)</strong>：每個槽位維護一個鏈結串列，碰撞元素加入串列。</p>
+<p><strong>開放定址法 (Open Addressing)</strong>：碰撞時尋找下一個空槽，如線性探測、二次探測、雙重雜湊。</p>
+</div>
+<div class="section">
+<h2>布隆過濾器</h2>
+<p>布隆過濾器是一種空間效率極高的機率性資料結構，用於測試元素是否在集合中。可能產生誤判（假陽性），但不會漏判（假陰性）。使用多個雜湊函數將元素映射到位元陣列。</p>
+</div>
+<div class="section">
+<h2>本課程範例</h2>
+<ul>
+<li><a href="https://github.com/ccckmit/course0/tree/main/code/演算法/method/02b-雜湊法/hashtable/hash1.py" target="_blank"><strong>hash1.py</strong></a>：雜湊表實作</li>
+<li><a href="https://github.com/ccckmit/course0/tree/main/code/演算法/method/02b-雜湊法/bloomFilter/bloomFilter.py" target="_blank"><strong>bloomFilter.py</strong></a>：布隆過濾器</li>
+<li><a href="https://github.com/ccckmit/course0/tree/main/code/演算法/method/02b-雜湊法/sha256/sha256.py" target="_blank"><strong>sha256.py</strong></a>：SHA-256 安全雜湊</li>
+</ul>
+</div>
+<div class="section">
+<h2>相關連結</h2>
+<ul>
+<li><a href="main.html">回到演算法入口</a></li>
+<li><a href="index.html">回到演算法 index</a></li>
+<li><a href="https://github.com/ccckmit/course0/blob/main/wiki/演算法/資料結構.md" target="_blank">資料結構 Wiki</a></li>
+<li><a href="https://github.com/ccckmit/course0/blob/main/wiki/演算法/雜湊法.md" target="_blank">雜湊法 Wiki</a></li>
+<li><a href="搜尋法.html">搜尋法</a></li>
+</ul>
+</div>
+</div>
+<footer><a href="main.html">演算法</a> | <a href="../index.html">回首頁</a></footer>
+</body>
+</html>

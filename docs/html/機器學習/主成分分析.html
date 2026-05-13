@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>主成分分析 — 機器學習</title>
+<link rel="stylesheet" href="../main.css">
+</head>
+<body>
+<header>
+  <div class="back-link"><a href="main.html">← 回到機器學習</a></div>
+  <h1>主成分分析 (PCA)</h1>
+  <p>最常用的維度降低技術，透過線性變換將高維資料映射到低維空間</p>
+</header>
+<div class="container">
+
+<div class="section">
+  <h2>原理</h2>
+  <p>主成分分析（Principal Component Analysis）是最常用的維度降低技術。其步驟為：<strong>標準化</strong>：將資料標準化（均值為 0，標準差為 1）。<strong>共變異矩陣</strong>：計算特徵間的共變異矩陣。<strong>特徵分解</strong>：找出特徵值和特徵向量。<strong>選擇主成分</strong>：選擇解釋最多變異的向量（特徵值最大的方向）。<strong>投影</strong>：將資料投影到主成分上，得到降維後的表示。PCA 保證投影後資料的變異量最大。</p>
+  <div class="code">
+from sklearn.decomposition import PCA
+pca = PCA(n_components=2)
+X_pca = pca.fit_transform(X)
+print(f"解釋變異量: {pca.explained_variance_ratio_}")
+print(f"累積解釋變異量: {sum(pca.explained_variance_ratio_)}")
+  </div>
+</div>
+
+<div class="section">
+  <h2>優點與應用</h2>
+  <p><strong>降低維度</strong>：減少計算成本和儲存空間，緩解維度詛咒。 <strong>去除雜訊</strong>：保留主要變異方向，捨棄可能由雜訊引起的小變異方向。 <strong>視覺化</strong>：將高維資料降為 2D 或 3D 便於可視化分析。 <strong>去相關</strong>：去除特徵間的相關性，得到正交的主成分。PCA 廣泛應用於基因數據分析、圖像壓縮、人臉識別（特徵臉）以及機器學習前的預處理步驟。</p>
+</div>
+
+<div class="section">
+  <h2>選擇主成分數量</h2>
+  <p>通常根據累積解釋變異量選擇主成分數量，一般保留 95% 以上的變異量。可使用「肘部法」（Scree Plot）觀察特徵值的下降曲線，選擇曲線轉折點處的主成分數。PCA 假設資料的主要變異方向包含最重要的資訊。若資料的結構不主要體現在變異量上（如聚類結構），PCA 可能不是最佳選擇。</p>
+</div>
+
+<div class="section">
+  <h2>相關連結</h2>
+  <ul>
+    <li><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E6%A9%9F%E5%99%A8%E5%AD%B8%E7%BF%92/%E4%B8%BB%E6%88%90%E5%88%86%E5%88%86%E6%9E%90.md">Wiki: 主成分分析</a></li>
+    <li><a href="降維演算法.html">降維演算法</a></li>
+    <li><a href="非監督式學習.html">非監督式學習</a></li>
+    <li><a href="聚類演算法.html">聚類演算法</a></li>
+  </ul>
+</div>
+
+</div>
+<footer><a href="main.html">機器學習</a> | <a href="../main.html">回首頁</a></footer>
+</body>
+</html>

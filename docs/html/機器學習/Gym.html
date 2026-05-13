@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gym — 機器學習</title>
+<link rel="stylesheet" href="../main.css">
+</head>
+<body>
+<header>
+  <div class="back-link"><a href="main.html">← 回到機器學習</a></div>
+  <h1>Gym</h1>
+  <p>OpenAI 開發的強化學習環境工具包，提供標準化 RL 演算法開發介面</p>
+</header>
+<div class="container">
+
+<div class="section">
+  <h2>概述</h2>
+  <p>Gym 是 OpenAI 開發的強化學習環境工具包，提供標準化的介面用於開發和比較 RL 演算法。每個環境遵循相同的 API：reset() 初始化環境並返回觀察、step(action) 執行一步動作並返回 (observation, reward, terminated, truncated, info)、render() 渲染環境視覺化。Gym 已於 2023 年更名為 Gymnasium，但 API 保持相容。</p>
+</div>
+
+<div class="section">
+  <h2>核心 API 與空間類型</h2>
+  <p>環境互動流程：建立環境 (gym.make) → 重置 (env.reset) → 迴圈執行動作 (env.step)。<strong>離散空間 (Discrete)</strong>：動作從有限集合中選擇，如 CartPole 的左/右。 <strong>盒子空間 (Box)</strong>：連續動作或觀察，用低維和高維邊界定義。 <strong>多離散/多二元/字典空間</strong>：用於複合動作和觀察空間。包裝器 (Wrapper) 如 TimeLimit、NormalizeObservation、FrameStack、RecordVideo 可擴展環境功能。</p>
+  <div class="code">
+import gym
+env = gym.make('CartPole-v1')
+observation, info = env.reset()
+for _ in range(1000):
+    action = env.action_space.sample()
+    observation, reward, terminated, truncated, info = env.step(action)
+    if terminated or truncated:
+        break
+env.close()
+  </div>
+</div>
+
+<div class="section">
+  <h2>經典控制環境</h2>
+  <p><strong>CartPole-v1</strong>：平衡桿子，觀察為 (位置, 速度, 角度, 角速度)，動作離散 2。 <strong>MountainCar-v0</strong>：爬上山頂，觀察為 2D (位置, 速度)，動作離散 3。 <strong>Pendulum-v1</strong>：鐘擺直立控制，觀察為 (cos θ, sin θ, ω)，動作連續扭矩。 <strong>LunarLander-v2</strong>：月球登陸，動作離散 4。 <strong>BipedalWalker-v3</strong>：雙足行走，動作連續 4。</p>
+</div>
+
+<div class="section">
+  <h2>RL 演算法範例</h2>
+  <p>Gym 環境可與 Stable-Baselines3 整合使用 DQN、PPO 等演算法。DQN 使用經驗回放和目標網路穩定訓練，適合離散動作空間。PPO 通過裁剪的代理目標函數實現穩定更新，是目前最流行的策略梯度方法。自定義環境可通過 gym.envs.registration.register 註冊，需實現 step、reset 和空間定義。</p>
+  <div class="code">
+from stable_baselines3 import DQN
+model = DQN("MlpPolicy", "CartPole-v1", verbose=1)
+model.learn(total_timesteps=10000)
+  </div>
+</div>
+
+<div class="section">
+  <h2>相關連結</h2>
+  <ul>
+    <li><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E6%A9%9F%E5%99%A8%E5%AD%B8%E7%BF%92/Gym.md">Wiki: Gym</a></li>
+    <li><a href="強化學習.html">強化學習</a></li>
+    <li><a href="PyTorch.html">PyTorch</a></li>
+  </ul>
+</div>
+
+</div>
+<footer><a href="main.html">機器學習</a> | <a href="../main.html">回首頁</a></footer>
+</body>
+</html>

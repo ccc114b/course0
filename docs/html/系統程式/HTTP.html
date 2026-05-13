@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HTTP — 系統程式</title>
+<link rel="stylesheet" href="../main.css">
+</head>
+<body>
+<header>
+  <div class="back-link"><a href="main.html">← 回入口</a></div>
+  <h1>HTTP</h1>
+  <p>網頁傳輸的基礎協定</p>
+</header>
+<div class="container">
+<div class="section">
+<h2>什麼是 HTTP？</h2>
+<p>HTTP（HyperText Transfer Protocol）是網際網路上應用最廣泛的通訊協定，定義客戶端與伺服器之間如何請求和傳輸超媒體文件，採用請求-回應模型。</p>
+</div>
+<div class="section">
+<h2>核心特性</h2>
+<ul>
+<li><strong>無狀態</strong>：伺服器不保留請求之間的狀態</li>
+<li><strong>純文字</strong>：協定訊息為人類可讀格式</li>
+<li><strong>靈活性</strong>：可傳輸 HTML、JSON、圖片等</li>
+<li><strong>可擴展</strong>：支援自訂標頭和方法</li>
+</ul>
+</div>
+<div class="section">
+<h2>請求方法</h2>
+<table>
+<tr><th>方法</th><th>用途</th></tr>
+<tr><td>GET</td><td>取得資源</td></tr>
+<tr><td>POST</td><td>提交資料</td></tr>
+<tr><td>PUT</td><td>更新資源</td></tr>
+<tr><td>DELETE</td><td>刪除資源</td></tr>
+<tr><td>PATCH</td><td>部分更新</td></tr>
+</table>
+</div>
+<div class="section">
+<h2>狀態碼</h2>
+<ul>
+<li><strong>2xx</strong>：成功（200 OK）</li>
+<li><strong>3xx</strong>：重定向（301 Moved）</li>
+<li><strong>4xx</strong>：客戶端錯誤（404 Not Found）</li>
+<li><strong>5xx</strong>：伺服器錯誤（500 Internal Error）</li>
+</ul>
+</div>
+<div class="section">
+<h2>版本演進</h2>
+<ul>
+<li><strong>HTTP/1.1</strong>（1997）：持久連線、管線化</li>
+<li><strong>HTTP/2</strong>（2015）：多路複用、伺服器推送</li>
+<li><strong>HTTP/3</strong>（2022）：基於 QUIC/UDP，降低延遲</li>
+</ul>
+</div>
+<div class="section">
+<h2>本課程範例</h2>
+<ul>
+<li><a href="https://github.com/ccckmit/course0/tree/main/code/系統程式/network/fastapi0" target="_blank"><strong>fastapi0</strong></a>：FastAPI Web 伺服器</li>
+<li><a href="https://github.com/ccckmit/course0/tree/main/code/系統程式/network/webserver0" target="_blank"><strong>webserver0</strong></a>：簡易 Web 伺服器</li>
+<li><a href="https://github.com/ccckmit/course0/tree/main/code/系統程式/network/git0server" target="_blank"><strong>git0server</strong></a>：Git 伺服器實作</li>
+</ul>
+</div>
+<div class="section">
+<h2>相關連結</h2>
+<ul>
+<li><a href="index.html">回到系統程式 index</a></li>
+<li><a href="main.html">回到入口</a></li>
+<li><a href="https://github.com/ccckmit/course0/blob/main/wiki/系統程式/HTTP.md" target="_blank">原始 Wiki 文章</a></li>
+</ul>
+</div>
+</div>
+<footer><a href="main.html">系統程式</a> | <a href="../index.html">回首頁</a></footer>
+</body>
+</html>

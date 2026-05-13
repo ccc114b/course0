@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>神經網路 — 機器學習</title>
+<link rel="stylesheet" href="../main.css">
+</head>
+<body>
+<header>
+  <div class="back-link"><a href="main.html">← 回到機器學習</a></div>
+  <h1>神經網路 (Neural Network)</h1>
+  <p>受生物神經元啟發的計算模型，深度學習的基礎構建模組</p>
+</header>
+<div class="container">
+
+<div class="section">
+  <h2>概述</h2>
+  <p>神經網路是受人類大腦神經元結構啟發的計算模型，是深度學習的基礎構建模組。1943 年，McCulloch 和 Pitts 提出了第一個人工神經元模型 MCP neuron。1958 年，Rosenblatt 發明了感知機（Perceptron），開創了機器學習的新時代。2012 年 AlexNet 在 ImageNet 競賽中取得突破性成績，神經網路再次成為 AI 領域的核心技術。</p>
+  <p>神經網路的核心思想是透過大量的簡單處理單元（神經元）的連接和學習，來表示複雜的函數關係。每個神經元接收輸入，進行加權求和，通過非線性啟動函數產生輸出。</p>
+</div>
+
+<div class="section">
+  <h2>網路架構</h2>
+  <h3>前饋神經網路 (FNN)</h3>
+  <p>最基礎的網路結構，資訊從輸入層向前傳播到輸出層。通常包含輸入層、若干隱藏層和輸出層，每層由多個神經元組成，層與層之間全連接。</p>
+  <h3>激活函數</h3>
+  <p>激活函數引入非線性變換，使網路能夠學習複雜模式。常見的激活函數包括：ReLU（線性整流函數，f(x)=max(0,x)）、Sigmoid（將輸出壓縮到 0-1 之間）、Tanh（將輸出壓縮到 -1 到 1 之間）。ReLU 是目前最廣泛使用的激活函數，因其能有效緩解梯度消失問題。</p>
+  <h3>損失函數與優化</h3>
+  <p>均方誤差（MSE）用於回歸問題，交叉熵損失用於分類問題。優化器使用梯度下降及其變體（SGD、Adam 等）來更新網路權重。</p>
+</div>
+
+<div class="section">
+  <h2>訓練過程</h2>
+  <p>神經網路的訓練分為前向傳播和反向傳播兩個階段。前向傳播計算預測輸出，反向傳播利用鏈式法則計算梯度並更新參數。訓練資料被分成多個批次（batch），每個批次計算一次梯度更新。完整遍歷一次訓練資料稱為一個 epoch。</p>
+  <div class="code">
+# 神經網路訓練示意
+for epoch in range(num_epochs):
+    for batch_x, batch_y in dataloader:
+        # 前向傳播
+        outputs = model(batch_x)
+        loss = criterion(outputs, batch_y)
+        # 反向傳播
+        optimizer.zero_grad()
+        loss.backward()
+        optimizer.step()
+  </div>
+</div>
+
+<div class="section">
+  <h2>常見類型</h2>
+  <ul>
+    <li><strong>卷積神經網路 (CNN)</strong>：專為影像處理設計，使用卷積層提取空間特徵</li>
+    <li><strong>循環神經網路 (RNN)</strong>：專門處理序列資料，具有記憶能力</li>
+    <li><strong>Transformer</strong>：基於自注意力機制，拋棄循環結構的革命性架構</li>
+    <li><strong>生成對抗網路 (GAN)</strong>：生成器與判別器相互對抗學習</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h2>本課程範例</h2>
+  <ul>
+    <li><a href="https://github.com/ccckmit/course0/blob/main/code/%E6%A9%9F%E5%99%A8%E5%AD%B8%E7%BF%92/nn/nn0/nn0py/nn0.py">nn0.py</a> — 從零實現的神經網路</li>
+    <li><a href="https://github.com/ccckmit/course0/blob/main/code/%E6%A9%9F%E5%99%A8%E5%AD%B8%E7%BF%92/nn/nn1tensor/nn.py">nn.py</a> — 基於 Tensor 類別的神經網路</li>
+    <li><a href="https://github.com/ccckmit/course0/blob/main/code/%E6%A9%9F%E5%99%A8%E5%AD%B8%E7%BF%92/nn/nn0/nn0py/examples/ex1-grad.py">ex1-grad.py</a> — 梯度下降範例</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h2>相關連結</h2>
+  <ul>
+    <li><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E6%A9%9F%E5%99%A8%E5%AD%B8%E7%BF%92/%E7%A5%9E%E7%B6%93%E7%B6%B2%E8%B7%AF.md">Wiki: 神經網路</a></li>
+    <li><a href="深度學習.html">深度學習</a></li>
+    <li><a href="卷積神經網路.html">卷積神經網路 (CNN)</a></li>
+    <li><a href="循環神經網路.html">循環神經網路 (RNN)</a></li>
+    <li><a href="Transformer.html">Transformer</a></li>
+  </ul>
+</div>
+
+</div>
+<footer><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E6%A9%9F%E5%99%A8%E5%AD%B8%E7%BF%92/%E7%A5%9E%E7%B6%93%E7%B6%B2%E8%B7%AF.md">編輯此頁</a></footer>
+</body>
+</html>

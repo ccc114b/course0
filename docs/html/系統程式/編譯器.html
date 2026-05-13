@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>編譯器 — 系統程式</title>
+<link rel="stylesheet" href="../main.css">
+</head>
+<body>
+<header>
+  <div class="back-link"><a href="main.html">← 回入口</a></div>
+  <h1>編譯器 (Compiler)</h1>
+  <p>從高階語言到機器碼的完整轉換</p>
+</header>
+<div class="container">
+<div class="section">
+<h2>什麼是編譯器？</h2>
+<p>編譯器是將人類可讀的高階程式語言翻譯成機器碼的系統軟體。翻譯過程涉及語法分析、語意理解、優化轉換和碼生成等多個層次的處理。</p>
+</div>
+<div class="section">
+<h2>歷史演進</h2>
+<ul>
+<li><strong>第一代（1950-1970）</strong>：支援 FORTRAN、LISP、COBOL 等早期語言</li>
+<li><strong>第二代（1970-1990）</strong>：引入最佳化技術，GCC、LLVM 等代表性框架出現</li>
+<li><strong>第三代（1990-至今）</strong>：跨平臺編譯、即時編譯（JIT）、多語言前端</li>
+</ul>
+</div>
+<div class="section">
+<h2>核心組成</h2>
+<h3>詞法分析</h3>
+<p>將原始程式碼轉換為 Token 序列，包括關鍵字、識別符、常值、運算子、分隔符等。</p>
+<h3>語法分析</h3>
+<p>將 Token 序列轉換為抽象語法樹（AST），驗證程式碼是否符合文法規則。方法有自頂向下（遞迴下降、LL(1)）和自底向上（LR、LALR）。</p>
+<h3>語意分析</h3>
+<p>型態檢查、作用域檢查、控制流檢查，確保程式意義正確。</p>
+<h3>中間表示式（IR）</h3>
+<p>平臺無關的程式表示，如三地址碼（TAC）、靜態單一賦值（SSA）、控制流圖（CFG）。LLVM IR 是最廣泛使用的 IR 之一。</p>
+<h3>程式碼最佳化</h3>
+<p>本地最佳化（常數摺疊、死碼消除）、全域最佳化（資料流分析、迴圈最佳化）、目標碼生成（指令選擇、暫存器分配）。</p>
+</div>
+<div class="section">
+<h2>本課程範例</h2>
+<ul>
+<li><a href="https://github.com/ccckmit/course0/tree/main/code/系統程式/compiler/py/py1i" target="_blank"><strong>py1i</strong></a>：Python 直譯器實作</li>
+<li><a href="https://github.com/ccckmit/course0/tree/main/code/系統程式/compiler/py/py1c" target="_blank"><strong>py1c</strong></a>：Python 編譯器實作</li>
+<li><a href="https://github.com/ccckmit/course0/tree/main/code/系統程式/compiler/c/c0" target="_blank"><strong>c0</strong></a>：C 語言編譯器雛形</li>
+<li><a href="https://github.com/ccckmit/course0/tree/main/code/系統程式/compiler/c4" target="_blank"><strong>c4</strong></a>：小型 C 編譯器</li>
+</ul>
+</div>
+<div class="section">
+<h2>相關連結</h2>
+<ul>
+<li><a href="index.html">回到系統程式 index</a></li>
+<li><a href="main.html">回到入口</a></li>
+<li><a href="https://github.com/ccckmit/course0/blob/main/wiki/系統程式/編譯器.md" target="_blank">原始 Wiki 文章</a></li>
+<li><a href="https://github.com/ccckmit/course0/tree/main/code/系統程式/compiler" target="_blank">程式碼範例</a></li>
+</ul>
+</div>
+</div>
+<footer><a href="main.html">系統程式</a> | <a href="../index.html">回首頁</a></footer>
+</body>
+</html>
