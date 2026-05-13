@@ -10,8 +10,8 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto
 header { background: linear-gradient(135deg, #e67e22 0%, #d35400 100%); color: #fff; padding: 40px 20px; text-align: center; }
 header h1 { font-size: 2rem; margin-bottom: 8px; }
 .container { max-width: 1100px; margin: 0 auto; padding: 20px; }
-.tabs { display: flex; gap: 4px; background: #fff; border-radius: 10px; padding: 6px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); flex-wrap: wrap; }
-.tab { flex: 1; min-width: 80px; padding: 10px 16px; border: none; background: transparent; border-radius: 8px; cursor: pointer; font-size: 0.9rem; color: #666; }
+.tabs { display: flex; gap: 4px; background: #fff; border-radius: 10px; padding: 6px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+.tab { flex: 1; padding: 12px 20px; border: none; background: transparent; border-radius: 8px; cursor: pointer; font-size: 1rem; color: #666; }
 .tab:hover { background: #f0f0f5; }
 .tab.active { background: #e67e22; color: #fff; }
 .search { width: 100%; padding: 10px 14px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 0.95rem; margin-bottom: 16px; }
@@ -25,23 +25,22 @@ header h1 { font-size: 2rem; margin-bottom: 8px; }
 .links { margin-top: 10px; padding-top: 10px; border-top: 1px solid #eee; display: flex; flex-wrap: wrap; gap: 6px; }
 .links a { font-size: 0.75rem; padding: 3px 10px; border-radius: 5px; text-decoration: none; color: #fff; background: #e67e22; }
 .links a:hover { opacity: 0.85; }
-.section-title { font-size: 1.2rem; font-weight: 700; margin: 20px 0 12px; border-bottom: 2px solid #e67e22; padding-bottom: 4px; }
+.section-title { font-size: 1.1rem; font-weight: 700; margin: 24px 0 12px; border-bottom: 2px solid #e67e22; padding-bottom: 4px; }
+.section-title:first-of-type { margin-top: 0; }
 footer { text-align: center; padding: 20px; color: #999; font-size: 0.8rem; }
 footer a { color: #e67e22; }
-.hidden { display: none; }
 </style>
 </head>
 <body>
 <header>
+  <div style="text-align:left;margin-bottom:12px"><a href="../index.html" style="color:#fff;text-decoration:underline">← 回首頁</a></div>
   <h1>演算法</h1>
   <p>解決問題的計算方法與效率分析</p>
 </header>
 <div class="container">
 <div class="tabs">
-  <button class="tab active" data-tab="概念">概念 <span id="c0">0</span></button>
-  <button class="tab" data-tab="主題">主題 <span id="c1">0</span></button>
-  <button class="tab" data-tab="工具">工具 <span id="c2">0</span></button>
-  <button class="tab" data-tab="程式碼">程式碼 <span id="c3">0</span></button>
+  <button class="tab active" data-tab="概念">📖 概念 <span id="c0">0</span></button>
+  <button class="tab" data-tab="程式碼">💻 程式碼 <span id="c1">0</span></button>
 </div>
 <input class="search" id="search" placeholder="搜尋..." oninput="doSearch()">
 <div id="content"></div>
@@ -51,77 +50,118 @@ footer a { color: #e67e22; }
 var WIKI = 'https://github.com/ccckmit/course0/blob/main/wiki/%E6%BC%94%E7%AE%97%E6%B3%95';
 var CODE = 'https://github.com/ccckmit/course0/blob/main/code/%E6%BC%94%E7%AE%97%E6%B3%95';
 
-var data = {
-  '概念': [
-    {name:'演算法歷史', file:'演算法的歷史.md'},
-    {name:'時間複雜度', file:'時間複雜度.md', code:['method/00-bigO']},
+var CODE_MAP = {
+  '時間複雜度': ['method/00-bigO'],
+  '資料結構': ['data'],
+  '字串演算法': ['method/06-搜尋法'],
+  '近似演算法': ['method/16-逼近法'],
+  '隨機演算法': ['method/09a-隨機法'],
+  '線性規劃': ['method/15a-委託法','method/15c-化約法'],
+  '排序演算法': ['method/07-分割擊破法/mergeSort','method/05b-改良法'],
+  '搜尋法': ['method/06-搜尋法','method/05c-爬山演算法'],
+  '分割擊破法': ['method/07-分割擊破法'],
+  '貪婪法': ['method/09c-遺傳演算法'],
+};
+
+function findCode(name) {
+  var keys = Object.keys(CODE_MAP);
+  for (var i = 0; i < keys.length; i++) {
+    if (name.indexOf(keys[i]) !== -1) {
+      var paths = CODE_MAP[keys[i]];
+      var links = '';
+      for (var j = 0; j < paths.length; j++) {
+        links += '<a href="' + CODE + '/' + paths[j] + '">📁 ' + paths[j] + '</a>';
+      }
+      return links;
+    }
+  }
+  return '';
+}
+
+var concepts = {
+  '基礎概念': [
+    {name:'演算法的歷史', file:'演算法的歷史.md'},
+    {name:'時間複雜度', file:'時間複雜度.md'},
     {name:'空間複雜度', file:'空間複雜度.md'},
-    {name:'資料結構', file:'資料結構.md', code:['data']},
+    {name:'資料結構', file:'資料結構.md'},
   ],
-  '主題': [
-    {name:'字串演算法', file:'字串演算法.md', code:['method/06-搜尋法']},
+  '進階主題': [
+    {name:'字串演算法', file:'字串演算法.md'},
     {name:'網路流', file:'網路流.md'},
     {name:'計算幾何', file:'計算幾何.md'},
-    {name:'近似演算法', file:'近似演算法.md', code:['method/16-逼近法']},
-    {name:'隨機演算法', file:'隨機演算法.md', code:['method/09a-隨機法']},
-    {name:'線性規劃', file:'線性規劃.md', code:['method/15a-委託法','method/15c-化約法']},
-    {name:'排序演算法', file:'排序演算法.md', code:['method/07-分割擊破法/mergeSort','method/05b-改良法']},
-    {name:'搜尋法', file:'搜尋法.md', code:['method/06-搜尋法','method/05c-爬山演算法']},
+    {name:'近似演算法', file:'近似演算法.md'},
+    {name:'隨機演算法', file:'隨機演算法.md'},
+    {name:'線性規劃', file:'線性規劃.md'},
+    {name:'排序演算法', file:'排序演算法.md'},
+    {name:'搜尋法', file:'搜尋法.md'},
     {name:'圖形演算法', file:'圖形演算法.md'},
     {name:'動態規劃法', file:'動態規劃法.md'},
     {name:'貪婪法', file:'貪婪法.md'},
-    {name:'分割擊破法', file:'分割擊破法.md', code:['method/07-分割擊破法']},
+    {name:'分割擊破法', file:'分割擊破法.md'},
     {name:'列舉法', file:'列舉法.md'},
   ],
   '工具': [
     {name:'Python', file:'Python.md'},
   ],
-  '程式碼': [
-    {name:'Big-O分析', path:'method/00-bigO', files:['bubbleSort.py','lsearch.py','matrixMul.py']},
-    {name:'查表法', path:'method/01-查表法', files:['power2n.py','fibonacci.py','Cnk.py']},
-    {name:'雜湊法', path:'method/02b-雜湊法', files:['hash1.py','bloomFilter.py','sha256.py']},
-    {name:'遞迴法', path:'method/04a-遞迴法', files:['fibonacci.py','hanoi.py','gcd.py']},
-    {name:'搜尋法', path:'method/06-搜尋法', files:['astar.py','binSearch.py']},
-    {name:'分割擊破', path:'method/07-分割擊破法/mergeSort', files:['mergesort.py','sortTest.py']},
-    {name:'隨機法', path:'method/09a-隨機法', files:['random1.py','random2.py']},
-    {name:'遺傳演算法', path:'method/09c-遺傳演算法', files:['geneticAlgorithm.py']},
-  ]
 };
 
-document.getElementById('c0').textContent = data['概念'].length;
-document.getElementById('c1').textContent = data['主題'].length;
-document.getElementById('c2').textContent = data['工具'].length;
-document.getElementById('c3').textContent = data['程式碼'].length;
+var codes = [
+  {name:'Big-O分析', path:'method/00-bigO', files:['bubbleSort.py','lsearch.py']},
+  {name:'查表法', path:'method/01-查表法', files:['power2n.py','fibonacci.py']},
+  {name:'雜湊法', path:'method/02b-雜湊法', files:['hash1.py','bloomFilter.py']},
+  {name:'遞迴法', path:'method/04a-遞迴法', files:['fibonacci.py','hanoi.py']},
+  {name:'搜尋法', path:'method/06-搜尋法', files:['astar.py','binSearch.py']},
+  {name:'分割擊破', path:'method/07-分割擊破法/mergeSort', files:['mergesort.py']},
+  {name:'隨機法', path:'method/09a-隨機法', files:['random1.py']},
+  {name:'遺傳演算法', path:'method/09c-遺傳演算法', files:['geneticAlgorithm.py']},
+];
 
-function showCard(item, isCode) {
+document.getElementById('c0').textContent = Object.keys(concepts).length + ' 區塊';
+document.getElementById('c1').textContent = codes.length;
+
+function showCard(item) {
   var h = '<div class="card"><h3>';
   if (item.file) h += '<a href="' + WIKI + '/' + item.file + '">' + item.name + '</a>';
   else h += item.name;
   h += '</h3>';
-  if (item.code && !isCode) {
-    for (var i = 0; i < item.code.length; i++) {
-      h += '<div class="links"><a href="' + CODE + '/' + item.code[i] + '">📁 ' + item.code[i] + '</a></div>';
-    }
-  }
-  if (item.files) {
-    h += '<div class="links">';
-    for (var i = 0; i < item.files.length; i++) {
-      h += '<a href="' + CODE + '/' + item.path + '/' + item.files[i] + '">' + item.files[i] + '</a>';
-    }
-    h += '</div>';
-  }
+  var links = findCode(item.name);
+  if (links) h += '<div class="links">' + links + '</div>';
   h += '</div>';
   return h;
 }
 
-function render(tab) {
-  var items = data[tab];
-  var html = '<h2 class="section-title">' + tab + '</h2><div class="grid">';
-  for (var i = 0; i < items.length; i++) {
-    html += showCard(items[i], tab === '程式碼');
+function renderConcept() {
+  var html = '';
+  var keys = Object.keys(concepts);
+  for (var k = 0; k < keys.length; k++) {
+    var key = keys[k];
+    var items = concepts[key];
+    html += '<h2 class="section-title">' + key + '</h2><div class="grid">';
+    for (var i = 0; i < items.length; i++) {
+      html += showCard(items[i]);
+    }
+    html += '</div>';
+  }
+  document.getElementById('content').innerHTML = html;
+}
+
+function renderCode() {
+  var html = '<h2 class="section-title">💻 程式碼</h2><div class="grid">';
+  for (var i = 0; i < codes.length; i++) {
+    var c = codes[i];
+    html += '<div class="card"><h3>' + c.name + '</h3><div class="links">';
+    for (var j = 0; j < c.files.length; j++) {
+      html += '<a href="' + CODE + '/' + c.path + '/' + c.files[j] + '">' + c.files[j] + '</a>';
+    }
+    html += '</div></div>';
   }
   html += '</div>';
   document.getElementById('content').innerHTML = html;
+}
+
+function render(tab) {
+  if (tab === '概念') renderConcept();
+  else renderCode();
 }
 
 function doSearch() {

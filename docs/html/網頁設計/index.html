@@ -10,8 +10,8 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto
 header { background: linear-gradient(135deg, #f1c40f 0%, #f39c12 100%); color: #fff; padding: 40px 20px; text-align: center; }
 header h1 { font-size: 2rem; margin-bottom: 8px; }
 .container { max-width: 1100px; margin: 0 auto; padding: 20px; }
-.tabs { display: flex; gap: 4px; background: #fff; border-radius: 10px; padding: 6px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); flex-wrap: wrap; }
-.tab { flex: 1; min-width: 80px; padding: 10px 16px; border: none; background: transparent; border-radius: 8px; cursor: pointer; font-size: 0.9rem; color: #666; }
+.tabs { display: flex; gap: 4px; background: #fff; border-radius: 10px; padding: 6px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+.tab { flex: 1; padding: 12px 20px; border: none; background: transparent; border-radius: 8px; cursor: pointer; font-size: 1rem; color: #666; }
 .tab:hover { background: #f0f0f5; }
 .tab.active { background: #f39c12; color: #fff; }
 .search { width: 100%; padding: 10px 14px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 0.95rem; margin-bottom: 16px; }
@@ -25,23 +25,22 @@ header h1 { font-size: 2rem; margin-bottom: 8px; }
 .links { margin-top: 10px; padding-top: 10px; border-top: 1px solid #eee; display: flex; flex-wrap: wrap; gap: 6px; }
 .links a { font-size: 0.75rem; padding: 3px 10px; border-radius: 5px; text-decoration: none; color: #fff; background: #f39c12; }
 .links a:hover { opacity: 0.85; }
-.section-title { font-size: 1.2rem; font-weight: 700; margin: 20px 0 12px; border-bottom: 2px solid #f39c12; padding-bottom: 4px; }
+.section-title { font-size: 1.1rem; font-weight: 700; margin: 24px 0 12px; border-bottom: 2px solid #f39c12; padding-bottom: 4px; }
+.section-title:first-of-type { margin-top: 0; }
 footer { text-align: center; padding: 20px; color: #999; font-size: 0.8rem; }
 footer a { color: #f39c12; }
-.hidden { display: none; }
 </style>
 </head>
 <body>
 <header>
+  <div style="text-align:left;margin-bottom:12px"><a href="../index.html" style="color:#fff;text-decoration:underline">← 回首頁</a></div>
   <h1>網頁設計</h1>
   <p>前端與後端開發技術</p>
 </header>
 <div class="container">
 <div class="tabs">
-  <button class="tab active" data-tab="概念">概念 <span id="c0">0</span></button>
-  <button class="tab" data-tab="主題">主題 <span id="c1">0</span></button>
-  <button class="tab" data-tab="工具">工具 <span id="c2">0</span></button>
-  <button class="tab" data-tab="程式碼">程式碼 <span id="c3">0</span></button>
+  <button class="tab active" data-tab="概念">📖 概念 <span id="c0">0</span></button>
+  <button class="tab" data-tab="程式碼">💻 程式碼 <span id="c1">0</span></button>
 </div>
 <input class="search" id="search" placeholder="搜尋..." oninput="doSearch()">
 <div id="content"></div>
@@ -51,83 +50,129 @@ footer a { color: #f39c12; }
 var WIKI = 'https://github.com/ccckmit/course0/blob/main/wiki/%E7%B6%B2%E9%A0%81%E8%A8%AD%E8%A8%88';
 var CODE = 'https://github.com/ccckmit/course0/blob/main/code/%E7%B6%B2%E7%AB%99%E8%A8%AD%E8%A8%88';
 
-var data = {
-  '概念': [
-    {name:'網頁設計歷史', file:'網頁設計的歷史.md'},
+var CODE_MAP = {
+  '表單處理': ['05-form'],
+  '前端框架': ['React'],
+  '後端開發': ['11-fastapi'],
+  '資料庫': ['sql'],
+  'RESTful': ['11-fastapi'],
+  'SQLite': ['sql/sqlite'],
+  'React': ['React'],
+  'Node.js': ['Node.js'],
+  'Blog系統': ['Blog'],
+  '即時聊天': ['chat'],
+  'FastAPI': ['11-fastapi'],
+};
+
+function findCode(name) {
+  var keys = Object.keys(CODE_MAP);
+  for (var i = 0; i < keys.length; i++) {
+    if (name.indexOf(keys[i]) !== -1) {
+      var paths = CODE_MAP[keys[i]];
+      var links = '';
+      for (var j = 0; j < paths.length; j++) {
+        links += '<a href="' + CODE + '/' + paths[j] + '">📁 ' + paths[j] + '</a>';
+      }
+      return links;
+    }
+  }
+  return '';
+}
+
+var concepts = {
+  '基礎技術': [
+    {name:'網頁設計的歷史', file:'網頁設計的歷史.md'},
     {name:'HTML', file:'HTML.md'},
     {name:'CSS', file:'CSS.md'},
     {name:'JavaScript', file:'JavaScript.md'},
     {name:'API', file:'API.md'},
     {name:'Fetch API', file:'Fetch_API.md'},
-    {name:'表單處理', file:'表單處理.md', code:['05-form']},
+    {name:'表單處理', file:'表單處理.md'},
   ],
-  '主題': [
+  '前端開發': [
     {name:'響應式設計', file:'響應式設計.md'},
-    {name:'前端框架', file:'前端框架.md', code:['React']},
-    {name:'後端開發', file:'後端開發.md', code:['11-fastapi']},
-    {name:'資料庫', file:'資料庫.md', code:['sql']},
-    {name:'RESTful', file:'RESTful.md', code:['11-fastapi']},
-    {name:'WebSocket', file:'WebSocket.md'},
-    {name:'SQLite', file:'SQLite.md', code:['sql/sqlite']},
+    {name:'前端框架', file:'前端框架.md'},
+    {name:'React', file:'React.md'},
     {name:'TypeScript', file:'TypeScript.md'},
     {name:'Tailwind CSS', file:'Tailwind_CSS.md'},
-    {name:'GraphQL', file:'GraphQL.md'},
+    {name:'Next.js', file:'Next.js.md'},
   ],
-  '工具': [
+  '後端開發': [
+    {name:'後端開發', file:'後端開發.md'},
+    {name:'資料庫', file:'資料庫.md'},
+    {name:'RESTful', file:'RESTful.md'},
+    {name:'WebSocket', file:'WebSocket.md'},
+    {name:'SQLite', file:'SQLite.md'},
+    {name:'Node.js', file:'Node.js.md'},
+    {name:'FastAPI', file:'FastAPI.md'},
+    {name:'GraphQL', file:'GraphQL.md'},
+    {name:'Rust框架', file:'Rust框架.md'},
+  ],
+  '開發工具': [
     {name:'Webpack與Vite', file:'Webpack與Vite.md'},
     {name:'單元測試', file:'單元測試.md'},
     {name:'CI/CD', file:'CI_CD.md'},
     {name:'SEO', file:'SEO.md'},
-    {name:'React', file:'React.md', code:['React']},
-    {name:'Node.js', file:'Node.js.md', code:['Node.js']},
     {name:'VSCode', file:'VSCode.md'},
-    {name:'Blog系統', file:'Blog系統.md', code:['Blog']},
-    {name:'即時聊天', file:'即時聊天.md', code:['chat']},
-    {name:'Next.js', file:'Next.js.md'},
-    {name:'FastAPI', file:'FastAPI.md', code:['11-fastapi']},
-    {name:'Rust框架', file:'Rust框架.md'},
   ],
-  '程式碼': [
-    {name:'FastAPI', path:'11-fastapi', files:['main.py','database.py']},
-    {name:'TeaPOS系統', path:'11-fastapi/teapos/app', files:['main.py','models.py','database.py']},
-    {name:'表單處理', path:'05-form', files:['form1.html','form2.html']},
-  ]
+  '應用系統': [
+    {name:'Blog系統', file:'Blog系統.md'},
+    {name:'即時聊天', file:'即時聊天.md'},
+  ],
 };
 
-document.getElementById('c0').textContent = data['概念'].length;
-document.getElementById('c1').textContent = data['主題'].length;
-document.getElementById('c2').textContent = data['工具'].length;
-document.getElementById('c3').textContent = data['程式碼'].length;
+var codes = [
+  {name:'FastAPI', path:'11-fastapi', files:['main.py','database.py']},
+  {name:'TeaPOS系統', path:'11-fastapi/teapos/app', files:['main.py','models.py','database.py']},
+  {name:'表單處理', path:'05-form', files:['form1.html','form2.html']},
+];
 
-function showCard(item, isCode) {
+document.getElementById('c0').textContent = Object.keys(concepts).length + ' 區塊';
+document.getElementById('c1').textContent = codes.length;
+
+function showCard(item) {
   var h = '<div class="card"><h3>';
   if (item.file) h += '<a href="' + WIKI + '/' + item.file + '">' + item.name + '</a>';
   else h += item.name;
   h += '</h3>';
-  if (item.code && !isCode) {
-    for (var i = 0; i < item.code.length; i++) {
-      h += '<div class="links"><a href="' + CODE + '/' + item.code[i] + '">📁 ' + item.code[i] + '</a></div>';
-    }
-  }
-  if (item.files) {
-    h += '<div class="links">';
-    for (var i = 0; i < item.files.length; i++) {
-      h += '<a href="' + CODE + '/' + item.path + '/' + item.files[i] + '">' + item.files[i] + '</a>';
-    }
-    h += '</div>';
-  }
+  var links = findCode(item.name);
+  if (links) h += '<div class="links">' + links + '</div>';
   h += '</div>';
   return h;
 }
 
-function render(tab) {
-  var items = data[tab];
-  var html = '<h2 class="section-title">' + tab + '</h2><div class="grid">';
-  for (var i = 0; i < items.length; i++) {
-    html += showCard(items[i], tab === '程式碼');
+function renderConcept() {
+  var html = '';
+  var keys = Object.keys(concepts);
+  for (var k = 0; k < keys.length; k++) {
+    var key = keys[k];
+    var items = concepts[key];
+    html += '<h2 class="section-title">' + key + '</h2><div class="grid">';
+    for (var i = 0; i < items.length; i++) {
+      html += showCard(items[i]);
+    }
+    html += '</div>';
+  }
+  document.getElementById('content').innerHTML = html;
+}
+
+function renderCode() {
+  var html = '<h2 class="section-title">💻 程式碼</h2><div class="grid">';
+  for (var i = 0; i < codes.length; i++) {
+    var c = codes[i];
+    html += '<div class="card"><h3>' + c.name + '</h3><div class="links">';
+    for (var j = 0; j < c.files.length; j++) {
+      html += '<a href="' + CODE + '/' + c.path + '/' + c.files[j] + '">' + c.files[j] + '</a>';
+    }
+    html += '</div></div>';
   }
   html += '</div>';
   document.getElementById('content').innerHTML = html;
+}
+
+function render(tab) {
+  if (tab === '概念') renderConcept();
+  else renderCode();
 }
 
 function doSearch() {

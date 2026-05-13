@@ -10,8 +10,8 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto
 header { background: linear-gradient(135deg, #16a085 0%, #1abc9c 100%); color: #fff; padding: 40px 20px; text-align: center; }
 header h1 { font-size: 2rem; margin-bottom: 8px; }
 .container { max-width: 1100px; margin: 0 auto; padding: 20px; }
-.tabs { display: flex; gap: 4px; background: #fff; border-radius: 10px; padding: 6px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); flex-wrap: wrap; }
-.tab { flex: 1; min-width: 80px; padding: 10px 16px; border: none; background: transparent; border-radius: 8px; cursor: pointer; font-size: 0.9rem; color: #666; }
+.tabs { display: flex; gap: 4px; background: #fff; border-radius: 10px; padding: 6px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+.tab { flex: 1; padding: 12px 20px; border: none; background: transparent; border-radius: 8px; cursor: pointer; font-size: 1rem; color: #666; }
 .tab:hover { background: #f0f0f5; }
 .tab.active { background: #16a085; color: #fff; }
 .search { width: 100%; padding: 10px 14px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 0.95rem; margin-bottom: 16px; }
@@ -25,24 +25,22 @@ header h1 { font-size: 2rem; margin-bottom: 8px; }
 .links { margin-top: 10px; padding-top: 10px; border-top: 1px solid #eee; display: flex; flex-wrap: wrap; gap: 6px; }
 .links a { font-size: 0.75rem; padding: 3px 10px; border-radius: 5px; text-decoration: none; color: #fff; background: #16a085; }
 .links a:hover { opacity: 0.85; }
-.section-title { font-size: 1.2rem; font-weight: 700; margin: 20px 0 12px; border-bottom: 2px solid #16a085; padding-bottom: 4px; }
+.section-title { font-size: 1.1rem; font-weight: 700; margin: 24px 0 12px; border-bottom: 2px solid #16a085; padding-bottom: 4px; }
+.section-title:first-of-type { margin-top: 0; }
 footer { text-align: center; padding: 20px; color: #999; font-size: 0.8rem; }
 footer a { color: #16a085; }
-.hidden { display: none; }
 </style>
 </head>
 <body>
 <header>
+  <div style="text-align:left;margin-bottom:12px"><a href="../index.html" style="color:#fff;text-decoration:underline">← 回首頁</a></div>
   <h1>計算機結構</h1>
   <p>計算機的硬體設計與組織</p>
 </header>
 <div class="container">
 <div class="tabs">
-  <button class="tab active" data-tab="概念">概念 <span id="c0">0</span></button>
-  <button class="tab" data-tab="主題">主題 <span id="c1">0</span></button>
-  <button class="tab" data-tab="工具">工具 <span id="c2">0</span></button>
-  <button class="tab" data-tab="人物">人物 <span id="c3">0</span></button>
-  <button class="tab" data-tab="程式碼">程式碼 <span id="c4">0</span></button>
+  <button class="tab active" data-tab="概念">📖 概念 <span id="c0">0</span></button>
+  <button class="tab" data-tab="程式碼">💻 程式碼 <span id="c1">0</span></button>
 </div>
 <input class="search" id="search" placeholder="搜尋..." oninput="doSearch()">
 <div id="content"></div>
@@ -52,22 +50,43 @@ footer a { color: #16a085; }
 var WIKI = 'https://github.com/ccckmit/course0/blob/main/wiki/%E8%A8%88%E7%AE%97%E6%A9%8B%E7%B5%90%E6%A7%8B';
 var CODE = 'https://github.com/ccckmit/course0/blob/main/code/%E8%A8%88%E7%AE%97%E6%A9%8B%E7%B5%90%E6%A7%8B';
 
-var data = {
-  '概念': [
-    {name:'計算機結構歷史', file:'計算機結構的歷史.md'},
+var CODE_MAP = {
+  '開放原始碼EDA': ['eda'],
+  'Nand2Tetris': ['nand2tetris'],
+  'EDA': ['eda'],
+};
+
+function findCode(name) {
+  var keys = Object.keys(CODE_MAP);
+  for (var i = 0; i < keys.length; i++) {
+    if (name.indexOf(keys[i]) !== -1) {
+      var paths = CODE_MAP[keys[i]];
+      var links = '';
+      for (var j = 0; j < paths.length; j++) {
+        links += '<a href="' + CODE + '/' + paths[j] + '">📁 ' + paths[j] + '</a>';
+      }
+      return links;
+    }
+  }
+  return '';
+}
+
+var concepts = {
+  '基礎概念': [
+    {name:'計算機結構的歷史', file:'計算機結構的歷史.md'},
     {name:'數位邏輯', file:'數位邏輯.md'},
     {name:'暫存器', file:'暫存器.md'},
     {name:'CPU架構', file:'CPU架構.md'},
     {name:'記憶體', file:'記憶體.md'},
     {name:'ALU', file:'ALU.md'},
     {name:'異常與中斷', file:'異常與中斷.md'},
-    {name:'開放原始碼EDA', file:'開放原始碼EDA.md', code:['eda']},
+    {name:'開放原始碼EDA', file:'開放原始碼EDA.md'},
   ],
-  '主題': [
+  '進階主題': [
     {name:'x86與ARM架構', file:'x86與ARM架構.md'},
     {name:'快取一致性', file:'快取一致性.md'},
     {name:'分支預測', file:'分支預測.md'},
-    {name:'超純量與亂序', file:'超純量與亂序執行.md'},
+    {name:'超純量與亂序執行', file:'超純量與亂序執行.md'},
     {name:'記憶體層次', file:'記憶體層次.md'},
     {name:'組合語言', file:'組合語言.md'},
     {name:'指令集架構', file:'指令集架構.md'},
@@ -81,8 +100,8 @@ var data = {
   '工具': [
     {name:'Verilog', file:'Verilog.md'},
     {name:'QEMU', file:'QEMU.md'},
-    {name:'Nand2Tetris', file:'Nand2Tetris.md', code:['nand2tetris']},
-    {name:'EDA', file:'EDA.md', code:['eda']},
+    {name:'Nand2Tetris', file:'Nand2Tetris.md'},
+    {name:'EDA', file:'EDA.md'},
     {name:'HDL', file:'HDL.md'},
     {name:'IcarusVerilog', file:'IcarusVerilog.md'},
     {name:'Verilator', file:'Verilator.md'},
@@ -91,49 +110,61 @@ var data = {
     {name:'John Hennessy', file:'John_Hennessy.md'},
     {name:'David Patterson', file:'David_Patterson.md'},
   ],
-  '程式碼': [
-    {name:'Nand2Tetris', path:'nand2tetris', files:['asm.py','code.py']},
-    {name:'Nand2Tetris VM', path:'nand2tetris/09', files:['anbn.py','exp.py','compiler.py']},
-    {name:'Nand2Tetris編譯器', path:'nand2tetris/11/py', files:['Parser.py','Compiler.py','Lex.py']},
-    {name:'EDA工具', path:'eda/eda0', files:['eda0.py']},
-  ]
 };
 
-document.getElementById('c0').textContent = data['概念'].length;
-document.getElementById('c1').textContent = data['主題'].length;
-document.getElementById('c2').textContent = data['工具'].length;
-document.getElementById('c3').textContent = data['人物'].length;
-document.getElementById('c4').textContent = data['程式碼'].length;
+var codes = [
+  {name:'Nand2Tetris', path:'nand2tetris', files:['asm.py','code.py']},
+  {name:'Nand2Tetris VM', path:'nand2tetris/09', files:['anbn.py','exp.py','compiler.py']},
+  {name:'Nand2Tetris編譯器', path:'nand2tetris/11/py', files:['Parser.py','Compiler.py','Lex.py']},
+  {name:'EDA工具', path:'eda/eda0', files:['eda0.py']},
+];
 
-function showCard(item, isCode) {
+document.getElementById('c0').textContent = Object.keys(concepts).length + ' 區塊';
+document.getElementById('c1').textContent = codes.length;
+
+function showCard(item) {
   var h = '<div class="card"><h3>';
   if (item.file) h += '<a href="' + WIKI + '/' + item.file + '">' + item.name + '</a>';
   else h += item.name;
   h += '</h3>';
-  if (item.code && !isCode) {
-    for (var i = 0; i < item.code.length; i++) {
-      h += '<div class="links"><a href="' + CODE + '/' + item.code[i] + '">📁 ' + item.code[i] + '</a></div>';
-    }
-  }
-  if (item.files) {
-    h += '<div class="links">';
-    for (var i = 0; i < item.files.length; i++) {
-      h += '<a href="' + CODE + '/' + item.path + '/' + item.files[i] + '">' + item.files[i] + '</a>';
-    }
-    h += '</div>';
-  }
+  var links = findCode(item.name);
+  if (links) h += '<div class="links">' + links + '</div>';
   h += '</div>';
   return h;
 }
 
-function render(tab) {
-  var items = data[tab];
-  var html = '<h2 class="section-title">' + tab + '</h2><div class="grid">';
-  for (var i = 0; i < items.length; i++) {
-    html += showCard(items[i], tab === '程式碼');
+function renderConcept() {
+  var html = '';
+  var keys = Object.keys(concepts);
+  for (var k = 0; k < keys.length; k++) {
+    var key = keys[k];
+    var items = concepts[key];
+    html += '<h2 class="section-title">' + key + '</h2><div class="grid">';
+    for (var i = 0; i < items.length; i++) {
+      html += showCard(items[i]);
+    }
+    html += '</div>';
+  }
+  document.getElementById('content').innerHTML = html;
+}
+
+function renderCode() {
+  var html = '<h2 class="section-title">💻 程式碼</h2><div class="grid">';
+  for (var i = 0; i < codes.length; i++) {
+    var c = codes[i];
+    html += '<div class="card"><h3>' + c.name + '</h3><div class="links">';
+    for (var j = 0; j < c.files.length; j++) {
+      html += '<a href="' + CODE + '/' + c.path + '/' + c.files[j] + '">' + c.files[j] + '</a>';
+    }
+    html += '</div></div>';
   }
   html += '</div>';
   document.getElementById('content').innerHTML = html;
+}
+
+function render(tab) {
+  if (tab === '概念') renderConcept();
+  else renderCode();
 }
 
 function doSearch() {
