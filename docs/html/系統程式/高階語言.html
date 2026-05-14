@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>高階語言 — 系統程式</title>
+<link rel="stylesheet" href="../main.css">
+</head>
+<body>
+<header>
+  <div class="back-link"><a href="main.html">← 回入口</a></div>
+  <h1>高階語言 (High-Level Language)</h1>
+  <p>從機器碼到人類可讀的抽象</p>
+</header>
+<div class="container">
+<div class="section">
+<h2>什麼是高階語言？</h2>
+<p>高階語言是相對於<a href="https://github.com/ccckmit/course0/blob/main/wiki/系統程式/組合語言.md" target="_blank">組合語言</a>而言的程式語言，它使用更接近人類自然語法的表達方式，讓程式設計師無需直接處理暫存器配置、記憶體位址等硬體細節。高階語言的產生是計算機科學中最重要的抽象之一，它使得軟體開發從少數專家才能掌握的技藝，轉變為大規模工業化的工程實踐。</p>
+</div>
+
+<div class="section">
+<h2>發展歷程</h2>
+<h3>機器語言與組合語言時代</h3>
+<p>最早的程式直接以二進制機器碼撰寫，每條指令對應 CPU 能直接執行的操作。組合語言的出現以助記符號替代二進制碼，但與特定 CPU 架構緊密耦合。這成為高階語言產生的根本驅動力。</p>
+<h3>高階語言的誕生（1950s）</h3>
+<ul>
+<li><strong><a href="https://github.com/ccckmit/course0/blob/main/wiki/系統程式/BASIC.md" target="_blank">FORTRAN</a>（1957）</strong>：John Backus 在 IBM 開發的科學計算語言，第一個成功的高階語言</li>
+<li><strong><a href="https://github.com/ccckmit/course0/blob/main/wiki/系統程式/LISP.md" target="_blank">LISP</a>（1958）</strong>：John McCarthy 發明的函數式語言，引入閉包、垃圾回收等概念</li>
+<li><strong>COBOL（1959）</strong>：面向商業資料處理的語言</li>
+</ul>
+<h3>結構化與物件導向時代（1970s-1990s）</h3>
+<ul>
+<li><strong><a href="https://github.com/ccckmit/course0/blob/main/wiki/系統程式/C語言.md" target="_blank">C語言</a>（1972）</strong>：Dennis Ritchie 開發，結合高階語言可移植性與組合語言效率</li>
+<li><strong><a href="https://github.com/ccckmit/course0/blob/main/wiki/系統程式/C++.md" target="_blank">C++</a>（1985）</strong>：Bjarne Stroustrup 在 C 基礎上引入物件導向</li>
+<li><strong>Java（1995）</strong>：以虛擬機器實現「寫一次，處處執行」</li>
+<li><strong>Python（1991）</strong>：以簡潔易學著稱的動態語言</li>
+</ul>
+<h3>現代語言百花齊放（2000s-至今）</h3>
+<ul>
+<li><strong><a href="https://github.com/ccckmit/course0/blob/main/wiki/系統程式/Go.md" target="_blank">Go</a></strong>：Google 開發，內建並行支援</li>
+<li><strong><a href="https://github.com/ccckmit/course0/blob/main/wiki/系統程式/Rust.md" target="_blank">Rust</a></strong>：Mozilla 開發，記憶體安全無 GC</li>
+<li><strong><a href="https://github.com/ccckmit/course0/blob/main/wiki/系統程式/Haskell.md" target="_blank">Haskell</a></strong>：純函數式語言</li>
+<li><strong><a href="https://github.com/ccckmit/course0/blob/main/wiki/系統程式/Prolog.md" target="_blank">Prolog</a></strong>：邏輯式語言</li>
+<li><strong><a href="https://github.com/ccckmit/course0/blob/main/wiki/系統程式/zig語言.md" target="_blank">Zig</a></strong>：現代系統程式語言</li>
+</ul>
+</div>
+
+<div class="section">
+<h2>依執行方式分類</h2>
+<h3>編譯型語言</h3>
+<p>程式執行前由<a href="https://github.com/ccckmit/course0/blob/main/wiki/系統程式/編譯器.md" target="_blank">編譯器</a>完整翻譯為機器碼。代表：C/C++（GCC/Clang）、Rust（rustc）、Go（gc）。優勢是執行效率極佳，適合效能關鍵場景。</p>
+<h3>直譯型語言</h3>
+<p>執行時由<a href="https://github.com/ccckmit/course0/blob/main/wiki/系統程式/直譯器.md" target="_blank">直譯器</a>逐行翻譯並執行。優勢是開發效率高、跨平臺性強。代表：Python、JavaScript、Ruby。</p>
+<h3>位元組碼語言</h3>
+<p>先編譯為平臺無關的位元組碼，再由<a href="https://github.com/ccckmit/course0/blob/main/wiki/系統程式/虛擬機.md" target="_blank">虛擬機</a>執行。代表：Java（JVM）、C#（.NET CLR）。</p>
+</div>
+
+<div class="section">
+<h2>依型別系統分類</h2>
+<ul>
+<li><strong>靜態定型</strong>：編譯時確定型別，及早發現錯誤，如 C、C++、Java、Rust</li>
+<li><strong>動態定型</strong>：執行時才確定型別，語法簡潔彈性高，如 Python、JavaScript</li>
+</ul>
+</div>
+
+<div class="section">
+<h2>依程式設計範式分類</h2>
+<ul>
+<li><strong>程序式</strong>：以程序/函數為基本組織單位，如 C、Pascal</li>
+<li><strong>物件導向</strong>：封裝、繼承、多型，如 C++、Java、Python</li>
+<li><strong>函數式</strong>：不可變性、高階函數，如 Haskell、LISP、Scheme</li>
+<li><strong>邏輯式</strong>：以邏輯推論為基礎，如 Prolog</li>
+</ul>
+</div>
+
+<div class="section">
+<h2>記憶體管理策略</h2>
+<table>
+<tr><th>策略</th><th>代表語言</th><th>優缺點</th></tr>
+<tr><td>手動管理</td><td>C、C++</td><td>完全控制但易洩漏</td></tr>
+<tr><td>垃圾回收</td><td>Java、Python、Go</td><td>安全但有暫停開銷</td></tr>
+<tr><td>所有權系統</td><td>Rust</td><td>無 GC 開銷且安全</td></tr>
+</table>
+</div>
+
+<div class="section">
+<h2>相關連結</h2>
+<ul>
+<li><a href="index.html">回到系統程式 index</a></li>
+<li><a href="main.html">回到入口</a></li>
+<li><a href="https://github.com/ccckmit/course0/blob/main/wiki/系統程式/程式語言.md" target="_blank">原始 Wiki 文章</a></li>
+<li><a href="編譯器.html">編譯器</a></li>
+<li><a href="C語言.html">C語言</a></li>
+<li><a href="Rust.html">Rust</a></li>
+</ul>
+</div>
+</div>
+<footer><a href="main.html">系統程式</a> | <a href="../index.html">回首頁</a></footer>
+</body>
+</html>

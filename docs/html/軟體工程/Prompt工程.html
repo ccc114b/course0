@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prompt 工程 — 軟體工程</title>
+<link rel="stylesheet" href="../main.css">
+</head>
+<body>
+<header>
+  <div class="back-link"><a href="main.html">← 回入口</a></div>
+  <h1>Prompt 工程</h1>
+  <p>設計和最佳化輸入提示詞，提升 LLM 輸出品質</p>
+</header>
+<div class="container">
+
+<div class="section">
+  <h2>提示詞基本結構</h2>
+  <ul>
+    <li><strong>System</strong>：角色定義、能力邊界</li>
+    <li><strong>Context</strong>：背景資訊、上下文</li>
+    <li><strong>Examples</strong>：範例（Few-shot）</li>
+    <li><strong>Task</strong>：具體任務</li>
+    <li><strong>Format</strong>：輸出格式</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h2>核心技巧</h2>
+  <h3>Zero-shot Prompting</h3>
+  <p>不提供任何範例，直接要求模型執行任務。適用於簡單任務。</p>
+  <h3>Few-shot Prompting</h3>
+  <p>提供 1-多個範例，讓模型學習模式。範例越接近目標任務效果越好。</p>
+  <h3>Chain-of-Thought（CoT）</h3>
+  <p>引導模型逐步推理，適合需要多步驟思考的複雜任務，如數學問題、邏輯推理。</p>
+</div>
+
+<div class="section">
+  <h2>進階技術</h2>
+  <ul>
+    <li><strong>Role-playing</strong>：賦予 LLM 特定角色（專家、教師等）</li>
+    <li><strong>Template Patterns</strong>：使用模板結構化提示詞</li>
+    <li><strong>Context Engineering</strong>：精心組織上下文資訊</li>
+    <li><strong>Harness Engineering</strong>：控制 LLM 的執行環境和工具使用</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h2>Prompt 範例</h2>
+  <div class="code">
+# System
+你是一個專業的 Python 程式設計師，
+擅長寫高品質、可維護的程式碼。
+
+# Task
+請寫一個函式，使用二分搜尋法在有序陣列中尋找目標值。
+
+# Format
+- 回傳目標值的索引，找不到則回傳 -1
+- 包含型別註記
+- 包含時間複雜度註解
+  </div>
+</div>
+
+<div class="section">
+  <h2>相關連結</h2>
+  <ul>
+    <li><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E8%BD%AF%E9%AB%94%E5%B7%A5%E7%A8%8B/Prompt%E5%B7%A5%E7%A8%8B.md">Wiki: Prompt 工程</a></li>
+    <li><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E8%BD%AF%E9%AB%94%E5%B7%A5%E7%A8%8B/Context%E5%B7%A5%E7%A8%8B.md">Wiki: Context 工程</a></li>
+    <li><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E8%BD%AF%E9%AB%94%E5%B7%A5%E7%A8%8B/Agent%E7%99%BC%E5%B1%95%E5%8F%B2.md">Wiki: Agent 發展史</a></li>
+  </ul>
+</div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>正則化 — 機器學習</title>
+<link rel="stylesheet" href="../main.css">
+</head>
+<body>
+<header>
+  <div class="back-link"><a href="main.html">← 回到機器學習</a></div>
+  <h1>正則化 (Regularization)</h1>
+  <p>防止過擬合的核心技術，通過約束或懲罰項鼓勵模型學習更簡單的表示</p>
+</header>
+<div class="container">
+
+<div class="section">
+  <h2>概述</h2>
+  <p>正則化是機器學習和深度學習中防止過擬合的核心技術。當模型在訓練數據上表現良好但在測試數據上表現較差時，稱模型過擬合了。正則化通過在損失函數中添加額外的約束或懲罰項，鼓勵模型學習更簡單、更通用的表示。正則化技術分為顯式正則化（L1、L2）和隱式正則化（Dropout、早停、資料增強）。</p>
+</div>
+
+<div class="section">
+  <h2>L1 和 L2 正則化</h2>
+  <p><strong>L2 正則化 (Ridge)</strong>：懲罰權重的平方和，傾向於使權重趨於零但不完全為零。公式為 min ||y - Xw||² + λ||w||²。 <strong>L1 正則化 (Lasso)</strong>：懲罰權重的絕對值和，傾向於使權重恰好為零（稀疏性）。公式為 min ||y - Xw||² + λ||w||₁。 <strong>Elastic Net</strong>：結合 L1 和 L2 的優點。L2 正則化在 PyTorch 中可通過優化器的 weight_decay 參數實現。</p>
+</div>
+
+<div class="section">
+  <h2>Dropout 與隨機化正則化</h2>
+  <p><strong>Dropout</strong>：訓練時以概率 p 隨機丟棄神經元，迫使網路學習冗餘表示。 <strong>Dropout2d</strong>：丟棄整個通道，適用於 CNN。 <strong>DropBlock</strong>：丟棄連續區域而非單個神經元，在 CNN 中比標準 Dropout 更有效。 <strong>Stochastic Depth</strong>：訓練時隨機丟棄殘差塊的路徑。 <strong>DropConnect</strong>：連接級別的 Dropout，隨機丟棄權重連接。</p>
+</div>
+
+<div class="section">
+  <h2>早停與資料增強</h2>
+  <p><strong>早停 (Early Stopping)</strong>：當驗證集效能不再提升時停止訓練，保存最佳模型。patience 參數控制容忍的連續無改善 epoch 數。 <strong>資料增強</strong>：通過翻轉、旋轉、裁剪、顏色變換等操作生成更多訓練樣本。 <strong>Mixup</strong>：將兩個樣本及其標籤按比例混合。 <strong>CutMix</strong>：裁剪一個樣本的區域貼到另一個樣本上。兩者都是強大的資料增強正則化方法。</p>
+</div>
+
+<div class="section">
+  <h2>Batch Normalization 與標籤平滑</h2>
+  <p>Batch Normalization 通過標準化每一層的輸入來穩定訓練，允許使用更大的學習率。它對每個 mini-batch 計算均值和方差，並維護移動平均用於推理。標籤平滑 (Label Smoothing) 將 one-hot 標籤替換為平滑分佈，防止模型過度自信。梯度懲罰 (Gradient Penalty) 用於 GAN 訓練，通過約束判別器的梯度範數來穩定訓練。</p>
+</div>
+
+<div class="section">
+  <h2>相關連結</h2>
+  <ul>
+    <li><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E6%A9%9F%E5%99%A8%E5%AD%B8%E7%BF%92/%E6%AD%A3%E5%89%87%E5%8C%96.md">Wiki: 正則化</a></li>
+    <li><a href="模型評估.html">模型評估</a></li>
+    <li><a href="損失函數.html">損失函數</a></li>
+    <li><a href="電腦視覺.html">電腦視覺</a></li>
+  </ul>
+</div>
+
+</div>
+<footer><a href="main.html">機器學習</a> | <a href="../main.html">回首頁</a></footer>
+</body>
+</html>

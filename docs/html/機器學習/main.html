@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>機器學習 — 陳鍾誠的課程教材</title>
+<link rel="stylesheet" href="../main.css">
+<style>
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; margin-bottom: 24px; }
+.card { background: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border: 1px solid #eee; transition: transform 0.15s; }
+.card:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,0,0,0.1); }
+.card h3 { font-size: 1.1rem; margin-bottom: 6px; }
+.card h3 a { color: #333; text-decoration: none; }
+.card h3 a:hover { color: #e74c3c; }
+.card p { font-size: 0.88rem; color: #666; line-height: 1.5; }
+.card .links { margin-top: 10px; padding-top: 10px; border-top: 1px solid #eee; display: flex; flex-wrap: wrap; gap: 6px; }
+.card .links a { font-size: 0.75rem; padding: 3px 10px; border-radius: 5px; text-decoration: none; color: #fff; background: #e74c3c; }
+.card .links a:hover { opacity: 0.85; }
+.section-title { font-size: 1.2rem; font-weight: 700; margin: 28px 0 14px; border-bottom: 2px solid #e74c3c; padding-bottom: 6px; }
+.section-title:first-of-type { margin-top: 0; }
+.back-home { display: block; text-align: left; margin-bottom: 12px; }
+.back-home a { color: #fff; text-decoration: underline; font-size: 0.9rem; }
+</style>
+</head>
+<body>
+<header>
+  <div class="back-home"><a href="../main.html">← 回首頁</a></div>
+  <h1>機器學習</h1>
+  <p>讓電腦從資料中學習的演算法</p>
+</header>
+<div class="container">
+
+<div class="section">
+  <p>機器學習（Machine Learning）是人工智慧的核心領域，專注於開發能從資料中自動學習和改進的演算法。本頁面整理了機器學習領域的主要概念、模型架構、應用領域及相關工具框架。</p>
+</div>
+
+<h2 class="section-title">核心概念</h2>
+<div class="grid">
+  <div class="card">
+    <h3><a href="機器學習的歷史.html">機器學習的歷史</a></h3>
+    <p>從圖靈測試到深度學習時代的發展歷程</p>
+  </div>
+  <div class="card">
+    <h3><a href="監督式學習.html">監督式學習</a></h3>
+    <p>使用標籤資料學習輸入到輸出的映射函數</p>
+  </div>
+  <div class="card">
+    <h3><a href="非監督式學習.html">非監督式學習</a></h3>
+    <p>從未標記資料中自動發現模式與結構</p>
+  </div>
+  <div class="card">
+    <h3><a href="深度學習.html">深度學習</a></h3>
+    <p>多層神經網路學習資料的層次化表示</p>
+  </div>
+  <div class="card">
+    <h3><a href="強化學習.html">強化學習</a></h3>
+    <p>智慧體透過與環境互動學習最佳決策</p>
+  </div>
+  <div class="card">
+    <h3><a href="神經網路.html">神經網路</a></h3>
+    <p>受生物神經元啟發的計算模型，深度學習的基礎</p>
+  </div>
+  <div class="card">
+    <h3><a href="梯度下降法.html">梯度下降法</a></h3>
+    <p>沿梯度反方向迭代更新參數的最佳化演算法</p>
+  </div>
+  <div class="card">
+    <h3><a href="反傳遞演算法.html">反傳遞演算法</a></h3>
+    <p>利用鏈式法則計算梯度以訓練神經網路</p>
+  </div>
+  <div class="card">
+    <h3><a href="決策樹.html">決策樹</a></h3>
+    <p>樹狀結構的監督式學習模型，具高度可解釋性</p>
+  </div>
+  <div class="card">
+    <h3><a href="隨機森林.html">隨機森林</a></h3>
+    <p>基於多棵決策樹的集成學習方法</p>
+  </div>
+  <div class="card">
+    <h3><a href="支持向量機.html">支持向量機</a></h3>
+    <p>尋找最大間隔超平面來分類資料</p>
+  </div>
+</div>
+
+<h2 class="section-title">模型架構</h2>
+<div class="grid">
+  <div class="card">
+    <h3><a href="卷積神經網路.html">卷積神經網路 (CNN)</a></h3>
+    <p>專為網格結構資料設計，特別擅長影像處理</p>
+    <div class="links"><a href="https://github.com/ccckmit/course0/blob/main/wiki/機器學習/卷積神經網路.md">Wiki</a></div>
+  </div>
+  <div class="card">
+    <h3><a href="循環神經網路.html">循環神經網路 (RNN)</a></h3>
+    <p>具內部狀態的序列資料處理架構</p>
+    <div class="links"><a href="https://github.com/ccckmit/course0/blob/main/wiki/機器學習/循環神經網路.md">Wiki</a></div>
+  </div>
+  <div class="card">
+    <h3><a href="Transformer.html">Transformer</a></h3>
+    <p>完全基於注意力機制的革命性架構</p>
+    <div class="links"><a href="https://github.com/ccckmit/course0/blob/main/wiki/機器學習/Transformer.md">Wiki</a></div>
+  </div>
+  <div class="card">
+    <h3><a href="大型語言模型.html">大型語言模型 (LLM)</a></h3>
+    <p>基於 Transformer 的海量預訓練語言模型</p>
+    <div class="links"><a href="https://github.com/ccckmit/course0/blob/main/wiki/機器學習/大型語言模型.md">Wiki</a></div>
+  </div>
+  <div class="card">
+    <h3><a href="生成對抗網路.html">生成對抗網路 (GAN)</a></h3>
+    <p>生成器與判別器相互對抗的生成模型</p>
+    <div class="links"><a href="https://github.com/ccckmit/course0/blob/main/wiki/機器學習/生成對抗網路.md">Wiki</a></div>
+  </div>
+  <div class="card">
+    <h3><a href="降維演算法.html">降維演算法 (PCA)</a></h3>
+    <p>主成分分析與其他維度降低技術</p>
+    <div class="links"><a href="https://github.com/ccckmit/course0/blob/main/wiki/機器學習/主成分分析.md">Wiki</a></div>
+  </div>
+  <div class="card">
+    <h3><a href="聚類演算法.html">聚類演算法</a></h3>
+    <p>K-Means、DBSCAN、層次聚類等非監督式方法</p>
+    <div class="links"><a href="https://github.com/ccckmit/course0/blob/main/wiki/機器學習/聚類演算法.md">Wiki</a></div>
+  </div>
+</div>
+
+<h2 class="section-title">應用領域</h2>
+<div class="grid">
+  <div class="card">
+    <h3><a href="自然語言處理.html">自然語言處理</a></h3>
+    <p>讓電腦理解、生成人類語言的技術</p>
+    <div class="links"><a href="https://github.com/ccckmit/course0/blob/main/wiki/機器學習/自然語言處理.md">Wiki</a></div>
+  </div>
+  <div class="card">
+    <h3><a href="電腦視覺.html">電腦視覺</a></h3>
+    <p>使電腦能從影像中理解視覺資訊</p>
+    <div class="links"><a href="https://github.com/ccckmit/course0/blob/main/wiki/機器學習/電腦視覺.md">Wiki</a></div>
+  </div>
+  <div class="card">
+    <h3><a href="模型評估.html">模型評估</a></h3>
+    <p>評估機器學習模型效能的各種指標與方法</p>
+    <div class="links"><a href="https://github.com/ccckmit/course0/blob/main/wiki/機器學習/模型評估.md">Wiki</a></div>
+  </div>
+  <div class="card">
+    <h3><a href="損失函數.html">損失函數</a></h3>
+    <p>衡量模型預測與真實值差異的函數</p>
+    <div class="links"><a href="https://github.com/ccckmit/course0/blob/main/wiki/機器學習/損失函數.md">Wiki</a></div>
+  </div>
+  <div class="card">
+    <h3><a href="正則化.html">正則化</a></h3>
+    <p>防止模型過擬合的技術</p>
+    <div class="links"><a href="https://github.com/ccckmit/course0/blob/main/wiki/機器學習/正則化.md">Wiki</a></div>
+  </div>
+  <div class="card">
+    <h3><a href="異常偵測.html">異常偵測</a></h3>
+    <p>識別資料中異常模式的技術</p>
+    <div class="links"><a href="https://github.com/ccckmit/course0/blob/main/wiki/機器學習/異常偵測.md">Wiki</a></div>
+  </div>
+</div>
+
+<h2 class="section-title">工具與框架</h2>
+<div class="grid">
+  <div class="card">
+    <h3><a href="PyTorch.html">PyTorch</a></h3>
+    <p>Meta 開發的動態計算圖深度學習框架</p>
+    <div class="links"><a href="https://github.com/ccckmit/course0/blob/main/wiki/機器學習/PyTorch.md">Wiki</a></div>
+  </div>
+  <div class="card">
+    <h3><a href="TensorFlow.html">TensorFlow</a></h3>
+    <p>Google 開發的端到端機器學習平台</p>
+    <div class="links"><a href="https://github.com/ccckmit/course0/blob/main/wiki/機器學習/TensorFlow.md">Wiki</a></div>
+  </div>
+  <div class="card">
+    <h3><a href="scikit-learn.html">scikit-learn</a></h3>
+    <p>Python 經典機器學習函式庫</p>
+    <div class="links"><a href="https://github.com/ccckmit/course0/blob/main/wiki/機器學習/scikit-learn.md">Wiki</a></div>
+  </div>
+  <div class="card">
+    <h3><a href="Gym.html">Gym</a></h3>
+    <p>OpenAI 開發的強化學習環境套件</p>
+    <div class="links"><a href="https://github.com/ccckmit/course0/blob/main/wiki/機器學習/Gym.md">Wiki</a></div>
+  </div>
+</div>
+
+<footer>
+  <p><a href="https://github.com/ccckmit/course0/blob/main/wiki/機器學習/index.md">查看 Wiki 原始檔</a></p>
+</footer>
+</div>
+</body>
+</html>

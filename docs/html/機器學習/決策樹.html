@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>決策樹 — 機器學習</title>
+<link rel="stylesheet" href="../main.css">
+</head>
+<body>
+<header>
+  <div class="back-link"><a href="main.html">← 回到機器學習</a></div>
+  <h1>決策樹 (Decision Tree)</h1>
+  <p>樹狀結構的監督式學習模型，具高度可解釋性</p>
+</header>
+<div class="container">
+
+<div class="section">
+  <h2>概述</h2>
+  <p>決策樹是一種樹狀結構的監督式學習模型，透過遞迴地選擇最佳特徵進行分裂，將資料劃分為越來越純淨的子集合。每個內部節點代表一個特徵上的判斷條件，每個分支代表條件的輸出，每個葉節點代表一個類別（分類樹）或一個數值（回歸樹）。決策樹的最大優勢是其可解釋性——我們可以將決策過程可視化為一系列「如果-那麼」的規則。</p>
+</div>
+
+<div class="section">
+  <h2>原理</h2>
+  <p>決策樹的核心理念是「分而治之」。從根節點開始，選擇一個特徵和分裂條件，將資料劃分為多個子集合，這個過程在每個子集合上遞迴重複，直到達到停止條件。決策樹的學習過程核心問題是：每次分裂應該選擇哪個特徵？一般來說，我們希望每次分裂後，子集合的「純淨度」能夠提高。</p>
+</div>
+
+<div class="section">
+  <h2>不純度度量</h2>
+  <ul>
+    <li><strong>熵 (Entropy)</strong>：源自資訊理論，表示資料的不確定性。H(S) = -Σ p_i log₂(p_i)，熵越高資料越混亂</li>
+    <li><strong>基尼不純度 (Gini Impurity)</strong>：CART 演算法使用，Gini(S) = 1 - Σ p_i²，測量隨機選擇兩個樣本被錯誤分類的機率</li>
+    <li><strong>資訊增益</strong>：分裂前熵減去分裂後加權熵，越大表示分裂效果越好</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h2>剪枝與正則化</h2>
+  <p>決策樹容易過擬合，需要通過剪枝來控制模型複雜度。預剪枝在樹生長過程中提前停止（限制最大深度、最小樣本數等），後剪枝先讓樹完全生長再合併葉節點。隨機森林通過集成多棵決策樹來進一步降低過擬合風險。</p>
+</div>
+
+<div class="section">
+  <h2>本課程範例</h2>
+  <ul>
+    <li><a href="https://github.com/ccckmit/course0/blob/main/code/%E6%A9%9F%E5%99%A8%E5%AD%B8%E7%BF%92/ml/classify/decision_tree.py">decision_tree.py</a> — 決策樹分類實作</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h2>相關連結</h2>
+  <ul>
+    <li><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E6%A9%9F%E5%99%A8%E5%AD%B8%E7%BF%92/%E6%B1%BA%E7%AD%96%E6%A8%B9.md">Wiki: 決策樹</a></li>
+    <li><a href="隨機森林.html">隨機森林</a></li>
+    <li><a href="分類演算法.html">分類演算法</a></li>
+    <li><a href="監督式學習.html">監督式學習</a></li>
+  </ul>
+</div>
+
+</div>
+<footer><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E6%A9%9F%E5%99%A8%E5%AD%B8%E7%BF%92/%E6%B1%BA%E7%AD%96%E6%A8%B9.md">編輯此頁</a></footer>
+</body>
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GPU 架構</title>
+<link rel="stylesheet" href="../main.css">
+</head>
+<body>
+<header>
+  <div class="back-link"><a href="main.html">← 回入口</a></div>
+  <h1>GPU 架構</h1>
+</header>
+<div class="container">
+
+<div class="section">
+<h2>CPU vs GPU</h2>
+<p>CPU 設計優化低延遲，擁有少量強大核心、大型快取和複雜分支預測。GPU 設計優化高吞吐量，擁有大量小型核心、共享記憶體，適合規則的資料平行運算。GPU 擁有數千個核心，專為大量資料平行處理而設計。</p>
+</div>
+
+<div class="section">
+<h2>NVIDIA GPU 架構演進</h2>
+<table>
+<tr><th>架構</th><th>年份</th><th>SM 數</th><th>核心/SM</th><th>特色</th></tr>
+<tr><td>Fermi</td><td>2010</td><td>16</td><td>32</td><td>首款完整 GPGPU 架構</td></tr>
+<tr><td>Kepler</td><td>2012</td><td>15</td><td>192</td><td>硬體支援同時多執行緒</td></tr>
+<tr><td>Pascal</td><td>2016</td><td>56</td><td>64</td><td>HBM2 高頻寬記憶體</td></tr>
+<tr><td>Volta</td><td>2017</td><td>80</td><td>64</td><td>Tensor Core 加速矩陣運算</td></tr>
+<tr><td>Turing</td><td>2018</td><td>72</td><td>64</td><td>RT Core 光線追蹤</td></tr>
+<tr><td>Ampere</td><td>2020</td><td>84</td><td>64</td><td>第三代 Tensor Core</td></tr>
+<tr><td>Hopper</td><td>2022</td><td>144</td><td>128</td><td>Transformer Engine</td></tr>
+</table>
+</div>
+
+<div class="section">
+<h2>SM 架構</h2>
+<p>Streaming Multiprocessor 是 GPU 的基本運算單元。每個 SM 包含多個 CUDA 核心、Tensor Core、Register File、Shared Memory 和 L1 Cache。執行緒以 32 個為一組（Warp）進行排程，Warp 內所有執行緒執行相同指令（SIMT 模式）。</p>
+</div>
+
+<div class="section">
+<h2>GPU 記憶體層次</h2>
+<ul>
+  <li><strong>全域記憶體</strong> — 最大容量，高延遲（HBM/HBM2/HBM3，頻寬達 3.5 TB/s）</li>
+  <li><strong>共享記憶體</strong> — SM 內低延遲，由程式設計師管理</li>
+  <li><strong>常數記憶體</strong> — 唯讀快取，廣播高效</li>
+  <li><strong>紋理記憶體</strong> — 優化 2D 空間局部性存取</li>
+</ul>
+</div>
+
+<div class="section">
+<h2>相關連結</h2>
+<ul>
+  <li><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E8%A8%88%E7%AE%97%E6%A9%9F%E7%B5%90%E6%A7%8B/GPU%E6%9E%B6%E6%A7%8B.md">wiki: GPU架構</a></li>
+</ul>
+</div>
+
+</div>
+</body>
+</html>

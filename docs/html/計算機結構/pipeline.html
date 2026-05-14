@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>管線處理</title>
+<link rel="stylesheet" href="../main.css">
+</head>
+<body>
+<header>
+  <div class="back-link"><a href="main.html">← 回入口</a></div>
+  <h1>管線處理</h1>
+</header>
+<div class="container">
+
+<div class="section">
+<h2>基本原理</h2>
+<p>管線處理將指令執行分為多個獨立階段，讓不同指令的不同階段可以並行進行。類似工廠生產線，每個階段專注特定任務，大幅提高指令吞吐量。經典的五級管線：IF（指令擷取）、ID（指令解碼）、EX（執行）、MEM（記憶體存取）、WB（寫回）。</p>
+</div>
+
+<div class="section">
+<h2>管線冒險</h2>
+<ul>
+  <li><strong>結構冒險</strong> — 硬體資源衝突（如同時存取記憶體）</li>
+  <li><strong>資料冒險</strong> — 指令間資料依賴（RAW、WAR、WAW）</li>
+  <li><strong>控制冒險</strong> — 分支指令造成的決策延遲</li>
+</ul>
+<p>解決方案包括：管線停頓（Stall）、 forwarding（旁路）、分支預測、延遲槽。</p>
+</div>
+
+<div class="section">
+<h2>資料冒險與 Forwarding</h2>
+<pre class="code">// 資料冒險範例：RAW (Read After Write)
+// ADD x1, x2, x3   // x1 = x2 + x3
+// SUB x4, x1, x5   // 需要 x1 的值
+// Without forwarding: 需要停頓 2 個周期
+// With forwarding: 從 EX 階段直接傳遞結果</pre>
+</div>
+
+<div class="section">
+<h2>深管線與現代處理器</h2>
+<p>現代處理器管線深度可達 14-20 級以上（如 Intel Pentium 4 的 20 級、Apple M1 的 10 級）。深管線可提高時脈頻率，但分支錯誤預測代價更高。現代設計結合分支預測、超純量、亂序執行等技術克服管線限制。</p>
+</div>
+
+<div class="section">
+<h2>相關連結</h2>
+<ul>
+  <li><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E8%A8%88%E7%AE%97%E6%A9%9F%E7%B5%90%E6%A7%8B/%E7%AE%A1%E7%B7%9A%E8%99%95%E7%90%86.md">wiki: 管線處理</a></li>
+</ul>
+</div>
+
+</div>
+</body>
+</html>

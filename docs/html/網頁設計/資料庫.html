@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>資料庫 — 網頁設計</title>
+<link rel="stylesheet" href="../main.css">
+</head>
+<body>
+<header>
+  <div class="back-link"><a href="./index.html">← 回網頁設計</a></div>
+  <h1>資料庫</h1>
+  <p>資料儲存與查詢系統</p>
+</header>
+<div class="container">
+  <div class="section">
+    <h2>資料庫發展歷程</h2>
+    <ul>
+      <li><strong>層次與網路資料庫 (1960s-1970s)</strong> — 最早的資料庫系統</li>
+      <li><strong>關聯式資料庫 (1970s-現在)</strong> — Edgar F. Codd 提出關聯模型，Oracle、MySQL、PostgreSQL 普及</li>
+      <li><strong>NoSQL 資料庫 (2000s-現在)</strong> — 因應 Web 2.0 和大資料時代而興起</li>
+      <li><strong>多模資料庫 (2010s-現在)</strong> — 支援多種資料模型</li>
+    </ul>
+  </div>
+  <div class="section">
+    <h2>關聯式資料庫 (RDBMS)</h2>
+    <p>資料以表格 (Table) 組織，透過鍵 (Key) 建立關係，使用 SQL 進行操作。</p>
+    <div class="code">CREATE TABLE users (<br>    id INT PRIMARY KEY AUTO_INCREMENT,<br>    name VARCHAR(100) NOT NULL,<br>    email VARCHAR(255) UNIQUE NOT NULL,<br>    age INT,<br>    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP<br>);</div>
+  </div>
+  <div class="section">
+    <h2>SQL 基本操作</h2>
+    <div class="code">-- 查詢<br>SELECT * FROM users WHERE age >= 18 ORDER BY created_at DESC;<br><br>-- 新增<br>INSERT INTO users (name, email) VALUES ('王小明', 'wang@example.com');<br><br>-- 更新<br>UPDATE users SET age = 26 WHERE name = '王小明';<br><br>-- 刪除<br>DELETE FROM users WHERE age < 18;</div>
+  </div>
+  <div class="section">
+    <h2>NoSQL 資料庫</h2>
+    <p>放棄嚴格的表格結構，提供更高擴展性。常見類型包括：</p>
+    <ul>
+      <li><strong>文件資料庫</strong> (MongoDB) — JSON-like 文件儲存</li>
+      <li><strong>鍵值儲存</strong> (Redis) — 高速記憶體資料庫</li>
+      <li><strong>列式資料庫</strong> (Cassandra) — 大規模分散式儲存</li>
+      <li><strong>圖形資料庫</strong> (Neo4j) — 關聯網路分析</li>
+    </ul>
+  </div>
+  <div class="section">
+    <h2>本課程範例</h2>
+    <ul>
+      <li><a href="https://github.com/ccckmit/course0/blob/main/code/%E7%B6%B2%E7%AB%99%E8%A8%AD%E8%A8%88/11-fastapi">11-fastapi/</a> — FastAPI + SQLite 範例</li>
+      <li><a href="https://github.com/ccckmit/course0/blob/main/code/%E7%B6%B2%E7%AB%99%E8%A8%AD%E8%A8%88/11-fastapi/teapos">teapos/</a> — TeaPOS 系統資料庫範例</li>
+    </ul>
+  </div>
+  <div class="section">
+    <h2>相關連結</h2>
+    <ul>
+      <li><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E7%B6%B2%E9%A0%81%E8%A8%AD%E8%A8%88/%E8%B3%87%E6%96%99%E5%BA%AB.md">Wiki: 資料庫</a></li>
+      <li><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E7%B6%B2%E9%A0%81%E8%A8%AD%E8%A8%88/SQLite.md">Wiki: SQLite</a></li>
+      <li><a href="SQL.html">SQL — 結構化查詢語言</a></li>
+      <li><a href="FastAPI.html">FastAPI — 後端框架</a></li>
+    </ul>
+  </div>
+  <footer><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E7%B6%B2%E9%A0%81%E8%A8%AD%E8%A8%88/%E8%B3%87%E6%96%99%E5%BA%AB.md">資料庫.md</a></footer>
+</div>
+</body>
+</html>

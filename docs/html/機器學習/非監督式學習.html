@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>非監督式學習 — 機器學習</title>
+<link rel="stylesheet" href="../main.css">
+</head>
+<body>
+<header>
+  <div class="back-link"><a href="main.html">← 回入口</a></div>
+  <h1>非監督式學習 (Unsupervised Learning)</h1>
+  <p>從未標籤資料中發現隱藏模式</p>
+</header>
+<div class="container">
+<div class="section">
+<h2>什麼是非監督式學習？</h2>
+<p>非監督式學習是機器學習中不使用標籤資料進行訓練的學習範式。演算法需要自動發現資料中的規律、模式和結構。由於不需要人類標註標籤，非監督式學習可以處理大規模未標記的資料，在資料探索、異常檢測、資料壓縮等場景中非常有用。</p>
+</div>
+<div class="section">
+<h2>核心任務</h2>
+<h3>聚類（Clustering）</h3>
+<p>將相似資料點分為同一群組。常用演算法：<a href="聚類演算法.html">K-Means</a>（基於距離的硬分群）、DBSCAN（基於密度的分群）、GMM（軟分群）。應用：客戶細分、影像分割、社群網絡分析。</p>
+<h3>降維（Dimensionality Reduction）</h3>
+<p>將高維資料映射到低維空間，保留重要結構。常用演算法：<a href="降維演算法.html">PCA</a>（主成分分析）、t-SNE（可視化）、UMAP。應用：資料可視化、雜訊過濾、特徵提取。</p>
+<h3>關聯規則學習</h3>
+<p>發現資料中變數之間的關聯關係。典型演算法是 Apriori，用於購物籃分析，發現「買尿布的人也買啤酒」這類規則。</p>
+<h3>異常檢測</h3>
+<p>識別與大多數資料顯著不同的異常點。應用：金融欺詐檢測、設備故障預警、網路入侵檢測。</p>
+</div>
+<div class="section">
+<h2>與監督式學習的比較</h2>
+<table>
+<tr><th>特性</th><th>監督式學習</th><th>非監督式學習</th></tr>
+<tr><td>訓練資料</td><td>需要標籤 (x, y)</td><td>不需要標籤 x</td></tr>
+<tr><td>目標</td><td>學習輸入到輸出的映射</td><td>學習資料的內在結構</td></tr>
+<tr><td>「老師」</td><td>需要標籤指導</td><td>自主探索發現</td></tr>
+<tr><td>任務</td><td>分類、迴歸</td><td>聚類、降維、關聯規則</td></tr>
+<tr><td>評估</td><td>有明確指標（準確率等）</td><td>無絕對標準（需內在評估）</td></tr>
+</table>
+</div>
+<div class="section">
+<h2>應用場景</h2>
+<ul>
+<li><strong>資料探索與可視化</strong>：發現模式和群組，降維可視化，資料預處理</li>
+<li><strong>異常檢測</strong>：金融欺詐、設備故障、網路入侵</li>
+<li><strong>客戶細分</strong>：客戶行為分群、市場區隔、推薦系統</li>
+<li><strong>生物資訊學</strong>：基因表達分群、蛋白質結構預測</li>
+<li><strong>影像處理</strong>：影像分割、物件辨識前處理</li>
+</ul>
+</div>
+<div class="section">
+<h2>相關連結</h2>
+<ul>
+<li><a href="index.html">回到機器學習 index</a></li>
+<li><a href="main.html">回到入口</a></li>
+<li><a href="https://github.com/ccckmit/course0/blob/main/wiki/機器學習/非監督式學習.md" target="_blank">原始 Wiki 文章</a></li>
+<li><a href="監督式學習.html">監督式學習</a></li>
+<li><a href="聚類演算法.html">聚類演算法</a></li>
+<li><a href="降維演算法.html">降維演算法</a></li>
+</ul>
+</div>
+</div>
+<footer><a href="main.html">機器學習</a> | <a href="../main.html">回首頁</a></footer>
+</body>
+</html>

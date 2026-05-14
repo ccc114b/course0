@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>組合語言 — 系統程式</title>
+<link rel="stylesheet" href="../main.css">
+</head>
+<body>
+<header>
+  <div class="back-link"><a href="main.html">← 回入口</a></div>
+  <h1>組合語言</h1>
+  <p>硬體層級編程的基礎</p>
+</header>
+<div class="container">
+<div class="section">
+<h2>什麼是組合語言？</h2>
+<p>組合語言（Assembly Language）是機器碼的人類可讀表示形式，每一條組合語言指令對應一條機器碼指令。它是低階程式語言的典型代表，允許程式設計師直接控制 CPU 的暫存器、記憶體和指令執行順序。</p>
+</div>
+<div class="section">
+<h2>核心概念</h2>
+<h3>指令集架構（ISA）</h3>
+<p>定義了處理器能夠執行的所有指令，包括資料傳送、算術運算、邏輯運算、控制流等。常見 ISA 包括 x86、ARM、RISC-V。</p>
+<h3>暫存器（Register）</h3>
+<p>CPU 內部的快速儲存單元，不同架構有不同的暫存器組。</p>
+<h3>定址模式（Addressing Mode）</h3>
+<p>指定運算元位置的方式，包括立即定址、暫存器定址、直接定址、間接定址、索引定址等。</p>
+</div>
+<div class="section">
+<h2>應用場景</h2>
+<ul>
+<li>開機啟動程式（Bootloader）</li>
+<li>作業系統核心：行程切換、中斷處理</li>
+<li>嵌入式系統：資源受限裝置</li>
+<li>效能關鍵代碼：手動優化的關鍵迴圈</li>
+<li>逆向工程：分析二進位程式</li>
+</ul>
+</div>
+<div class="section">
+<h2>本課程範例</h2>
+<ul>
+<li><a href="https://github.com/ccckmit/course0/tree/main/code/系統程式/os/mini-riscv-os2" target="_blank"><strong>mini-riscv-os2</strong></a>：RISC-V 組合語言 OS 實作</li>
+<li><a href="https://github.com/ccckmit/course0/tree/main/code/系統程式/irvm/rv0" target="_blank"><strong>rv0</strong></a>：RISC-V 虛擬機</li>
+</ul>
+</div>
+<div class="section">
+<h2>相關連結</h2>
+<ul>
+<li><a href="index.html">回到系統程式 index</a></li>
+<li><a href="main.html">回到入口</a></li>
+<li><a href="https://github.com/ccckmit/course0/blob/main/wiki/系統程式/組合語言.md" target="_blank">原始 Wiki 文章</a></li>
+</ul>
+</div>
+</div>
+<footer><a href="main.html">系統程式</a> | <a href="../index.html">回首頁</a></footer>
+</body>
+</html>

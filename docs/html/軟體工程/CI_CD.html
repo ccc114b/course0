@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CI/CD — 軟體工程</title>
+<link rel="stylesheet" href="../main.css">
+</head>
+<body>
+<header>
+  <div class="back-link"><a href="main.html">← 回入口</a></div>
+  <h1>CI/CD</h1>
+  <p>持續整合與持續部署</p>
+</header>
+<div class="container">
+
+<div class="section">
+  <h2>持續整合（CI）</h2>
+  <p>開發團隊成員頻繁地將程式碼整合到共享主線，每次整合都通過自動化建構和測試來驗證。傳統模式中開發人員在本地工作數天後合併，容易導致「整合地獄」。</p>
+  <p>CI 的解決方案：頻繁整合（每天多次推送）、自動化驗證（每次推送觸發建構和測試）、快速反饋（盡早發現問題）。</p>
+</div>
+
+<div class="section">
+  <h2>CI 工作流程</h2>
+  <ol>
+    <li>開發者從共享儲存庫 pull 最新程式碼</li>
+    <li>在功能分支（feature branch）開發</li>
+    <li>提交並 push 到遠端儲存庫</li>
+    <li>觸發 Webhook 通知 CI 伺服器</li>
+    <li>CI 伺服器檢出程式碼 → 安裝依賴 → 執行建構 → 執行測試 → 生成報告</li>
+    <li>回饋給開發者（成功即可合併 PR，失敗則需修復）</li>
+  </ol>
+</div>
+
+<div class="section">
+  <h2>持續部署（CD）</h2>
+  <p>持續部署將通過 CI 測試的程式碼自動化地部署到生產環境。與持續交付（需人工確認部署）不同，持續部署完全自動化，從提交到上線無需人工介入。</p>
+  <ul>
+    <li><strong>快速交付</strong>：從提交到上線只需幾分鐘</li>
+    <li><strong>降低風險</strong>：小而頻繁的變更，快速回滾</li>
+    <li><strong>提高品質</strong>：自動化確保品質，及早發現問題</li>
+    <li><strong>改善協作</strong>：開發和維運目標一致</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h2>CI/CD Pipeline</h2>
+  <div class="code">
+# 典型的 pipeline 階段
+stages:
+  - checkout
+  - install
+  - lint
+  - test
+  - build
+  - deploy
+
+checkout:
+  script: git clone repo
+
+install:
+  script: npm ci
+
+test:
+  script: npm run test:ci
+
+build:
+  script: npm run build
+
+deploy:
+  script: deploy-to-production
+  </div>
+</div>
+
+<div class="section">
+  <h2>本課程範例</h2>
+  <ul>
+    <li><a href="https://github.com/ccckmit/course0/tree/main/code/軟體工程/agtw">AgTW — CI/CD 範例專案</a></li>
+  </ul>
+</div>
+
+<div class="section">
+  <h2>相關連結</h2>
+  <ul>
+    <li><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E8%BD%AF%E9%AB%94%E5%B7%A5%E7%A8%8B/%E6%8C%81%E7%BA%8C%E6%95%B4%E5%90%88.md">Wiki: 持續整合</a></li>
+    <li><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E8%BD%AF%E9%AB%94%E5%B7%A5%E7%A8%8B/%E6%8C%81%E7%BA%8C%E9%83%A8%E7%BD%B2.md">Wiki: 持續部署</a></li>
+    <li><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E8%BD%AF%E9%AB%94%E5%B7%A5%E7%A8%8B/DevOps.md">Wiki: DevOps</a></li>
+    <li><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E8%BD%AF%E9%AB%94%E5%B7%A5%E7%A8%8B/Jenkins.md">Wiki: Jenkins</a></li>
+  </ul>
+</div>
+
+</div>
+</body>
+</html>

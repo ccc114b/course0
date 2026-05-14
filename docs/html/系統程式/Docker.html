@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Docker — 系統程式</title>
+<link rel="stylesheet" href="../main.css">
+</head>
+<body>
+<header>
+  <div class="back-link"><a href="main.html">← 回入口</a></div>
+  <h1>Docker</h1>
+  <p>容器化平台</p>
+</header>
+<div class="container">
+<div class="section">
+<h2>什麼是 Docker？</h2>
+<p>Docker 是領先的容器化平台，讓開發者可以將應用程式與其依賴環境打包到輕量級的容器中。與傳統虛擬機不同，Docker 容器共享主機核心，啟動快、資源佔用小，是現代 DevOps 和微服務架構的核心技術。</p>
+</div>
+<div class="section">
+<h2>核心概念</h2>
+<h3>映像檔（Image）</h3>
+<p>唯讀模板，包含應用程式及其執行環境。基於分層架構，支援快取和分享。</p>
+<h3>容器（Container）</h3>
+<p>映像檔的執行實例，包含隔離的檔案系統、網路和行程空間。</p>
+<h3>Dockerfile</h3>
+<p>描述如何建構映像檔的指令稿，支援多階段建構。</p>
+</div>
+<div class="section">
+<h2>與虛擬機的比較</h2>
+<table>
+<tr><th>特性</th><th>Docker 容器</th><th>傳統虛擬機</th></tr>
+<tr><td>啟動時間</td><td>毫秒級</td><td>秒到分鐘</td></tr>
+<tr><td>核心</td><td>共享主機核心</td><td>獨立核心</td></tr>
+<tr><td>資源開銷</td><td>低（MB 級）</td><td>高（GB 級）</td></tr>
+<tr><td>隔離性</td><td>行程層級</td><td>硬體層級</td></tr>
+</table>
+</div>
+<div class="section">
+<h2>本課程範例</h2>
+<ul>
+<li><a href="https://github.com/ccckmit/course0/tree/main/code/系統程式/irvm/docker0" target="_blank"><strong>docker0</strong></a>：Docker 容器基礎範例</li>
+</ul>
+</div>
+<div class="section">
+<h2>相關連結</h2>
+<ul>
+<li><a href="index.html">回到系統程式 index</a></li>
+<li><a href="main.html">回到入口</a></li>
+<li><a href="https://github.com/ccckmit/course0/blob/main/wiki/系統程式/Docker.md" target="_blank">原始 Wiki 文章</a></li>
+<li><a href="https://github.com/ccckmit/course0/blob/main/wiki/系統程式/Kubernetes.md" target="_blank">Kubernetes 文章</a></li>
+</ul>
+</div>
+</div>
+<footer><a href="main.html">系統程式</a> | <a href="../index.html">回首頁</a></footer>
+</body>
+</html>

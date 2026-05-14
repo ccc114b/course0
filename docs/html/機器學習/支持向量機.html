@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>支持向量機 (SVM) — 機器學習</title>
+<link rel="stylesheet" href="../main.css">
+</head>
+<body>
+<header>
+  <div class="back-link"><a href="main.html">← 回到機器學習</a></div>
+  <h1>支持向量機 (SVM)</h1>
+  <p>尋找最大間隔超平面的經典監督式學習分類器</p>
+</header>
+<div class="container">
+
+<div class="section">
+  <h2>概述</h2>
+  <p>支持向量機（Support Vector Machine，SVM）是一種經典的監督式學習分類器。其核心思想是找出一個最大間隔的超平面來分類資料，使得兩類別之間的邊界最大化。SVM 在處理高維資料和小樣本問題上表現出色，是機器學習領域最受歡迎的演算法之一。</p>
+</div>
+
+<div class="section">
+  <h2>原理</h2>
+  <p>SVM 的目標是找到一個超平面 wx + b = 0，不僅能正確分類所有訓練樣本，而且使支援向量（離超平面最近的樣本）到超平面的距離最大化。這個最大間隔分類器具有很好的泛化能力，因為邊界越大，分類器的魯棒性越強。</p>
+  <div class="code">
+# SVM 的優化目標
+minimize:  1/2 * ||w||²
+subject to: y_i(w·x_i + b) >= 1  for all i
+  </div>
+</div>
+
+<div class="section">
+  <h2>核心概念</h2>
+  <ul>
+    <li><strong>支持向量</strong>：靠近超平面的關鍵訓練點，它們決定了超平面的位置</li>
+    <li><strong>最大間隔</strong>：兩類別之間的距離，最大化間隔能提高泛化能力</li>
+    <li><strong>軟間隔</strong>：引入鬆弛變數處理非線性可分的狀況</li>
+    <li><strong>核函數</strong>：將資料映射到高維空間以處理非線性可分問題</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h2>核函數</h2>
+  <p>核函數是 SVM 處理非線性問題的關鍵技術。常見的核函數包括：</p>
+  <ul>
+    <li><strong>線性核</strong>：K(x,y) = x·y，適合線性可分的資料</li>
+    <li><strong>多項式核</strong>：K(x,y) = (x·y + r)^d</li>
+    <li><strong>RBF 核（高斯核）</strong>：K(x,y) = exp(-γ||x - y||²)，最常用的核函數</li>
+    <li><strong>Sigmoid 核</strong>：K(x,y) = tanh(κx·y + c)</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h2>本課程範例</h2>
+  <ul>
+    <li><a href="https://github.com/ccckmit/course0/blob/main/code/%E6%A9%9F%E5%99%A8%E5%AD%B8%E7%BF%92/ml/classify/svm.py">svm.py</a> — SVM 分類實作</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h2>相關連結</h2>
+  <ul>
+    <li><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E6%A9%9F%E5%99%A8%E5%AD%B8%E7%BF%92/%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%A9%9F.md">Wiki: 支持向量機</a></li>
+    <li><a href="分類演算法.html">分類演算法</a></li>
+    <li><a href="監督式學習.html">監督式學習</a></li>
+    <li><a href="scikit-learn.html">scikit-learn</a></li>
+  </ul>
+</div>
+
+</div>
+<footer><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E6%A9%9F%E5%99%A8%E5%AD%B8%E7%BF%92/%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%A9%9F.md">編輯此頁</a></footer>
+</body>
+</html>

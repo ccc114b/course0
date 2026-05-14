@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>自動機理論 — 計算理論</title>
+<link rel="stylesheet" href="../main.css">
+<style>
+  .back-link a { color: #fff; }
+  .section h2 { color: #9b59b6; }
+  footer a { color: #9b59b6; }
+  pre { background: #2d2d2d; color: #f8f8f2; padding: 16px; border-radius: 8px; overflow-x: auto; font-family: "Consolas", "Monaco", monospace; font-size: 0.9rem; margin: 12px 0; }
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; }
+  table th, table td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+  table th { background: #f5f5f5; }
+</style>
+</head>
+<body>
+<header>
+  <div class="back-link"><a href="main.html">← 回入口</a></div>
+  <h1>自動機理論</h1>
+  <p>形式語言與計算模型</p>
+</header>
+<div class="container">
+  <div class="section">
+    <h2>什麼是自動機理論？</h2>
+    <p>自動機理論研究抽象計算機器的數學模型，是形式語言、編譯器設計和計算複雜度的理論基礎。自動機從簡單的有限狀態機到複雜的圖靈機，構成了理解計算本質的層次結構。自動機理論的核心問題是：什麼樣的語言可以被機器識別？這個問題與「什麼可以被計算」密切相關。</p>
+  </div>
+
+  <div class="section">
+    <h2>自動機與語言對應</h2>
+    <pre>┌─────────────────────────────────────────────────────────────┐
+│              自動機與語言的對應                              │
+├─────────────────────────────────────────────────────────────┤
+│                                                              │
+│  有限狀態機 ──▶  正則語言    ──▶  正則表達式               │
+│       ↓                                                      │
+│  下推自動機 ──▶  上下文無關語言 ──▶  BNF                    │
+│       ↓                                                      │
+│  線性有界自動機 ──▶  上下文敏感語言                         │
+│       ↓                                                      │
+│  圖靈機 ──▶  遞迴可枚舉語言                                 │
+└─────────────────────────────────────────────────────────────┘</pre>
+  </div>
+
+  <div class="section">
+    <h2>有限狀態自動機</h2>
+    <p>確定性有限自動機 (DFA) 的特點是每個狀態對每個輸入符號只有唯一確定的下一個狀態。形式定義：DFA = (Q, Σ, δ, q₀, F)。</p>
+    <p><strong>範例</strong>：設計一個 DFA 識別包含子字串 "ab" 的所有字串：</p>
+    <ul>
+      <li>q₀：起始狀態，還沒看到 "a"</li>
+      <li>q₁：剛讀到 "a"</li>
+      <li>q₂：已讀到 "ab"（接受狀態）</li>
+    </ul>
+    <pre>轉移函數：
+- δ(q₀, 'a') = q₁, δ(q₀, 'b') = q₀
+- δ(q₁, 'a') = q₁, δ(q₁, 'b') = q₂
+- δ(q₂, 'a') = q₂, δ(q₂, 'b') = q₂</pre>
+  </div>
+
+  <div class="section">
+    <h2>正則表達式</h2>
+    <p>正則表達式是描述正則語言的另一種方式，與有限狀態機等價。語法包括：基本符號、空字串 ε、並聯 r|s、串聯 rs、克萊尼星 r*。正則表達式可以轉換為 NFA（使用 Thompson 構造），NFA 可以轉換為 DFA（使用子集構造），這個流程是編譯器詞法分析器的理論基礎。</p>
+    <pre>"ab"      — 匹配字串 "ab"
+"a|b"     — 匹配 "a" 或 "b"
+"a*"      — 匹配零或多個 "a"
+"(a|b)*"  — 匹配任意數量的 a 和 b 的組合
+"a*b*"    — 匹配任意數量的 a 後跟任意數量的 b</pre>
+  </div>
+
+  <div class="section">
+    <h2>下推自動機</h2>
+    <p>下推自動機（PDA）比有限狀態機多了一個堆疊，這使其能夠識別上下文無關語言。下推自動機與上下文無關文法是等價的：一個語言是上下文無關的，當且僅當有一個下推自動機能夠識別它。</p>
+    <pre>┌─────────────────────────────────────────────────────────────┐
+│                    下推自動機結構                           │
+├─────────────────────────────────────────────────────────────┤
+│                                                              │
+│  ┌─────────┐      ┌─────────┐      ┌─────────────────────┐ │
+│  │ 狀態控制 │─────▶│ 轉移函數 │─────▶│  無限堆疊           │ │
+│  └─────────┘      └─────────┘      │ ┌───┬───┬───┐      │ │
+│                                     │ │ Z │ X │ Y │ ... │ │ │
+│                                     │ └───┴───┴───┴──────│ │
+│                                     └─────────────────────┘ │
+└─────────────────────────────────────────────────────────────┘</pre>
+    <p>範例語言：{aⁿbⁿ | n ≥ 1}（n 個 a 後跟 n 個 b）、匹配的括號等，這些需要「計數」或「配對」的能力。</p>
+  </div>
+
+  <div class="section">
+    <h2>相關連結</h2>
+    <ul>
+      <li><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E8%A8%88%E7%AE%97%E7%90%86%E8%AB%96/%E8%87%AA%E5%8B%95%E6%A9%9F%E7%90%86%E8%AB%96.md">Wiki: 自動機理論</a></li>
+      <li><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E8%A8%88%E7%AE%97%E7%90%86%E8%AB%96/%E6%9C%89%E9%99%90%E7%8A%B6%E6%85%8B%E6%A9%9F.md">Wiki: 有限狀態機</a></li>
+      <li><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E8%A8%88%E7%AE%97%E7%90%86%E8%AB%96/%E5%BD%A2%E5%BC%8F%E6%96%87%E6%B3%95.md">Wiki: 形式文法</a></li>
+      <li><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E8%A8%88%E7%AE%97%E7%90%86%E8%AB%96/%E5%9C%96%E9%9D%88%E6%A9%9F.md">Wiki: 圖靈機</a></li>
+    </ul>
+  </div>
+
+  <footer>
+    <a href="main.html">← 回入口</a> ·
+    <a href="https://github.com/ccckmit/course0">GitHub</a>
+  </footer>
+</div>
+</body>
+</html>

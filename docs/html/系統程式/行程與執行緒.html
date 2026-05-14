@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>行程與執行緒 — 系統程式</title>
+<link rel="stylesheet" href="../main.css">
+</head>
+<body>
+<header>
+  <div class="back-link"><a href="main.html">← 回入口</a></div>
+  <h1>行程與執行緒</h1>
+  <p>並發執行的基本單位</p>
+</header>
+<div class="container">
+<div class="section">
+<h2>行程（Process）</h2>
+<p>行程是正在執行的程式實例，是作業系統資源分配的基本單位。每個行程擁有獨立的位址空間、程式計數器、堆疊和系統資源。</p>
+<h3>行程狀態</h3>
+<ul>
+<li><strong>新建（New）</strong>：行程正在被建立</li>
+<li><strong>就緒（Ready）</strong>：等待 CPU 排程</li>
+<li><strong>執行（Running）</strong>：正在 CPU 上執行</li>
+<li><strong>等待（Waiting）</strong>：等待 I/O 或事件</li>
+<li><strong>終止（Terminated）</strong>：執行完畢</li>
+</ul>
+</div>
+<div class="section">
+<h2>執行緒（Thread）</h2>
+<p>執行緒是行程內部的輕量級執行單位，是 CPU 排程的基本單位。同一行程內的多個執行緒共享位址空間和資源，但各自擁有獨立的堆疊和暫存器狀態。</p>
+<h3>執行緒的優勢</h3>
+<ul>
+<li><strong>共用記憶體</strong>：直接共享資料，無需 IPC</li>
+<li><strong>快速切換</strong>：開銷遠小於行程切換</li>
+<li><strong>高效率</strong>：建立和終止成本低</li>
+</ul>
+</div>
+<div class="section">
+<h2>行程間通訊（IPC）</h2>
+<ul>
+<li><strong>管道（Pipe）</strong>：單向資料流</li>
+<li><strong>訊息佇列（Message Queue）</strong>：非同步傳遞</li>
+<li><strong>共享記憶體（Shared Memory）</strong>：高效共享</li>
+<li><strong>信號（Signal）</strong>：非同步事件通知</li>
+<li><strong>Socket</strong>：網路通訊</li>
+</ul>
+</div>
+<div class="section">
+<h2>本課程範例</h2>
+<ul>
+<li><a href="https://github.com/ccckmit/course0/tree/main/code/系統程式/linux/02-thread" target="_blank"><strong>linux/02-thread</strong></a>：執行緒範例（生產者消費者）</li>
+<li><a href="https://github.com/ccckmit/course0/tree/main/code/系統程式/linux/03-fork" target="_blank"><strong>linux/03-fork</strong></a>：行程建立範例</li>
+<li><a href="https://github.com/ccckmit/course0/tree/main/code/系統程式/linux/08-ipcchat" target="_blank"><strong>linux/08-ipcchat</strong></a>：行程間通訊範例</li>
+<li><a href="https://github.com/ccckmit/course0/tree/main/code/系統程式/linux/14-user-level-thread" target="_blank"><strong>linux/14-user-level-thread</strong></a>：使用者層級執行緒</li>
+</ul>
+</div>
+<div class="section">
+<h2>相關連結</h2>
+<ul>
+<li><a href="index.html">回到系統程式 index</a></li>
+<li><a href="main.html">回到入口</a></li>
+<li><a href="https://github.com/ccckmit/course0/blob/main/wiki/系統程式/行程與執行緒.md" target="_blank">原始 Wiki 文章</a></li>
+</ul>
+</div>
+</div>
+<footer><a href="main.html">系統程式</a> | <a href="../index.html">回首頁</a></footer>
+</body>
+</html>

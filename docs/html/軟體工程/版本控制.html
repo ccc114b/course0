@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>版本控制 — 軟體工程</title>
+<link rel="stylesheet" href="../main.css">
+</head>
+<body>
+<header>
+  <div class="back-link"><a href="main.html">← 回入口</a></div>
+  <h1>版本控制</h1>
+  <p>追蹤檔案變化、支援多人協作的核心工具</p>
+</header>
+<div class="container">
+
+<div class="section">
+  <h2>版本控制的重要性</h2>
+  <p>版本控制系統記錄檔案或專案的每次修改，允許開發者回溯到任何歷史版本、比較差異、合併多人編輯結果。核心功能包括：</p>
+  <ul>
+    <li><strong>歷史追蹤</strong>：記錄每次修改的時間、作者、內容</li>
+    <li><strong>版本回溯</strong>：回到任意歷史版本</li>
+    <li><strong>差異比較</strong>：視覺化展示版本之間的變化</li>
+    <li><strong>分支管理</strong>：並行開發不同功能</li>
+    <li><strong>合併解決</strong>：自動或手動解決合併衝突</li>
+    <li><strong>備份還原</strong>：異地備份，防止資料遺失</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h2>集中式 vs 分散式</h2>
+  <table>
+    <tr><th>特性</th><th>集中式（SVN, CVS）</th><th>分散式（Git, Mercurial）</th></tr>
+    <tr><td>儲存庫</td><td>中央伺服器單一儲存庫</td><td>每個開發者完整儲存庫</td></tr>
+    <tr><td>離線工作</td><td>需要連線</td><td>完全離線</td></tr>
+    <tr><td>分支</td><td>較慢，可能衝突</td><td>快速、輕量</td></tr>
+    <tr><td>合併</td><td>複雜</td><td>強大工具支援</td></tr>
+  </table>
+</div>
+
+<div class="section">
+  <h2>版本控制策略</h2>
+  <ul>
+    <li><strong>Git Flow</strong>：main、develop、feature、release、hotfix 分支</li>
+    <li><strong>GitHub Flow</strong>：main + feature branch + PR 的簡潔模式</li>
+    <li><strong>Trunk-Based Development</strong>：頻繁合併到主幹，適合 CI/CD</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h2>團隊協作價值</h2>
+  <ul>
+    <li>獨立開發：每人可在自己的分支工作</li>
+    <li>程式碼審查：透過 Pull Request 審查程式碼</li>
+    <li>責任追溯：知道是誰在何時做了什麼修改</li>
+    <li>衝突預警：及早發現並解決衝突</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h2>本課程範例</h2>
+  <ul>
+    <li><a href="https://github.com/ccckmit/course0/blob/main/code/%E8%BD%AF%E9%AB%94%E5%B7%A5%E7%A8%8B/git/git0.py">Git 操作範例</a></li>
+  </ul>
+</div>
+
+<div class="section">
+  <h2>相關連結</h2>
+  <ul>
+    <li><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E8%BD%AF%E9%AB%94%E5%B7%A5%E7%A8%8B/%E7%89%88%E6%9C%AC%E6%8E%A7%E5%88%B6.md">Wiki: 版本控制</a></li>
+    <li><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E8%BD%AF%E9%AB%94%E5%B7%A5%E7%A8%8B/Git.md">Wiki: Git</a></li>
+  </ul>
+</div>
+
+</div>
+</body>
+</html>

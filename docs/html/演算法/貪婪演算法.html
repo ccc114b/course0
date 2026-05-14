@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>貪婪演算法 — 演算法</title>
+<link rel="stylesheet" href="../main.css">
+</head>
+<body>
+<header>
+  <div class="back-link"><a href="main.html">← 回入口</a></div>
+  <h1>貪婪演算法 (Greedy Algorithm)</h1>
+  <p>每一步選擇當前最佳選項，期望得到全域最優解</p>
+</header>
+<div class="container">
+<div class="section">
+<h2>基本思想</h2>
+<p>貪婪演算法在每個決策點都選擇當下最有利的選項，不考慮未來影響。</p>
+<ul>
+<li><strong>選擇函數</strong>：選擇下一個最優元素</li>
+<li><strong>可行性檢查</strong>：確保選擇滿足約束條件</li>
+<li><strong>目標函數</strong>：更新當前最佳解</li>
+</ul>
+</div>
+<div class="section">
+<h2>找錢問題</h2>
+<div class="code">def greedy_change(money, coins=[100, 50, 10, 5, 1]):
+    result = []
+    for coin in sorted(coins, reverse=True):
+        while money >= coin:
+            money -= coin
+            result.append(coin)
+    return result</div>
+</div>
+<div class="section">
+<h2>活動選擇問題</h2>
+<p>選擇最多不相衝突的活動，按結束時間排序後貪婪選擇。</p>
+<div class="code">def activity_selection(activities):
+    activities.sort(key=lambda x: x[1])
+    selected = [activities[0]]
+    last_end = activities[0][1]
+    for start, end in activities[1:]:
+        if start >= last_end:
+            selected.append((start, end))
+            last_end = end
+    return selected</div>
+</div>
+<div class="section">
+<h2>貪婪 vs 動態規劃</h2>
+<p>貪婪演算法不一定能得到全域最優解（如 0/1 背包問題），但在特定問題下（如找錢問題、活動選擇、最小生成樹）可以得到最優解。關鍵在於問題是否具有<strong>貪婪選擇性質</strong>：局部最優選擇能導致全域最優解。</p>
+</div>
+<div class="section">
+<h2>本課程範例</h2>
+<ul>
+<li><a href="https://github.com/ccckmit/course0/tree/main/code/演算法/method/05f-貪婪法" target="_blank"><strong>貪婪法</strong></a>：貪婪演算法程式碼</li>
+<li><a href="https://github.com/ccckmit/course0/tree/main/code/演算法/method/09c-遺傳演算法/geneticAlgorithm.py" target="_blank"><strong>geneticAlgorithm.py</strong></a>：遺傳演算法</li>
+</ul>
+</div>
+<div class="section">
+<h2>相關連結</h2>
+<ul>
+<li><a href="main.html">回到演算法入口</a></li>
+<li><a href="index.html">回到演算法 index</a></li>
+<li><a href="https://github.com/ccckmit/course0/blob/main/wiki/演算法/貪婪法.md" target="_blank">原始 Wiki 文章</a></li>
+<li><a href="動態規劃.html">動態規劃</a></li>
+<li><a href="最小生成樹.html">最小生成樹</a></li>
+</ul>
+</div>
+</div>
+<footer><a href="main.html">演算法</a> | <a href="../index.html">回首頁</a></footer>
+</body>
+</html>

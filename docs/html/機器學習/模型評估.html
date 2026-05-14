@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>模型評估 — 機器學習</title>
+<link rel="stylesheet" href="../main.css">
+</head>
+<body>
+<header>
+  <div class="back-link"><a href="main.html">← 回到機器學習</a></div>
+  <h1>模型評估 (Model Evaluation)</h1>
+  <p>客觀衡量模型在未見數據上表現的效能度量方法</p>
+</header>
+<div class="container">
+
+<div class="section">
+  <h2>概述</h2>
+  <p>模型評估是機器學習工作流程中至關重要的環節，決定了我們如何客觀地衡量模型在未見數據上的表現。訓練誤差低的模型可能在測試數據上表現很差（過擬合），反之則為欠擬合。正確的評估方法能幫助選擇最佳模型、診斷問題並指導超參數調優。評估指標的選擇應與任務目標一致。</p>
+</div>
+
+<div class="section">
+  <h2>分類評估指標</h2>
+  <p>混淆矩陣由 TP、TN、FP、FN 組成，是分類評估的基礎。精確率 (Precision) = TP/(TP+FP)，召回率 (Recall) = TP/(TP+FN)，F1 分數 = 2×Precision×Recall/(Precision+Recall)。AUC-ROC 曲線衡量模型在不同閾值下的分類能力，AUC 值越大越好。對於不平衡資料，應使用 Balanced Accuracy 和 Macro-F1 而非整體準確率。</p>
+  <div class="code">
+def calculate_classification_metrics(y_true, y_pred, y_prob=None):
+    accuracy = accuracy_score(y_true, y_pred)
+    precision = precision_score(y_true, y_pred, average='weighted')
+    recall = recall_score(y_true, y_pred, average='weighted')
+    f1 = f1_score(y_true, y_pred, average='weighted')
+    cm = confusion_matrix(y_true, y_pred)
+    return {'accuracy': accuracy, 'precision': precision,
+            'recall': recall, 'f1': f1, 'confusion_matrix': cm}
+  </div>
+</div>
+
+<div class="section">
+  <h2>回歸評估指標</h2>
+  <p><strong>MSE</strong>：均方誤差，對大誤差懲罰較重。 <strong>RMSE</strong>：均方根誤差，與原始數據單位一致。 <strong>MAE</strong>：平均絕對誤差，對異常值較魯棒。 <strong>R²</strong>：決定係數，表示模型解釋的變異比例，最大值為 1。 <strong>MAPE</strong>：平均絕對百分比誤差，以百分比形式呈現誤差。選擇哪個指標取決於業務需求：RMSE 對大誤差敏感，MAE 則更均衡。</p>
+</div>
+
+<div class="section">
+  <h2>交叉驗證</h2>
+  <p><strong>K 折交叉驗證</strong>：將數據分為 K 份，輪流使用 K-1 份訓練、1 份驗證。 <strong>分層 K 折</strong>：保持各折的類別比例與原始數據一致。 <strong>留一法 (LOO-CV)</strong>：每次只留一個樣本作為驗證集，適合小數據集。學習曲線可診斷過擬合/欠擬合，驗證曲線可分析超參數影響。自助法可用於計算模型效能的置信區間。</p>
+</div>
+
+<div class="section">
+  <h2>統計顯著性檢驗</h2>
+  <p>比較不同模型時，需要統計檢驗來確認效能差異是否顯著。配對 t 檢驗適用於比較兩個模型在相同折數上的表現。Wilcoxon 符號秩檢驗是 t 檢驗的非參數版本。McNemar 檢驗直接用於分類預測的比較。Friedman 檢驗可用於多個模型的整體比較，Nemenyi 事後檢驗則進一步找出有顯著差異的模型對。</p>
+</div>
+
+<div class="section">
+  <h2>相關連結</h2>
+  <ul>
+    <li><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E6%A9%9F%E5%99%A8%E5%AD%B8%E7%BF%92/%E6%A8%A1%E5%9E%8B%E8%A9%95%E4%BC%B0.md">Wiki: 模型評估</a></li>
+    <li><a href="損失函數.html">損失函數</a></li>
+    <li><a href="正則化.html">正則化</a></li>
+    <li><a href="分類演算法.html">分類演算法</a></li>
+  </ul>
+</div>
+
+</div>
+<footer><a href="main.html">機器學習</a> | <a href="../main.html">回首頁</a></footer>
+</body>
+</html>

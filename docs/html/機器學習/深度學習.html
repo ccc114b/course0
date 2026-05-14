@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>深度學習 — 機器學習</title>
+<link rel="stylesheet" href="../main.css">
+</head>
+<body>
+<header>
+  <div class="back-link"><a href="main.html">← 回到機器學習</a></div>
+  <h1>深度學習 (Deep Learning)</h1>
+  <p>使用多層神經網路學習資料的複雜表示</p>
+</header>
+<div class="container">
+
+<div class="section">
+  <h2>概述</h2>
+  <p>深度學習是機器學習的一個分支，專注於使用多層神經網路（深度神經網路）來學習資料的複雜表示。深度學習在過去十多年中徹底改變了人工智慧領域，從影像識別、自然語言處理到語音識別，都取得了突破性的進展。與傳統機器學習方法相比，深度學習能夠自動從原始資料中學習層次化的特徵表示，無需人工設計特徵工程。</p>
+</div>
+
+<div class="section">
+  <h2>發展歷程</h2>
+  <ul>
+    <li><strong>1943年</strong>：McCulloch 和 Pitts 提出神經元的數學模型</li>
+    <li><strong>1986年</strong>：Hinton 推廣反向傳播算法</li>
+    <li><strong>2006年</strong>：Hinton 提出深度信念網路，開啟深度學習熱潮</li>
+    <li><strong>2012年</strong>：AlexNet 在 ImageNet 競賽中大幅領先</li>
+    <li><strong>2014年</strong>：GAN 開創生成模型新領域</li>
+    <li><strong>2017年</strong>：Transformer 革命性地改變了 NLP</li>
+    <li><strong>2020年</strong>：GPT-3 展示大型語言模型的強大能力</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h2>神經網路基礎</h2>
+  <p>神經元是神經網路的基本單位，其核心運算是輸入的加權求和加上偏差，再經由激活函數非線性變換產生輸出。多層神經元堆疊形成深度網路，每層學習不同層次的特徵表示。激活函數如 ReLU、Sigmoid、Tanh 等引入非線性，使網路能學習複雜函數。</p>
+  <div class="code">
+class Neuron:
+    def __init__(self, input_size):
+        self.weights = np.random.randn(input_size) * 0.01
+        self.bias = 0
+    def forward(self, inputs):
+        z = np.dot(inputs, self.weights) + self.bias
+        return self.activation(z)
+  </div>
+</div>
+
+<div class="section">
+  <h2>核心技術</h2>
+  <ul>
+    <li><strong>反向傳播</strong>：利用鏈式法則計算梯度，是訓練深度網路的關鍵</li>
+    <li><strong>正則化</strong>：Dropout、L1/L2 正則化等防止過擬合</li>
+    <li><strong>批次歸一化</strong>：加速訓練並提高穩定性</li>
+    <li><strong>殘差連接</strong>：解決深層網路的梯度消失問題</li>
+    <li><strong>注意力機制</strong>：讓模型關注輸入中的重要部分</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h2>主要架構</h2>
+  <ul>
+    <li><strong>CNN</strong>：影像處理的最佳選擇，使用卷積核提取空間特徵</li>
+    <li><strong>RNN/LSTM</strong>：序列建模，具有時間記憶能力</li>
+    <li><strong>Transformer</strong>：當前主流架構，完全基於注意力機制</li>
+    <li><strong>GAN</strong>：生成對抗網路，用於生成逼真資料</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h2>本課程範例</h2>
+  <ul>
+    <li><a href="https://github.com/ccckmit/course0/blob/main/code/%E6%A9%9F%E5%99%A8%E5%AD%B8%E7%BF%92/nn/nn0/nn0py/nn0.py">nn0.py</a> — 從零實現神經網路</li>
+    <li><a href="https://github.com/ccckmit/course0/blob/main/code/%E6%A9%9F%E5%99%A8%E5%AD%B8%E7%BF%92/nn/nn1tensor/nn.py">nn.py</a> — Tensor 版神經網路</li>
+    <li><a href="https://github.com/ccckmit/course0/blob/main/code/%E6%A9%9F%E5%99%A8%E5%AD%B8%E7%BF%92/nn/nn1tensor/tensor.py">tensor.py</a> — 自動微分 Tensor 類別</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h2>相關連結</h2>
+  <ul>
+    <li><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E6%A9%9F%E5%99%A8%E5%AD%B8%E7%BF%92/%E6%B7%B1%E5%BA%A6%E5%AD%B8%E7%BF%92.md">Wiki: 深度學習</a></li>
+    <li><a href="神經網路.html">神經網路</a></li>
+    <li><a href="卷積神經網路.html">卷積神經網路</a></li>
+    <li><a href="Transformer.html">Transformer</a></li>
+  </ul>
+</div>
+
+</div>
+<footer><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E6%A9%9F%E5%99%A8%E5%AD%B8%E7%BF%92/%E6%B7%B1%E5%BA%A6%E5%AD%B8%E7%BF%92.md">編輯此頁</a></footer>
+</body>
+</html>

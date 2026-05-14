@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>卷積神經網路 (CNN) — 機器學習</title>
+<link rel="stylesheet" href="../main.css">
+</head>
+<body>
+<header>
+  <div class="back-link"><a href="main.html">← 回到機器學習</a></div>
+  <h1>卷積神經網路 (CNN)</h1>
+  <p>專門處理網格結構資料的神經網路，特別適合影像處理</p>
+</header>
+<div class="container">
+
+<div class="section">
+  <h2>概述</h2>
+  <p>卷積神經網路（Convolutional Neural Network，CNN）是一種專門設計用於處理具有網格結構資料的神經網路，特別適合處理影像資料。CNN 在電腦視覺領域取得了巨大成功，從影像分類、物體偵測到語義分割，幾乎統治了所有視覺任務。CNN 的核心思想是利用卷積運算來自動學習空間層次化的特徵。</p>
+</div>
+
+<div class="section">
+  <h2>核心概念</h2>
+  <p>傳統全連接層處理影像時參數過多且忽略空間結構。CNN 通過三個關鍵設計解決這些問題：</p>
+  <ul>
+    <li><strong>局部連接</strong>：每個神經元只連接輸入的一小區域，大幅減少參數</li>
+    <li><strong>共享權重</strong>：同一卷積核在整個輸入上共享，實現平移不變性</li>
+    <li><strong>池化</strong>：下採樣操作降低特徵圖尺寸，增加感受野</li>
+  </ul>
+  <p>CNN 對平移、旋轉、尺度變化具有一定的容忍度。</p>
+</div>
+
+<div class="section">
+  <h2>卷積運算</h2>
+  <p>卷積是一種數學運算，在影像處理中稱為「濾波」。卷積核（濾波器）在輸入影像上滑動，在每個位置計算卷積核與局部區域的點積，產生新的特徵圖。多個卷積核可以提取多種不同的特徵（邊緣、紋理、形狀等）。</p>
+  <div class="code">
+def conv2d(image, kernel):
+    h, w = image.shape
+    kh, kw = kernel.shape
+    oh, ow = h - kh + 1, w - kw + 1
+    output = np.zeros((oh, ow))
+    for i in range(oh):
+        for j in range(ow):
+            output[i, j] = np.sum(image[i:i+kh, j:j+kw] * kernel)
+    return output
+  </div>
+</div>
+
+<div class="section">
+  <h2>經典 CNN 架構</h2>
+  <ul>
+    <li><strong>LeNet-5</strong> (1998)：最早的 CNN，用於手寫數字識別</li>
+    <li><strong>AlexNet</strong> (2012)：ImageNet 大賽突破，開啟深度學習時代</li>
+    <li><strong>VGGNet</strong> (2014)：使用小卷積核堆疊更深網路</li>
+    <li><strong>ResNet</strong> (2015)：引入殘差連接，解決梯度消失問題</li>
+    <li><strong>GoogLeNet/Inception</strong>：使用多尺度卷積核並行處理</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h2>本課程範例</h2>
+  <ul>
+    <li><a href="https://github.com/ccckmit/course0/blob/main/code/%E6%A9%9F%E5%99%A8%E5%AD%B8%E7%BF%92/nn/nn0/nn0py/cnn0.py">cnn0.py</a> — 從零實現的卷積神經網路</li>
+    <li><a href="https://github.com/ccckmit/course0/blob/main/code/%E6%A9%9F%E5%99%A8%E5%AD%B8%E7%BF%92/image/mnistRecognize/train.py">train.py</a> — MNIST 手寫數字 CNN 訓練</li>
+    <li><a href="https://github.com/ccckmit/course0/blob/main/code/%E6%A9%9F%E5%99%A8%E5%AD%B8%E7%BF%92/image/mnistRecognize/predict.py">predict.py</a> — MNIST 預測</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h2>相關連結</h2>
+  <ul>
+    <li><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E6%A9%9F%E5%99%A8%E5%AD%B8%E7%BF%92/%E5%8D%B7%E7%A9%8D%E7%A5%9E%E7%B6%93%E7%B6%B2%E8%B7%AF.md">Wiki: 卷積神經網路</a></li>
+    <li><a href="電腦視覺.html">電腦視覺</a></li>
+    <li><a href="深度學習.html">深度學習</a></li>
+    <li><a href="神經網路.html">神經網路</a></li>
+  </ul>
+</div>
+
+</div>
+<footer><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E6%A9%9F%E5%99%A8%E5%AD%B8%E7%BF%92/%E5%8D%B7%E7%A9%8D%E7%A5%9E%E7%B6%93%E7%B6%B2%E8%B7%AF.md">編輯此頁</a></footer>
+</body>
+</html>

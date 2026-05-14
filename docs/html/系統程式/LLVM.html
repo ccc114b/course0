@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LLVM — 系統程式</title>
+<link rel="stylesheet" href="../main.css">
+</head>
+<body>
+<header>
+  <div class="back-link"><a href="main.html">← 回入口</a></div>
+  <h1>LLVM</h1>
+  <p>現代化編譯器框架</p>
+</header>
+<div class="container">
+<div class="section">
+<h2>什麼是 LLVM？</h2>
+<p>LLVM（Low Level Virtual Machine）是 Chris Lattner 開發的現代化編譯器框架，提供模組化的編譯器元件，讓開發者能輕鬆建立編譯器的前端（Frontend）、最佳化（Optimizer）和後端（Backend）。</p>
+</div>
+<div class="section">
+<h2>核心架構</h2>
+<h3>LLVM IR</h3>
+<p>靜態單一賦值（SSA）形式的低階語言，具有強型別、平臺無關、支援元資料等特點。</p>
+<h3>Pass 架構</h3>
+<p>最佳化以 Pass 為單位，分為分析 Pass（Analysis Pass）和轉換 Pass（Transform Pass）。</p>
+</div>
+<div class="section">
+<h2>主要元件</h2>
+<ul>
+<li><strong>Clang</strong>：C/C++/Objective-C 前端</li>
+<li><strong>LLVM Core</strong>：最佳化和後端</li>
+<li><strong>LLDB</strong>：除錯器</li>
+<li><strong>libc++</strong>：C++ 標準函式庫</li>
+<li><strong>compiler-rt</strong>：執行時函式庫</li>
+</ul>
+</div>
+<div class="section">
+<h2>本課程範例</h2>
+<ul>
+<li><a href="https://github.com/ccckmit/course0/tree/main/code/系統程式/irvm/ll0" target="_blank"><strong>ll0</strong></a>：LLVM 風格虛擬機與編譯器</li>
+<li><a href="https://github.com/ccckmit/course0/tree/main/code/系統程式/compiler/py/py1c" target="_blank"><strong>py1c</strong></a>：Python 編譯器（含 IR）</li>
+</ul>
+</div>
+<div class="section">
+<h2>相關連結</h2>
+<ul>
+<li><a href="index.html">回到系統程式 index</a></li>
+<li><a href="main.html">回到入口</a></li>
+<li><a href="https://github.com/ccckmit/course0/blob/main/wiki/系統程式/LLVM.md" target="_blank">原始 Wiki 文章</a></li>
+</ul>
+</div>
+</div>
+<footer><a href="main.html">系統程式</a> | <a href="../index.html">回首頁</a></footer>
+</body>
+</html>

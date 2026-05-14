@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>指令集架構</title>
+<link rel="stylesheet" href="../main.css">
+</head>
+<body>
+<header>
+  <div class="back-link"><a href="main.html">← 回入口</a></div>
+  <h1>指令集架構（ISA）</h1>
+</header>
+<div class="container">
+
+<div class="section">
+<h2>什麼是 ISA</h2>
+<p>指令集架構（Instruction Set Architecture）是 CPU 與軟體之間的介面定義，規定了指令集合、暫存器組織、記憶體模型和例外處理方式。ISA 是電腦系統中最關鍵的抽象層，決定了編譯器產生什麼樣的機器碼，以及作業系統如何與硬體互動。</p>
+</div>
+
+<div class="section">
+<h2>主要 ISA 比較</h2>
+<table>
+<tr><th>ISA</th><th>類型</th><th>指令數</th><th>長度</th><th>應用</th></tr>
+<tr><td>x86/x64</td><td>CISC</td><td>數百</td><td>變長</td><td>PC / 伺服器</td></tr>
+<tr><td>ARM</td><td>RISC</td><td>~100</td><td>固定 32 位元</td><td>行動裝置</td></tr>
+<tr><td>RISC-V</td><td>RISC</td><td>~40</td><td>固定 32/64 位元</td><td>嵌入式 / 學術</td></tr>
+<tr><td>MIPS</td><td>RISC</td><td>~100</td><td>固定 32 位元</td><td>網路 / 嵌入式</td></tr>
+</table>
+</div>
+
+<div class="section">
+<h2>CISC vs RISC</h2>
+<p>CISC（複雜指令集）提供豐富的指令，硬體複雜，如 x86 使用微碼實現。RISC（精簡指令集）指令簡單固定，硬體簡潔，適合低功耗和高頻率設計。現代 x86 處理器內部也使用 RISC 風格的微操作（μop）。</p>
+</div>
+
+<div class="section">
+<h2>指令格式</h2>
+<p>RISC 指令通常使用固定長度格式（如 RISC-V 為 32 位元），分為 R 型（暫存器）、I 型（立即數）、S 型（儲存）、B 型（分支）、U 型（上位立即數）和 J 型（跳躍）。</p>
+<pre class="code"># RISC-V R-type (ADD)
+#  31:25 | 24:20 | 19:15 | 14:12 | 11:7 | 6:0
+# funct7 |  rs2  |  rs1  | funct3 |  rd  | opcode
+# 0000000 | 00001 | 00010 |  000   | 00110| 0110011
+# ADD x6, x4, x5</pre>
+</div>
+
+<div class="section">
+<h2>相關連結</h2>
+<ul>
+  <li><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E8%A8%88%E7%AE%97%E6%A9%9F%E7%B5%90%E6%A7%8B/%E6%8C%87%E4%BB%A4%E9%9B%86%E6%9E%B6%E6%A7%8B.md">wiki: 指令集架構</a></li>
+</ul>
+</div>
+
+</div>
+</body>
+</html>

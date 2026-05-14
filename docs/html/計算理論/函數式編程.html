@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>函數式編程 — 計算理論</title>
+<link rel="stylesheet" href="../main.css">
+<style>
+  .back-link a { color: #fff; }
+  .section h2 { color: #9b59b6; }
+  footer a { color: #9b59b6; }
+  pre { background: #2d2d2d; color: #f8f8f2; padding: 16px; border-radius: 8px; overflow-x: auto; font-family: "Consolas", "Monaco", monospace; font-size: 0.9rem; margin: 12px 0; }
+</style>
+</head>
+<body>
+<header>
+  <div class="back-link"><a href="main.html">← 回入口</a></div>
+  <h1>函數式編程 (Functional Programming)</h1>
+  <p>以函數為主的程式設計範式</p>
+</header>
+<div class="container">
+  <div class="section">
+    <h2>什麼是函數式編程？</h2>
+    <p>函數式編程（Functional Programming，FP）是一種編程範式，其核心思想是將計算視為函數的求值過程，並避免改變共享狀態和可變資料。函數式編程強調不可變性、第一類函數、聲明式編程和高階函數。這種編程範式隨著多核處理器和分散式系統的普及而變得越來越重要。</p>
+    <p>函數式編程的理論基礎可以追溯到 1936 年丘奇發明的 Lambda 演算。1958 年約翰·麥卡錫創建了 Lisp 語言（第一個函數式語言），1978 年羅伯特·米爾納創建了 ML 語言（第一個靜態類型系統的函數式語言），1990 年 Haskell 語言誕生。2000 年代以來，主流語言開始引入函數式特性。</p>
+  </div>
+
+  <div class="section">
+    <h2>核心概念</h2>
+    <h3>一等公民 (First-Class Functions)</h3>
+    <p>函數是「一等公民」，可以作為參數傳遞、作為返回值、賦值給變數，以及存儲在資料結構中。這種特性使得高階函數成為可能，允許我們編寫更具抽象性的代碼。</p>
+    <h3>不可變性 (Immutability)</h3>
+    <p>資料一旦創建就不能被修改。與其在原資料上進行修改，我們創建新的資料結構來容納結果。不可變性消除了共享狀態引起的 bug，使並行編程更加安全。</p>
+    <h3>純函數 (Pure Functions)</h3>
+    <p>純函數的輸出只依賴於其輸入參數，不會產生副作用。相同的輸入總是產生相同的輸出，易於測試、調試和並行化。</p>
+  </div>
+
+  <div class="section">
+    <h2>高階函數模式</h2>
+    <p><strong>Map（映射）</strong>：對集合中的每個元素應用一個函數，產生一個新集合。</p>
+    <p><strong>Filter（過濾）</strong>：根據謂詞函數的結果篩選集合中的元素。</p>
+    <p><strong>Reduce（歸約）</strong>：將集合中的所有元素歸約為單一值（也稱為 fold）。</p>
+    <p><strong>Compose（組合）</strong>：將多個函數組合成一個新函數。f ∘ g 表示「先應用 g，然後應用 f」。</p>
+    <p><strong>Curry 化（Currying）</strong>：將多參數函數轉換為單參數函數鏈。</p>
+    <p><strong>範例</strong>：對 [1, 2, 3, 4, 5] 執行 Map（平方）→ [1, 4, 9, 16, 25]，Filter（偶數）→ [2, 4]，Reduce（求和）→ 15。</p>
+  </div>
+
+  <div class="section">
+    <h2>函數式資料結構與型態</h2>
+    <p>函數式語言通常使用不可變的持續資料結構（Persistent Data Structures），所有版本都可以被高效地共享。Option/Maybe 型態用於表示可能存在也可能不存在的值，避免空指標異常。Either 型態表示成功或失敗兩種可能的結果，用於優雅的錯誤處理。</p>
+  </div>
+
+  <div class="section">
+    <h2>著名函數式語言</h2>
+    <p><strong>Haskell</strong>：最純粹的函數式語言，惰性求值、純函數式設計、強大的類型系統。</p>
+    <p><strong>Lisp 方言</strong>：歷史最悠久的函數式語言，S-表達式語法，Clojure 是 JVM 上的現代實現。</p>
+    <p><strong>Scala</strong>：結合函數式和物件導向，運行在 JVM 上。</p>
+    <p><strong>F#</strong>：.NET 平台上的函數式語言，支援管道運算子。</p>
+    <p>現代主流語言如 JavaScript、Python、Rust 也越來越多地引入函數式特性。</p>
+  </div>
+
+  <div class="section">
+    <h2>本課程範例</h2>
+    <ul>
+      <li><a href="https://github.com/ccckmit/course0/blob/main/code/%E8%A8%88%E7%AE%97%E7%90%86%E8%AB%96/interpreter/lisp/lisp.py">interpreter/lisp/lisp.py</a> — Lisp 直譯器</li>
+      <li><a href="https://github.com/ccckmit/course0/blob/main/code/%E8%A8%88%E7%AE%97%E7%90%86%E8%AB%96/interpreter/js0i/js0i.js">interpreter/js0i/js0i.js</a> — JavaScript 直譯器</li>
+      <li><a href="https://github.com/ccckmit/course0/blob/main/code/%E8%A8%88%E7%AE%97%E7%90%86%E8%AB%96/lambda/01-full/lambdaCalculus.py">lambda/01-full/lambdaCalculus.py</a> — Lambda 演算實現</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>相關連結</h2>
+    <ul>
+      <li><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E8%A8%88%E7%AE%97%E7%90%86%E8%AB%96/%E5%87%BD%E6%95%B8%E5%BC%8F%E7%B7%A8%E7%A8%8B.md">Wiki: 函數式編程</a></li>
+      <li><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E8%A8%88%E7%AE%97%E7%90%86%E8%AB%96/Lambda%E6%BC%94%E7%AE%97.md">Wiki: Lambda 演算</a></li>
+      <li><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E8%A8%88%E7%AE%97%E7%90%86%E8%AB%96/%E5%9C%96%E9%9D%88%E6%A9%9F.md">Wiki: 圖靈機</a></li>
+      <li><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E8%A8%88%E7%AE%97%E7%90%86%E8%AB%96/%E5%BD%A2%E5%BC%8F%E6%96%87%E6%B3%95.md">Wiki: 形式文法</a></li>
+    </ul>
+  </div>
+
+  <footer>
+    <a href="main.html">← 回入口</a> ·
+    <a href="https://github.com/ccckmit/course0">GitHub</a>
+  </footer>
+</div>
+</body>
+</html>

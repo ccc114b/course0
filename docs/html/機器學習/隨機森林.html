@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>隨機森林 — 機器學習</title>
+<link rel="stylesheet" href="../main.css">
+</head>
+<body>
+<header>
+  <div class="back-link"><a href="main.html">← 回到機器學習</a></div>
+  <h1>隨機森林 (Random Forest)</h1>
+  <p>基於決策樹的集成學習方法，透過多棵樹的預測匯總提高準確性和穩定性</p>
+</header>
+<div class="container">
+
+<div class="section">
+  <h2>概述</h2>
+  <p>隨機森林由 Leo Breiman 於 2001 年提出，屬於 Bootstrap Aggregating（Bagging）的變體。它通過建構多棵決策樹並匯總它們的預測結果來提高模型的準確性和穩定性。核心思想是「三個臭皮匠，勝過諸葛亮」——通過組合多個弱分類器形成一個強分類器。隨機森林在傳統 Bagging 的基礎上加入了隨機特徵選擇，進一步減少了各棵樹之間的相關性。</p>
+</div>
+
+<div class="section">
+  <h2>原理與建構過程</h2>
+  <p><strong>Bootstrap Sampling</strong>：對每棵樹從訓練資料中進行有放回的隨機抽樣，每個子集約包含 63.2% 的原始樣本，未被選中的樣本稱為袋外樣本 (OOB)。 <strong>特徵隨機選擇</strong>：在每個節點分裂時，從隨機選擇的特徵子集中選擇最佳分裂，分類問題通常設為 sqrt(n_features)。 <strong>建構決策樹</strong>：每棵樹在隨機選擇的訓練子集上使用隨機選擇的特徵子集完整建構（不剪枝）。 <strong>預測匯總</strong>：分類問題使用多數投票，回歸問題使用平均值。</p>
+</div>
+
+<div class="section">
+  <h2>特徵重要性</h2>
+  <p>隨機森林的一個重要優勢是可以計算特徵重要性。基於不純度減少的重要性在每棵樹分裂時記錄特徵對不純度的降低量，匯總後正規化即得到重要性分數。基於排列的重要性通過隨機打亂特徵值來測量模型效能的下降。這對於了解哪些特徵對預測最重要以及進行特徵選擇非常有用。</p>
+</div>
+
+<div class="section">
+  <h2>調參數指南</h2>
+  <p><strong>n_estimators</strong>：樹的數量，越多越好但回報遞減，一般 100-500 足夠。 <strong>max_depth</strong>：最大深度，None 表示不限制（可能過擬合），一般 10-30 是合理的起始點。 <strong>max_features</strong>：每個分裂考慮的特徵數，'sqrt' 是分類的經典選擇。 <strong>min_samples_split/min_samples_leaf</strong>：增加這些值會使模型更保守，有助於減少過擬合。</p>
+</div>
+
+<div class="section">
+  <h2>優缺點</h2>
+  <p><strong>優點</strong>：準確率高、穩定性強、可處理高維資料、可處理缺失值、可並行訓練、內建特徵重要性。 <strong>缺點</strong>：訓練時間較長、預測時間較長、可解釋性較低、在噪音較大的資料上可能過擬合。隨機森林在 Kaggle 競賽中廣受歡迎，是許多資料科學專案的強力基線模型。</p>
+</div>
+
+<div class="section">
+  <h2>相關連結</h2>
+  <ul>
+    <li><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E6%A9%9F%E5%99%A8%E5%AD%B8%E7%BF%92/%E9%9A%A8%E6%A9%9F%E6%A3%AE%E6%9E%97.md">Wiki: 隨機森林</a></li>
+    <li><a href="分類演算法.html">分類演算法</a></li>
+    <li><a href="決策樹.html">決策樹</a></li>
+    <li><a href="監督式學習.html">監督式學習</a></li>
+  </ul>
+</div>
+
+</div>
+<footer><a href="main.html">機器學習</a> | <a href="../main.html">回首頁</a></footer>
+</body>
+</html>

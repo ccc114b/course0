@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>動態規劃 — 演算法</title>
+<link rel="stylesheet" href="../main.css">
+</head>
+<body>
+<header>
+  <div class="back-link"><a href="main.html">← 回入口</a></div>
+  <h1>動態規劃 (Dynamic Programming)</h1>
+  <p>將複雜問題分解為子問題的演算法策略</p>
+</header>
+<div class="container">
+<div class="section">
+<h2>基本概念與條件</h2>
+<p>動態規劃適用於具備以下兩個性質的問題：</p>
+<ul>
+<li><strong>最優子結構</strong>：問題的最優解包含子問題的最優解</li>
+<li><strong>重疊子問題</strong>：子問題會被多次重複計算</li>
+</ul>
+</div>
+<div class="section">
+<h2>經典問題：費波那契數列</h2>
+<p>暴力遞迴為 O(2ⁿ)，動態規劃可優化至 O(n)。</p>
+<div class="code">def fibonacci_dp(n):
+    if n <= 1:
+        return n
+    dp = [0] * (n + 1)
+    dp[1] = 1
+    for i in range(2, n + 1):
+        dp[i] = dp[i-1] + dp[i-2]
+    return dp[n]</div>
+</div>
+<div class="section">
+<h2>自頂向下 vs 自底向上</h2>
+<p><strong>自頂向下（記憶化）</strong>：遞迴 + 快取，只計算需要的子問題。</p>
+<p><strong>自底向上（表格法）</strong>：迭代填表，計算所有子問題，無遞迴開銷。</p>
+</div>
+<div class="section">
+<h2>其他經典 DP 問題</h2>
+<p><strong>0/1 背包問題</strong>：在容量限制下選擇物品最大化價值。</p>
+<p><strong>最長公共子序列 (LCS)</strong>：找出兩個序列中最長的共同子序列。</p>
+<p><strong>最長遞增子序列 (LIS)</strong>：找出序列中最長的遞增子序列。</p>
+<p><strong>矩陣鏈乘積</strong>：找出最優的矩陣相乘順序。</p>
+</div>
+<div class="section">
+<h2>本課程範例</h2>
+<ul>
+<li><a href="https://github.com/ccckmit/course0/tree/main/code/演算法/method/04a-遞迴法/01-basic/fibonacci.py" target="_blank"><strong>fibonacci.py</strong></a>：費波那契數列</li>
+<li><a href="https://github.com/ccckmit/course0/tree/main/code/演算法/method/04a-遞迴法/01-basic/hanoi.py" target="_blank"><strong>hanoi.py</strong></a>：漢諾塔</li>
+<li><a href="https://github.com/ccckmit/course0/tree/main/code/演算法/method/08-動態規劃法" target="_blank"><strong>動態規劃法</strong></a>：DP 相關程式碼</li>
+</ul>
+</div>
+<div class="section">
+<h2>相關連結</h2>
+<ul>
+<li><a href="main.html">回到演算法入口</a></li>
+<li><a href="index.html">回到演算法 index</a></li>
+<li><a href="https://github.com/ccckmit/course0/blob/main/wiki/演算法/動態規劃法.md" target="_blank">原始 Wiki 文章</a></li>
+<li><a href="貪婪演算法.html">貪婪演算法</a></li>
+<li><a href="時間複雜度.html">時間複雜度</a></li>
+</ul>
+</div>
+</div>
+<footer><a href="main.html">演算法</a> | <a href="../index.html">回首頁</a></footer>
+</body>
+</html>

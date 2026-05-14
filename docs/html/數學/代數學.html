@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>代數學 — 數學 — 陳鍾誠的課程教材</title>
+<link rel="stylesheet" href="../main.css">
+</head>
+<body>
+<header>
+  <div class="back-link"><a href="main.html">← 回到數學入口</a></div>
+  <h1>代數學</h1>
+  <p>群、環、體等抽象代數結構</p>
+</header>
+<div class="container">
+
+<div class="section">
+<h2>抽象代數概述</h2>
+<p>代數學是數學的重要分支，主要研究群、環、體等代數結構。這些抽象結構是現代密碼學、編碼理論與電腦科學的數學基礎。</p>
+<h3>為什麼要抽象？</h3>
+<p><strong>統一化與簡化</strong>：當我們證明某個定理適用於「群」這個概念時，自動就證明了這個定理適用於所有符合「群」規則的數學系統。這就像發現了「所有鳥類都會飛」這個規則後，當你看到麻雀、老鷹，你就知道它們可以飛。</p>
+<p><strong>擴展應用</strong>：透過抽象化，可以將原本適用於數字的理論應用到完全不同的領域，例如對稱性研究（分子結構、晶體結構、物理粒子）。</p>
+</div>
+
+<div class="section">
+<h2>群 (Group)</h2>
+<p>群是抽象代數中最基本的結構。一個非空集合 G 必須配備一個二元運算 *，同時滿足：封閉性、結合律、單位元素、反元素。若還滿足交換律，則稱為阿貝爾群。</p>
+<p>群的例子包括：整數加法群 (ℤ, +)、非零實數乘法群、n 階可逆矩陣群 GL(n,ℝ)、模 n 的簡約餘數類。</p>
+<p><strong>子群與陪集</strong>：子群 H ⊆ G 是在 G 的運算下也構成群的子集。拉格朗日定理指出，有限群 G 的子群 H 的階整除 G 的階。</p>
+<p><strong>群同態與同構</strong>：群同態 φ: G → H 滿足 φ(ab) = φ(a)φ(b)。若 φ 是雙射，則稱為同構，表示兩個群在代數結構上完全相同。</p>
+</div>
+
+<div class="section">
+<h2>環 (Ring)</h2>
+<p>環是配備兩種二元運算（加法和乘法）的代數結構。關鍵性質：(R, +) 是阿貝爾群，乘法滿足封閉性和結合律，乘法對加法滿足分配律。</p>
+<p>常見例子包括：整數環 ℤ、多項式環 R[x]、矩陣環 Mₙ(R)、模 n 的剩餘類環 ℤₙ。</p>
+<p><strong>理想與商環</strong>：理想 I ⊆ R 是滿足 (I,+) 是子群且對任意 r∈R, i∈I 有 ri∈I 的子集。商環 R/I 是模掉理想 I 的商結構。</p>
+</div>
+
+<div class="section">
+<h2>體 (Field) 與有限體</h2>
+<p>體是比環更強的代數結構：(F, +) 是阿貝爾群，(F\{0}, ·) 是阿貝爾群，且乘法對加法滿足分配律。常見的體包括有理數 ℚ、實數 ℝ、複數 ℂ。</p>
+<p><strong>有限體</strong>（伽羅瓦體）是只包含有限個元素的體。元素個數只能是質數的冪次方 pⁿ。給定 pⁿ，存在唯一的有限體記為 GF(pⁿ) 或 𝔽_{pⁿ}。有限體在密碼學（如 AES）和編碼理論中至關重要。</p>
+</div>
+
+<div class="section">
+<h2>本課程範例</h2>
+<p>相關程式碼在 <a href="https://github.com/ccckmit/course0/tree/main/code/數學/02-代數/_ccc" target="_blank">code/數學/02-代數/_ccc</a>：</p>
+<ul>
+<li><a href="https://github.com/ccckmit/course0/blob/main/code/數學/02-代數/_ccc/group.py" target="_blank">group.py</a> — 群的實現</li>
+<li><a href="https://github.com/ccckmit/course0/blob/main/code/數學/02-代數/_ccc/group_axioms.py" target="_blank">group_axioms.py</a> — 群公理的檢驗</li>
+</ul>
+</div>
+
+<div class="section">
+<h2>相關連結</h2>
+<ul>
+<li><a href="https://github.com/ccckmit/course0/blob/main/wiki/數學/代數學.md" target="_blank">Wiki: 代數學</a></li>
+<li><a href="數論.html">數論</a> — 數論與代數的緊密關聯</li>
+<li><a href="密碼學.html">密碼學</a> — 代數在密碼學中的應用</li>
+<li><a href="main.html">回到數學入口</a></li>
+</ul>
+</div>
+
+</div>
+<footer>
+<a href="https://github.com/ccckmit/course0">回到課程首頁</a>
+</footer>
+</body>
+</html>

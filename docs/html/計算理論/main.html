@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>計算理論 — 陳鍾誠的課程教材</title>
+<link rel="stylesheet" href="../main.css">
+<style>
+  .hero { background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%); color: #fff; padding: 60px 20px; text-align: center; border-radius: 12px; margin-bottom: 24px; }
+  .hero h1 { font-size: 2.2rem; margin-bottom: 8px; }
+  .hero p { font-size: 1.1rem; opacity: 0.9; }
+  .topic-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; margin-top: 16px; }
+  .topic-card { background: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border: 1px solid #eee; transition: transform 0.2s, box-shadow 0.2s; }
+  .topic-card:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,0,0,0.1); }
+  .topic-card h3 { font-size: 1.1rem; margin-bottom: 8px; }
+  .topic-card h3 a { color: #9b59b6; text-decoration: none; }
+  .topic-card h3 a:hover { text-decoration: underline; }
+  .topic-card p { font-size: 0.85rem; color: #666; line-height: 1.5; }
+  .section h2 { color: #9b59b6; }
+  footer a { color: #9b59b6; }
+  .back-link a { color: #fff; }
+</style>
+</head>
+<body>
+<header>
+  <div class="back-link"><a href="../index.html">← 回首頁</a></div>
+  <h1>計算理論</h1>
+  <p>計算的本質、能力與極限</p>
+</header>
+<div class="container">
+  <div class="hero">
+    <h1>📖 計算理論</h1>
+    <p>探討什麼可以被計算、計算需要多少資源、以及哪些問題是無法解決的</p>
+  </div>
+
+  <div class="section">
+    <h2>核心概念</h2>
+    <div class="topic-grid">
+      <div class="topic-card">
+        <h3><a href="計算理論.html">計算理論</a></h3>
+        <p>計算理論是電腦科學的理論基礎，涵蓋可計算性理論與複雜度理論，探討計算模型層次、停機問題、P vs NP 等核心議題。</p>
+      </div>
+      <div class="topic-card">
+        <h3><a href="圖靈機.html">圖靈機</a></h3>
+        <p>艾倫·圖靈於 1936 年提出的抽象計算模型，由無限磁帶、讀寫頭和有限狀態控制器組成，定義了可計算性的數學意義。</p>
+      </div>
+      <div class="topic-card">
+        <h3><a href="有限狀態機.html">有限狀態機</a></h3>
+        <p>最基本的計算模型，在有限數量的狀態間轉換，用於識別正則語言，廣泛應用於編譯器詞法分析、協定設計等領域。</p>
+      </div>
+      <div class="topic-card">
+        <h3><a href="形式文法.html">形式文法</a></h3>
+        <p>描述語言語法的數學工具，喬姆斯基將文法分為四個層次（Chomsky 階層），每個層次對應不同的計算能力。</p>
+      </div>
+      <div class="topic-card">
+        <h3><a href="Lambda演算.html">Lambda 演算</a></h3>
+        <p>阿隆佐·丘奇發明的計算模型，從函數角度描述計算，是函數式編程的理論基礎，與圖靈機計算等價。</p>
+      </div>
+      <div class="topic-card">
+        <h3><a href="自動機理論.html">自動機理論</a></h3>
+        <p>研究抽象計算機器的數學模型，從有限狀態機到圖靈機構成層次結構，與形式語言理論密切相關。</p>
+      </div>
+      <div class="topic-card">
+        <h3><a href="NP完全性.html">NP 完全性</a></h3>
+        <p>探討哪些問題本質上難以快速解決。包含 P 類、NP 類、NP-Complete 與 P vs NP 千年難題。</p>
+      </div>
+      <div class="topic-card">
+        <h3><a href="資訊理論.html">資訊理論</a></h3>
+        <p>克勞德·夏農創立的數學學科，研究資訊的量化、儲存與傳輸，核心概念包括熵、交叉熵、KL 散度等。</p>
+      </div>
+      <div class="topic-card">
+        <h3><a href="函數式編程.html">函數式編程</a></h3>
+        <p>以函數為主的程式設計範式，強調不可變性、第一類函數、高階函數，理論基礎源自 Lambda 演算。</p>
+      </div>
+      <div class="topic-card">
+        <h3><a href="Noam_Chomsky.html">Noam Chomsky</a></h3>
+        <p>二十世紀最重要的思想家之一，語言學家、認知科學家，提出轉換生成語法和 Chomsky 階層。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>計算模型層次</h2>
+    <p>計算理論建立了不同層次的計算模型，從最強大的圖靈機到最簡單的正則語言，構成清晰的階層結構：</p>
+    <div class="code">
+      <pre>圖靈機 (Turing Machine) —— 最強大的計算模型
+    ↓
+λ 演算 (Lambda Calculus) —— 函數式計算的基礎
+    ↓
+上下文無關文法 (Context-Free Grammar) —— 程式語言語法理論
+    ↓
+正規語言 (Regular Language) —— 有限狀態機，詞法分析基礎</pre>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>相關資源</h2>
+    <ul>
+      <li><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E8%A8%88%E7%AE%97%E7%90%86%E8%AB%96/index.md">Wiki 首頁</a></li>
+      <li><a href="https://github.com/ccckmit/course0/blob/main/code/%E8%A8%88%E7%AE%97%E7%90%86%E8%AB%96/">程式碼範例</a></li>
+      <li><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E8%A8%88%E7%AE%97%E7%90%86%E8%AB%96/log.md">更新日誌</a></li>
+    </ul>
+  </div>
+
+  <footer>
+    <a href="index.html">← 回到上頁</a> ·
+    <a href="https://github.com/ccckmit/course0">GitHub</a>
+  </footer>
+</div>
+</body>
+</html>

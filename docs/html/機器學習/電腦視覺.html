@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>電腦視覺 — 機器學習</title>
+<link rel="stylesheet" href="../main.css">
+</head>
+<body>
+<header>
+  <div class="back-link"><a href="main.html">← 回到機器學習</a></div>
+  <h1>電腦視覺 (Computer Vision)</h1>
+  <p>使計算機能夠「看見」和理解視覺世界的技術</p>
+</header>
+<div class="container">
+
+<div class="section">
+  <h2>概述</h2>
+  <p>電腦視覺是人工智慧領域中使計算機能夠「看見」和理解視覺世界的分支。從圖像分類、物體偵測到語義分割，電腦視覺技術已廣泛應用於自動駕駛、醫學影像分析、人臉識別、視頻監控等領域。從早期的手工特徵（SIFT、HOG）到現代的深度卷積神經網路（CNN），電腦視覺經歷了革命性的變革。</p>
+</div>
+
+<div class="section">
+  <h2>卷積神經網路 (CNN)</h2>
+  <p>CNN 的核心構件包括卷積層（Conv2d）、批歸一化（BatchNorm）、激活函數（ReLU）和池化層。深度可分離卷積 (Depthwise Separable Conv) 將標準卷積分解為深度卷積和逐點卷積，大幅減少計算量。殘差塊 (Residual Block) 透過捷徑連接 (Shortcut Connection) 解決深層網路的梯度消失問題。Squeeze-and-Excitation 模塊通過通道注意力機制提升特徵表達能力。</p>
+</div>
+
+<div class="section">
+  <h2>經典架構與物體偵測</h2>
+  <p><strong>ResNet</strong>：使用殘差塊構建深層網路，有 ResNet-18/34/50/101/152 等變體。 <strong>EfficientNet</strong>：通過神經架構搜索同時優化網路深度、寬度和解析度。物體偵測中，錨框 (Anchor) 用於生成候選區域，非極大值抑制 (NMS) 用於去除冗餘檢測框。兩階段檢測器（如 Faster R-CNN）先提議區域再分類，單階段檢測器（如 YOLO）直接預測邊界框和類別。</p>
+</div>
+
+<div class="section">
+  <h2>語義分割</h2>
+  <p><strong>U-Net</strong>：編碼器-解碼器結構，透過跳躍連接 (Skip Connection) 保留空間細節，特別適合醫學影像分割。 <strong>DeepLabV3+</strong>：使用空洞卷積 (Atrous Convolution) 擴大感受野，搭配空洞空間金字塔池化 (ASPP) 捕捉多尺度上下文信息。語義分割為每個像素分配類別標籤，實例分割則進一步區分同一類別的不同個體。</p>
+</div>
+
+<div class="section">
+  <h2>相關連結</h2>
+  <ul>
+    <li><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E6%A9%9F%E5%99%A8%E5%AD%B8%E7%BF%92/%E9%9B%BB%E8%85%A6%E8%A6%96%E8%A6%BA.md">Wiki: 電腦視覺</a></li>
+    <li><a href="卷積神經網路.html">卷積神經網路</a></li>
+    <li><a href="深度學習.html">深度學習</a></li>
+    <li><a href="正則化.html">正則化</a></li>
+  </ul>
+</div>
+
+</div>
+<footer><a href="main.html">機器學習</a> | <a href="../main.html">回首頁</a></footer>
+</body>
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>網路流 — 演算法</title>
+<link rel="stylesheet" href="../main.css">
+</head>
+<body>
+<header>
+  <div class="back-link"><a href="main.html">← 回入口</a></div>
+  <h1>網路流 (Network Flow)</h1>
+  <p>圖論中的流量優化問題</p>
+</header>
+<div class="container">
+<div class="section">
+<h2>基礎概念</h2>
+<p>網路流問題研究如何在有容量限制的網路中，從源點到匯點傳輸最大流量。典型應用包括交通網路、資料傳輸、通訊網路、航空公司調度。</p>
+<ul>
+<li><strong>源點 (Source)</strong>：流量起點</li>
+<li><strong>匯點 (Sink)</strong>：流量終點</li>
+<li><strong>容量 (Capacity)</strong>：邊能承載的最大流量</li>
+<li><strong>剩餘網路</strong>：還有剩餘容量的邊形成的網路</li>
+</ul>
+</div>
+<div class="section">
+<h2>Ford-Fulkerson 演算法</h2>
+<p>核心思想：在剩餘網路中反覆尋找增廣路徑，增加流量，直到沒有增廣路徑為止。時間複雜度 O(E × maxflow)。</p>
+<div class="code">def ford_fulkerson(graph, source, sink):
+    flow = 0
+    while path := bfs_find_path(graph, source, sink):
+        bottleneck = min(cap for (_, _, cap) in path)
+        for u, v, _ in path:
+            graph[u][v] -= bottleneck
+            graph[v][u] += bottleneck
+        flow += bottleneck
+    return flow</div>
+</div>
+<div class="section">
+<h2>最大流最小割定理</h2>
+<p>在任何網路中，從源點到匯點的最大流量值等於最小割的容量。這個優美的對偶性是網路流理論的核心，也是許多演算法正確性的基礎。</p>
+</div>
+<div class="section">
+<h2>應用場景</h2>
+<p>二分圖最大匹配、運輸問題、工作分配、影像分割（Graph Cut）、通訊網路可靠度分析。</p>
+</div>
+<div class="section">
+<h2>本課程範例</h2>
+<ul>
+<li><a href="https://github.com/ccckmit/course0/tree/main/code/演算法/method/15a-委託法/ipDelegate.py" target="_blank"><strong>ipDelegate.py</strong></a>：委託法（網路流相關）</li>
+<li><a href="https://github.com/ccckmit/course0/tree/main/code/演算法/method/15c-化約法" target="_blank"><strong>化約法</strong></a>：問題化約範例</li>
+</ul>
+</div>
+<div class="section">
+<h2>相關連結</h2>
+<ul>
+<li><a href="main.html">回到演算法入口</a></li>
+<li><a href="index.html">回到演算法 index</a></li>
+<li><a href="https://github.com/ccckmit/course0/blob/main/wiki/演算法/網路流.md" target="_blank">原始 Wiki 文章</a></li>
+<li><a href="圖論.html">圖論</a></li>
+<li><a href="最短路徑.html">最短路徑</a></li>
+<li><a href="線性規劃.html">線性規劃</a></li>
+</ul>
+</div>
+</div>
+<footer><a href="main.html">演算法</a> | <a href="../index.html">回首頁</a></footer>
+</body>
+</html>

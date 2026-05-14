@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>超純量與亂序執行</title>
+<link rel="stylesheet" href="../main.css">
+</head>
+<body>
+<header>
+  <div class="back-link"><a href="main.html">← 回入口</a></div>
+  <h1>超純量與亂序執行</h1>
+</header>
+<div class="container">
+
+<div class="section">
+<h2>概述</h2>
+<p>超純量（Superscalar）和亂序執行（Out-of-Order Execution）是現代高效能處理器實現高指令吞吐量的兩大核心技術。超純量架構允許 CPU 在每個時鐘週期發射多條指令到多個執行單元，實現指令級並行（ILP）。亂序執行放寬了指令必須按序執行的限制，動態調整指令順序最大化執行效率。</p>
+</div>
+
+<div class="section">
+<h2>超純量架構</h2>
+<p>典型的 4 路超純量處理器每個時脈週期最多發射 4 條指令到不同的執行單元（ALU、Load/Store、FPU、Branch）。執行單元延遲各異：整數 ALU 1 周期、整數乘法 3 周期、FP 加法 4 周期、FP 除法 15 周期。</p>
+<pre class="code">// 執行單元延遲範例
+// Integer ALU:      1 cyc, 每周期 1 條
+// Integer Multiply: 3 cyc, 每周期 1 條
+// FP Add:           4 cyc, 每周期 1 條
+// FP Multiply:      5 cyc, 每 2 周期 1 條
+// FP Divide:       15 cyc, 每 15 周期 1 條
+// Branch Unit:      1 cyc, 每 2 周期 1 條</pre>
+</div>
+
+<div class="section">
+<h2>亂序執行</h2>
+<p>亂序執行的關鍵硬體元件：</p>
+<ul>
+  <li><strong>重命名暫存器（RAT）</strong> — 消除虛假資料依賴（WAR、WAW）</li>
+  <li><strong>保留站（Reservation Station）</strong> — 等待運算元就緒的指令緩衝區</li>
+  <li><strong>重排緩衝區（ROB）</strong> — 按程式順序提交結果，確保精確例外</li>
+  <li><strong>發射佇列</strong> — 管理指令到執行單元的分發</li>
+</ul>
+</div>
+
+<div class="section">
+<h2>Tomasulo 演算法</h2>
+<p>Robert Tomasulo 在 IBM 360/91 上提出的動態排程演算法，透過暫存器重命名和保留站實現亂序執行。現代處理器都使用其變體，支援：</p>
+<ul>
+  <li>資料導向的指令發射（Dataflow Execution）</li>
+  <li>避免 WAW/WAR 冒險</li>
+  <li>硬體迴圈展開</li>
+</ul>
+</div>
+
+<div class="section">
+<h2>相關連結</h2>
+<ul>
+  <li><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E8%A8%88%E7%AE%97%E6%A9%9F%E7%B5%90%E6%A7%8B/%E8%B6%85%E7%B4%94%E9%87%8F%E8%88%87%E4%BA%82%E5%BA%8F%E5%9F%B7%E8%A1%8C.md">wiki: 超純量與亂序執行</a></li>
+</ul>
+</div>
+
+</div>
+</body>
+</html>

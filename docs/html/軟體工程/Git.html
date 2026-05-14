@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Git — 軟體工程</title>
+<link rel="stylesheet" href="../main.css">
+</head>
+<body>
+<header>
+  <div class="back-link"><a href="main.html">← 回入口</a></div>
+  <h1>Git</h1>
+  <p>分散式版本控制系統</p>
+</header>
+<div class="container">
+
+<div class="section">
+  <h2>核心概念</h2>
+  <ul>
+    <li><strong>Repository（倉庫）</strong>：存放專案和所有歷史的地方，分為本地和遠端倉庫</li>
+    <li><strong>Commit（提交）</strong>：對專案某一時刻的「快照」，每個 commit 有唯一的 SHA-1 雜湊值</li>
+    <li><strong>Branch（分支）</strong>：獨立開發的程式碼線，預設分支通常是 main 或 master</li>
+    <li><strong>Merge（合併）</strong>：將一個分支的變更合併到另一個分支</li>
+    <li><strong>HEAD</strong>：指向當前 checkout 的 commit</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h2>Branch 與 Merge</h2>
+  <p>Git 的分支是輕量級指標，指向特定 commit。常見操作：</p>
+  <ul>
+    <li><code>git branch feature-x</code> — 創建分支</li>
+    <li><code>git checkout feature-x</code> — 切換分支</li>
+    <li><code>git merge feature-x</code> — 合併分支到當前分支</li>
+    <li><code>git rebase main</code> — 將當前分支基底移到 main 的最新 commit</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h2>協作工作流程</h2>
+  <ul>
+    <li><strong>Fork & Pull Request</strong>：開源協作模式，fork → 修改 → PR → 審查 → 合併</li>
+    <li><strong>Git Flow</strong>：適合釋出版本較固定的專案，包含 develop、release、hotfix 分支</li>
+    <li><strong>GitHub Flow</strong>：任何修改都從 main 開分支，PR 審查後合併回 main</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h2>常用指令</h2>
+  <div class="code">
+# 配置
+git config --global user.name "Your Name"
+git config --global user.email "email@example.com"
+
+# 基本操作
+git init
+git add .
+git commit -m "message"
+git push origin main
+git pull origin main
+
+# 查看
+git status
+git log --oneline --graph
+git diff
+  </div>
+</div>
+
+<div class="section">
+  <h2>本課程範例</h2>
+  <ul>
+    <li><a href="https://github.com/ccckmit/course0/blob/main/code/%E8%BD%AF%E9%AB%94%E5%B7%A5%E7%A8%8B/git/git0.py">Git 操作範例</a></li>
+  </ul>
+</div>
+
+<div class="section">
+  <h2>相關連結</h2>
+  <ul>
+    <li><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E8%BD%AF%E9%AB%94%E5%B7%A5%E7%A8%8B/Git.md">Wiki: Git</a></li>
+    <li><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E8%BD%AF%E9%AB%94%E5%B7%A5%E7%A8%8B/%E7%89%88%E6%9C%AC%E6%8E%A7%E5%88%B6.md">Wiki: 版本控制</a></li>
+  </ul>
+</div>
+
+</div>
+</body>
+</html>

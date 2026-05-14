@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Node.js — 網頁設計</title>
+<link rel="stylesheet" href="../main.css">
+</head>
+<body>
+<header>
+  <div class="back-link"><a href="./index.html">← 回網頁設計</a></div>
+  <h1>Node.js</h1>
+  <p>JavaScript 伺服器執行環境</p>
+</header>
+<div class="container">
+  <div class="section">
+    <h2>Node.js 核心特性</h2>
+    <p>Node.js 基於 Chrome V8 引擎，採用事件驅動、非阻塞 I/O 模型，由 Ryan Dahl 於 2009 年發布。讓 JavaScript 成為全端語言。</p>
+    <ul>
+      <li><strong>事件驅動</strong> — 基於 EventEmitter 模式</li>
+      <li><strong>非阻塞 I/O</strong> — 高效處理並發請求</li>
+      <li><strong>單執行緒事件循環</strong> — 簡化並發模型</li>
+      <li><strong>npm</strong> — 全球最大的套件生態系統</li>
+    </ul>
+  </div>
+  <div class="section">
+    <h2>模組系統</h2>
+    <p>Node.js 使用 CommonJS 模組規範，也支援 ES Modules。</p>
+    <div class="code">// CommonJS 匯出 (myModule.js)<br>module.exports = { greet: (name) => `Hello, ${name}!` };<br><br>// 匯入<br>const myModule = require('./myModule');</div>
+  </div>
+  <div class="section">
+    <h2>HTTP 伺服器</h2>
+    <div class="code">const http = require('http');<br><br>const server = http.createServer((req, res) => {<br>    res.statusCode = 200;<br>    res.setHeader('Content-Type', 'text/plain');<br>    res.end('Hello World\n');<br>});<br><br>server.listen(3000, () => {<br>    console.log('Server running at http://localhost:3000/');<br>});</div>
+  </div>
+  <div class="section">
+    <h2>檔案系統與串流</h2>
+    <div class="code">const fs = require('fs');<br>const fsPromises = require('fs').promises;<br><br>async function readFile() {<br>    const data = await fsPromises.readFile('file.txt', 'utf8');<br>    console.log(data);<br>}<br><br>// 串流處理大型檔案<br>const readStream = fs.createReadStream('input.txt');<br>readStream.pipe(process.stdout);</div>
+  </div>
+  <div class="section">
+    <h2>熱門框架</h2>
+    <ul>
+      <li><strong>Express.js</strong> — 簡單靈活的 Web 框架</li>
+      <li><strong>NestJS</strong> — 漸進式框架，支援 TypeScript</li>
+      <li><strong>Fastify</strong> — 高效能框架</li>
+      <li><strong>Socket.io</strong> — WebSocket 即時通訊</li>
+    </ul>
+  </div>
+  <div class="section">
+    <h2>本課程範例</h2>
+    <ul>
+      <li><a href="https://github.com/ccckmit/course0/blob/main/code/%E7%B6%B2%E7%AB%99%E8%A8%AD%E8%A8%88/04-nodejs">04-nodejs/</a> — Node.js 範例</li>
+      <li><a href="https://github.com/ccckmit/course0/blob/main/code/%E7%B6%B2%E7%AB%99%E8%A8%AD%E8%A8%88/07-websocket">07-websocket/</a> — WebSocket 聊天範例</li>
+    </ul>
+  </div>
+  <div class="section">
+    <h2>相關連結</h2>
+    <ul>
+      <li><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E7%B6%B2%E9%A0%81%E8%A8%AD%E8%A8%88/Node.js.md">Wiki: Node.js</a></li>
+      <li><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E7%B6%B2%E9%A0%81%E8%A8%AD%E8%A8%88/%E5%BE%8C%E7%AB%AF%E9%96%8B%E7%99%BC.md">Wiki: 後端開發</a></li>
+      <li><a href="JavaScript.html">JavaScript — 基礎語言</a></li>
+      <li><a href="WebSocket.html">WebSocket — 即時通訊</a></li>
+    </ul>
+  </div>
+  <footer><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E7%B6%B2%E9%A0%81%E8%A8%AD%E8%A8%88/Node.js.md">Node.js.md</a></footer>
+</div>
+</body>
+</html>

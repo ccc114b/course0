@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SQL — 網頁設計</title>
+<link rel="stylesheet" href="../main.css">
+</head>
+<body>
+<header>
+  <div class="back-link"><a href="./index.html">← 回網頁設計</a></div>
+  <h1>SQL</h1>
+  <p>結構化查詢語言</p>
+</header>
+<div class="container">
+  <div class="section">
+    <h2>SQL 概述</h2>
+    <p>SQL (Structured Query Language) 是關聯式資料庫的標準查詢語言，用於資料的定義、查詢、更新與管理。主要分為 DDL (資料定義)、DML (資料操作)、DQL (資料查詢) 和 DCL (資料控制)。</p>
+  </div>
+  <div class="section">
+    <h2>資料定義 (DDL)</h2>
+    <div class="code">CREATE TABLE users (<br>    id INTEGER PRIMARY KEY AUTOINCREMENT,<br>    username TEXT NOT NULL UNIQUE,<br>    email TEXT NOT NULL UNIQUE,<br>    created_at DATETIME DEFAULT CURRENT_TIMESTAMP<br>);<br><br>CREATE INDEX idx_users_email ON users(email);</div>
+  </div>
+  <div class="section">
+    <h2>資料查詢 (DQL)</h2>
+    <div class="code">-- 基本查詢<br>SELECT * FROM users WHERE age >= 18;<br><br>-- JOIN 查詢<br>SELECT u.name, o.total<br>FROM users u<br>INNER JOIN orders o ON u.id = o.user_id;<br><br>-- 聚合<br>SELECT status, COUNT(*) as count<br>FROM orders GROUP BY status HAVING COUNT(*) > 10;<br><br>-- 排序與分頁<br>SELECT * FROM users ORDER BY created_at DESC LIMIT 10 OFFSET 20;</div>
+  </div>
+  <div class="section">
+    <h2>資料操作 (DML)</h2>
+    <div class="code">INSERT INTO users (name, email) VALUES ('王小明', 'wang@example.com');<br><br>UPDATE users SET age = 26 WHERE name = '王小明';<br><br>DELETE FROM users WHERE age < 18;</div>
+  </div>
+  <div class="section">
+    <h2>交易 (Transaction)</h2>
+    <p>交易確保多個操作要麼全部成功，要麼全部失敗 (ACID)。</p>
+    <div class="code">START TRANSACTION;<br>INSERT INTO users (name, email) VALUES ('新使用者', 'new@example.com');<br>INSERT INTO orders (user_id, total) VALUES (LAST_INSERT_ID(), 100.00);<br>COMMIT;<br>-- ROLLBACK;  -- 取消交易</div>
+  </div>
+  <div class="section">
+    <h2>本課程範例</h2>
+    <ul>
+      <li><a href="https://github.com/ccckmit/course0/blob/main/code/%E7%B6%B2%E7%AB%99%E8%A8%AD%E8%A8%88/11-fastapi">11-fastapi/</a> — FastAPI + SQLite 範例</li>
+      <li><a href="https://github.com/ccckmit/course0/blob/main/code/%E7%B6%B2%E7%AB%99%E8%A8%AD%E8%A8%88/11-fastapi/teapos/app/database.py">teapos database.py</a> — 資料庫操作範例</li>
+    </ul>
+  </div>
+  <div class="section">
+    <h2>相關連結</h2>
+    <ul>
+      <li><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E7%B6%B2%E9%A0%81%E8%A8%AD%E8%A8%88/SQLite.md">Wiki: SQLite</a></li>
+      <li><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E7%B6%B2%E9%A0%81%E8%A8%AD%E8%A8%88/%E8%B3%87%E6%96%99%E5%BA%AB.md">Wiki: 資料庫</a></li>
+      <li><a href="資料庫.html">資料庫概論</a></li>
+      <li><a href="FastAPI.html">FastAPI — 後端框架</a></li>
+    </ul>
+  </div>
+  <footer><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E7%B6%B2%E9%A0%81%E8%A8%AD%E8%A8%88/SQLite.md">SQLite.md</a></footer>
+</div>
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>領域驅動設計 — 軟體工程</title>
+<link rel="stylesheet" href="../main.css">
+</head>
+<body>
+<header>
+  <div class="back-link"><a href="main.html">← 回入口</a></div>
+  <h1>領域驅動設計</h1>
+  <p>DDD — 複雜系統的設計方法</p>
+</header>
+<div class="container">
+
+<div class="section">
+  <h2>核心概念</h2>
+  <ul>
+    <li><strong>實體（Entity）</strong>：具有唯一標識的對象（如：訂單有 order_id）</li>
+    <li><strong>值對象（Value Object）</strong>：由其屬性定義的不可變對象（如：Money、地址）</li>
+    <li><strong>聚合（Aggregate）</strong>：一組相關對象的集合，透過聚合根訪問</li>
+    <li><strong>倉儲（Repository）</strong>：封裝資料存取邏輯</li>
+    <li><strong>領域服務（Domain Service）</strong>：不適合放在 Entity 或 VO 中的業務邏輯</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h2>限界上下文</h2>
+  <p>限界上下文（Bounded Context）是 DDD 的核心戰術模式，定義了領域模型的邊界。每個限界上下文內有統一的領域語言（Ubiquitous Language），不同上下文之間透過上下文映射（Context Map）進行整合。</p>
+</div>
+
+<div class="section">
+  <h2>通用語言</h2>
+  <p>通用語言（Ubiquitous Language）是團隊共享的領域術語，在程式碼、文件、討論中使用一致的詞彙。例如：在電商領域，「訂單」、「出貨單」、「發票」各有明確含義，團隊成員（工程師、產品經理、領域專家）使用相同的語言溝通。</p>
+</div>
+
+<div class="section">
+  <h2>戰術模式實作</h2>
+  <div class="code">
+class Order:
+    def __init__(self, order_id, customer):
+        self._order_id = order_id
+        self._customer = customer
+        self._items = []
+
+    def add_item(self, product, quantity):
+        self._items.append(OrderItem(product, quantity))
+
+    def total(self):
+        return sum(item.subtotal() for item in self._items)
+
+class Money:
+    def __init__(self, amount, currency='USD'):
+        self._amount = amount
+        self._currency = currency
+
+    def __add__(self, other):
+        return Money(self._amount + other._amount, self._currency)
+  </div>
+</div>
+
+<div class="section">
+  <h2>相關連結</h2>
+  <ul>
+    <li><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E8%BD%AF%E9%AB%94%E5%B7%A5%E7%A8%8B/%E9%A0%98%E5%9F%9F%E9%A9%85%E5%8B%95%E8%A8%AD%E8%A8%88.md">Wiki: 領域驅動設計</a></li>
+    <li><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E8%BD%AF%E9%AB%94%E5%B7%A5%E7%A8%8B/%E8%BB%9F%E9%AB%94%E6%9E%B6%E6%A7%8B.md">Wiki: 軟體架構</a></li>
+    <li><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E8%BD%AF%E9%AB%94%E5%B7%A5%E7%A8%8B/%E5%BE%AE%E6%9C%8D%E5%8B%99%E6%9E%B6%E6%A7%8B.md">Wiki: 微服務架構</a></li>
+  </ul>
+</div>
+
+</div>
+</body>
+</html>

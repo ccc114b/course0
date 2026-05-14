@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>數論 — 數學 — 陳鍾誠的課程教材</title>
+<link rel="stylesheet" href="../main.css">
+</head>
+<body>
+<header>
+  <div class="back-link"><a href="main.html">← 回到數學入口</a></div>
+  <h1>數論</h1>
+  <p>整數性質與密碼學基礎</p>
+</header>
+<div class="container">
+
+<div class="section">
+<h2>概述</h2>
+<p>數論是研究整數性質的數學分支，被稱為「數學的皇后」。在電腦科學中，數論扮演著核心角色，特別是在密碼學、編碼理論、演算法設計和資訊安全等領域。現代公鑰密碼系統（如 RSA、橢圓曲線密碼學）完全建立在數論的基礎之上。</p>
+</div>
+
+<div class="section">
+<h2>整數除法與同餘</h2>
+<p><strong>整除性</strong>：對於整數 a 和 b（b≠0），若存在整數 q 使得 a = bq，則稱 b 整除 a，記作 b | a。</p>
+<p><strong>除法算法</strong>：對於任意整數 a 和正整數 b，存在唯一的商 q 和餘數 r 使得 a = bq + r，0 ≤ r < b。</p>
+<p><strong>最大公因數 (GCD)</strong>：歐幾里得演算法基於 gcd(a,b) = gcd(b, a mod b)，時間複雜度 O(log min(a,b))。<strong>擴展歐幾里得演算法</strong>可計算模反元素，是 RSA 加密的數學基礎。</p>
+<p><strong>同餘關係</strong>：a ≡ b (mod m) 若 m | (a-b)。同餘關係滿足自反性、對稱性、傳遞性、加法律和乘法律。</p>
+</div>
+
+<div class="section">
+<h2>質數理論</h2>
+<p><strong>質數</strong>是大於 1 且只能被 1 和自身整除的自然數。<strong>算術基本定理</strong>：每個大於 1 的自然數都可以唯一分解為質數的乘積。</p>
+<p><strong>質數定理</strong>：π(x) ~ x / ln x，其中 π(x) 是小於 x 的質數數量。第 n 個質數約為 n ln n。</p>
+<p><strong>質數檢驗</strong>：埃拉託斯特尼篩法（找出範圍內的所有質數）、米勒-拉賓質數檢驗（機率性演算法）、AKS 質數檢驗（確定性多項式時間）。</p>
+</div>
+
+<div class="section">
+<h2>RSA 加密與數論的應用</h2>
+<p>RSA 公鑰密碼系統的安全性依賴於大質數分解的困難性。金鑰生成過程：隨機選擇兩個大質數 p, q，計算 n = p×q 和 φ(n) = (p-1)(q-1)，選擇 e 滿足 gcd(e, φ(n)) = 1，計算 d 使得 ed ≡ 1 mod φ(n)。</p>
+<p><strong>歐拉定理</strong>：若 gcd(m, n) = 1，則 m^{φ(n)} ≡ 1 (mod n)。這是 RSA 解密正確性的數學保證。</p>
+</div>
+
+<div class="section">
+<h2>本課程範例</h2>
+<p>相關程式碼在 <a href="https://github.com/ccckmit/course0/tree/main/code/數學/02-代數/_ccc" target="_blank">code/數學/02-代數/_ccc</a>：</p>
+<ul>
+<li><a href="https://github.com/ccckmit/course0/blob/main/code/數學/02-代數/_ccc/group.py" target="_blank">group.py</a></li>
+<li><a href="https://github.com/ccckmit/course0/blob/main/code/數學/02-代數/_ccc/group_axioms.py" target="_blank">group_axioms.py</a></li>
+</ul>
+</div>
+
+<div class="section">
+<h2>相關連結</h2>
+<ul>
+<li><a href="https://github.com/ccckmit/course0/blob/main/wiki/數學/數論.md" target="_blank">Wiki: 數論</a></li>
+<li><a href="密碼學.html">密碼學</a> — 數論的重要應用</li>
+<li><a href="代數學.html">代數學</a> — 代數結構與數論的關聯</li>
+<li><a href="main.html">回到數學入口</a></li>
+</ul>
+</div>
+
+</div>
+<footer>
+<a href="https://github.com/ccckmit/course0">回到課程首頁</a>
+</footer>
+</body>
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>演算法入口 — 陳鍾誠的課程教材</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans TC", sans-serif; background: #f5f7fa; color: #333; line-height: 1.6; }
+header { background: linear-gradient(135deg, #e67e22 0%, #d35400 100%); color: #fff; padding: 40px 20px; text-align: center; }
+header h1 { font-size: 2rem; margin-bottom: 8px; }
+header p { font-size: 1.1rem; opacity: 0.9; }
+.back-link { position: absolute; left: 20px; top: 20px; }
+.back-link a { color: #fff; text-decoration: underline; font-size: 0.9rem; }
+.container { max-width: 1100px; margin: 0 auto; padding: 20px; }
+.section { background: #fff; border-radius: 12px; padding: 20px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+.section h2 { font-size: 1.2rem; margin-bottom: 12px; color: #e67e22; border-bottom: 2px solid #eee; padding-bottom: 8px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
+.card { border: 1px solid #eee; border-radius: 8px; padding: 14px; transition: all 0.2s; }
+.card:hover { border-color: #e67e22; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+.card a { color: #333; text-decoration: none; font-weight: 600; display: block; }
+.card span { display: block; font-size: 0.8rem; color: #777; margin-top: 4px; }
+footer { text-align: center; padding: 20px; color: #999; font-size: 0.8rem; }
+footer a { color: #e67e22; }
+</style>
+</head>
+<body>
+<header>
+  <div class="back-link"><a href="../main.html">← 回首頁</a></div>
+  <h1>演算法</h1>
+  <p>解決問題的計算方法與效率分析</p>
+</header>
+<div class="container">
+<div class="section">
+<h2>📖 排序與搜尋</h2>
+<div class="grid">
+<div class="card"><a href="排序演算法.html">排序演算法<span>氣泡、合併、快速、堆積排序</span></a></div>
+<div class="card"><a href="搜尋法.html">搜尋法<span>線性搜尋、二分搜尋、A*</span></a></div>
+<div class="card"><a href="堆積.html">堆積<span>優先佇列與堆積排序</span></a></div>
+<div class="card"><a href="雜湊表.html">雜湊表<span>O(1) 查找與布隆過濾器</span></a></div>
+<div class="card"><a href="二元搜尋樹.html">二元搜尋樹<span>平衡樹與高效查找</span></a></div>
+</div>
+</div>
+
+<div class="section">
+<h2>🔗 圖論</h2>
+<div class="grid">
+<div class="card"><a href="圖論.html">圖論<span>BFS、DFS、圖的表示</span></a></div>
+<div class="card"><a href="最短路徑.html">最短路徑<span>Dijkstra、Bellman-Ford</span></a></div>
+<div class="card"><a href="最小生成樹.html">最小生成樹<span>Kruskal、Prim 演算法</span></a></div>
+<div class="card"><a href="網路流.html">網路流<span>最大流與最小割</span></a></div>
+</div>
+</div>
+
+<div class="section">
+<h2>🧠 動態規劃</h2>
+<div class="grid">
+<div class="card"><a href="動態規劃.html">動態規劃<span>最優子結構與重疊子問題</span></a></div>
+<div class="card"><a href="貪婪演算法.html">貪婪演算法<span>局部最優求全域最優</span></a></div>
+<div class="card"><a href="分割擊破法.html">分割擊破法<span>分而治之的經典策略</span></a></div>
+</div>
+</div>
+
+<div class="section">
+<h2>📊 資料結構</h2>
+<div class="grid">
+<div class="card"><a href="資料結構.html">資料結構<span>陣列、鏈結串列、堆疊、佇列</span></a></div>
+<div class="card"><a href="時間複雜度.html">時間複雜度<span>Big-O 分析與複雜度等級</span></a></div>
+</div>
+</div>
+
+<div class="section">
+<h2>🔬 演算法設計</h2>
+<div class="grid">
+<div class="card"><a href="字串演算法.html">字串演算法<span>字串比對與處理</span></a></div>
+<div class="card"><a href="線性規劃.html">線性規劃<span>資源調配與優化</span></a></div>
+<div class="card"><a href="計算幾何.html">計算幾何<span>凸包、最近點對</span></a></div>
+<div class="card"><a href="隨機演算法.html">隨機演算法<span>蒙地卡羅與隨機化</span></a></div>
+<div class="card"><a href="近似演算法.html">近似演算法<span>NP 難題的近似解</span></a></div>
+</div>
+</div>
+
+<div class="section">
+<h2>📚 主題索引</h2>
+<div class="grid">
+<div class="card"><a href="index.html">📚 完整主題列表<span>所有概念與程式碼</span></a></div>
+<div class="card"><a href="https://github.com/ccckmit/course0/blob/main/wiki/演算法/index.md" target="_blank">📄 Wiki 原文<span>Markdown 原始檔</span></a></div>
+<div class="card"><a href="https://github.com/ccckmit/course0/tree/main/code/演算法" target="_blank">💻 程式碼範例<span>GitHub 程式碼倉庫</span></a></div>
+</div>
+</div>
+</div>
+<footer>
+<a href="https://github.com/ccckmit/course0">回到課程首頁</a>
+</footer>
+</body>
+</html>

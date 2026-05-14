@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NP 完全性 — 計算理論</title>
+<link rel="stylesheet" href="../main.css">
+<style>
+  .back-link a { color: #fff; }
+  .section h2 { color: #9b59b6; }
+  footer a { color: #9b59b6; }
+  pre { background: #2d2d2d; color: #f8f8f2; padding: 16px; border-radius: 8px; overflow-x: auto; font-family: "Consolas", "Monaco", monospace; font-size: 0.9rem; margin: 12px 0; }
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; }
+  table th, table td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+  table th { background: #f5f5f5; }
+</style>
+</head>
+<body>
+<header>
+  <div class="back-link"><a href="main.html">← 回入口</a></div>
+  <h1>NP 完全性 (NP-Completeness)</h1>
+  <p>計算複雜度理論的核心</p>
+</header>
+<div class="container">
+  <div class="section">
+    <h2>什麼是 NP 完全性？</h2>
+    <p>NP 完全性理論是計算複雜度理論的核心，探討「哪些問題在本質上難以快速解決」。這個理論不僅具有深刻的數學意義，也對密碼學、優化演算法和實際問題的可行性分析有重要影響。計算複雜度理論將問題按照求解所需的資源（如時間、空間）進行分類：從常數時間到指數時間構成複雜度層次。</p>
+  </div>
+
+  <div class="section">
+    <h2>P 類與 NP 類問題</h2>
+    <p><strong>P 類（Polynomial Time）</strong>：所有可以在多項式時間內由確定性圖靈機解決的問題，被認為是「容易解決」的。典型例子包括線性搜尋、合併排序、最短路徑（Dijkstra 演算法）、最大公因數、連通性檢查等。</p>
+    <p><strong>NP 類（Non-deterministic Polynomial Time）</strong>：所有可以在多項式時間內由非確定性圖靈機解決的問題，或等價地，可以由確定性圖靈機在多項式時間內驗證解答的問題。NP 類問題的關鍵特性是：雖然找到解答可能很難（可能需要指數時間），但驗證解答很容易（多項式時間）。</p>
+    <pre>┌─────────────────────────────────────────────────────────────┐
+|                    複雜度層次                                |
+├─────────────────────────────────────────────────────────────┤
+|                                                             |
+|  O(1)       常數時間     陣列存取                          |
+|      ↓                                                   |
+|  O(log n)   對數時間     二分搜尋                          |
+|      ↓                                                   |
+|  O(n)       線性時間     線性搜尋                          |
+|      ↓                                                   |
+|  O(n log n) 線性對數     合併排序                         |
+|      ↓                                                   |
+|  O(nᵏ)      多項式時間   P 類                             |
+|      ↓                                                   |
+|  O(kⁿ)      指數時間     組合爆炸                        |
+└─────────────────────────────────────────────────────────────┘</pre>
+  </div>
+
+  <div class="section">
+    <h2>NP 完全問題與 Cook-Levin 定理</h2>
+    <p>NP 完全（NP-Complete）問題是 NP 類中最「難」的問題。任何 NP 問題都可以在多項式時間內歸約到 NP 完全問題。1971 年，史蒂芬·庫克和萊昂尼德·萊文獨立證明了 SAT（布爾可滿足性問題）是第一個 NP 完全問題。</p>
+    <p>經典 NP 完全問題包括：</p>
+    <table>
+      <tr><th>問題</th><th>描述</th><th>應用場景</th></tr>
+      <tr><td>SAT</td><td>布爾公式可滿足性</td><td>電路設計、規劃</td></tr>
+      <tr><td>3-SAT</td><td>每子句恰好 3 個文字的 SAT</td><td>NP完全性證明基準</td></tr>
+      <tr><td>頂點覆蓋</td><td>最小的頂點覆蓋大小為 k？</td><td>網路監控、設施選址</td></tr>
+      <tr><td>哈密頓回路</td><td>存在經過所有頂點的回路？</td><td>路徑規劃、DNA 測序</td></tr>
+      <tr><td>旅行推銷員</td><td>最短哈密頓回路長度？</td><td>物流配送、電路設計</td></tr>
+      <tr><td>子集和</td><td>是否存在子集和為目標值？</td><td>資源分配、貨幣系統</td></tr>
+      <tr><td>圖著色</td><td>圖可用 k 種顏色著色？</td><td>排程、時隙分配</td></tr>
+      <tr><td>背包問題</td><td>背包價值最大化的選擇？</td><td>資源優化、投資組合</td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <h2>歸約與 NP-hard</h2>
+    <p>歸約是連接問題難度的橋樑。如果問題 A 可以歸約到問題 B，意味著只要能解決 B，就能解決 A。NP-hard（NP-困難）類包含所有「至少與 NP 問題一樣難」的問題——NP-hard 問題不一定屬於 NP，有些甚至不可計算。</p>
+    <pre>┌─────────────────────────────────────────────────────────────┐
+|                    問題分類                                 |
+├─────────────────────────────────────────────────────────────┤
+|                                                             |
+|  P ⊆ NP                                                    |
+|      ↓                                                     |
+|  NP ⊆ PSPACE                                              |
+|      ↓                                                     |
+|  PSPACE ⊆ EXPTIME                                         |
+|                                                             |
+|  NP-complete ⊆ NP ∩ NP-hard                               |
+|                                                             |
+|  注意：P = NP 仍未解決！                                   |
+└─────────────────────────────────────────────────────────────┘</pre>
+  </div>
+
+  <div class="section">
+    <h2>P vs NP 問題</h2>
+    <p>P vs NP 是計算機科學中最大的未解決問題之一，也是千禧年大獎難題之一。若 P = NP，則所有 NP 問題都有多項式時間演算法，密碼學將被徹底顛覆。若 P ≠ NP（多數人相信），則 NP-Complete 問題本質上困難，密碼學有理論安全保障。</p>
+    <p>在實際應用中，面對 NP 完全問題的策略包括：特殊情況處理、參數化演算法、近似演算法（如頂點覆蓋的 2-近似演算法）、隨機演算法等。</p>
+  </div>
+
+  <div class="section">
+    <h2>相關連結</h2>
+    <ul>
+      <li><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E8%A8%88%E7%AE%97%E7%90%86%E8%AB%96/NP%E5%AE%8C%E5%85%A8%E6%80%A7.md">Wiki: NP完全性</a></li>
+      <li><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E8%A8%88%E7%AE%97%E7%90%86%E8%AB%96/%E8%A8%88%E7%AE%97%E7%90%86%E8%AB%96.md">Wiki: 計算理論</a></li>
+      <li><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E8%A8%88%E7%AE%97%E7%90%86%E8%AB%96/%E5%9C%96%E9%9D%88%E6%A9%9F.md">Wiki: 圖靈機</a></li>
+    </ul>
+  </div>
+
+  <footer>
+    <a href="main.html">← 回入口</a> ·
+    <a href="https://github.com/ccckmit/course0">GitHub</a>
+  </footer>
+</div>
+</body>
+</html>

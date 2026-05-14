@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PyTorch — 機器學習</title>
+<link rel="stylesheet" href="../main.css">
+</head>
+<body>
+<header>
+  <div class="back-link"><a href="main.html">← 回到機器學習</a></div>
+  <h1>PyTorch</h1>
+  <p>Facebook 開發的開源深度學習框架，以動態計算圖和 Python 原生風格著稱</p>
+</header>
+<div class="container">
+
+<div class="section">
+  <h2>概述</h2>
+  <p>PyTorch 是 Facebook（Meta）於 2016 年開發的開源深度學習框架，迅速成為學術研究和產業開發的首選工具。其設計理念強調動態計算圖和 Python 原生風格，讓研究者能以直覺的方式快速原型化、實驗和部署模型。PyTorch 2.0 引入了 torch.compile，大幅提升了效能。核心優勢包括靈活性、易用性、豐富的生態系統（torchvision、transformers、PyTorch Lightning 等）。</p>
+</div>
+
+<div class="section">
+  <h2>張量操作與自動微分</h2>
+  <p>PyTorch 的張量 (Tensor) 類似 NumPy 陣列但支援 GPU 加速和自動微分。可從 Python 列表、NumPy 陣列創建，或使用 torch.zeros、torch.ones、torch.randn 等函數。自動微分系統透過 requires_grad 追蹤計算圖，呼叫 backward() 自動計算梯度。自定義 autograd.Function 可實現前向和反向傳播，梯度累加需在每次反向傳播前呼叫 zero_grad() 清零。</p>
+  <div class="code">
+x = torch.tensor([1., 2., 3.], requires_grad=True)
+y = x + 2
+z = y.sum()
+z.backward()
+print(x.grad)  # dz/dx = 1
+  </div>
+</div>
+
+<div class="section">
+  <h2>神經網路模組</h2>
+  <p>nn.Module 是所有神經網路的基類，透過 __init__ 定義層、forward 定義前向傳播。PyTorch 提供了完整的層集合：全連接層 (Linear)、卷積層 (Conv1d/2d/3d)、池化層 (MaxPool2d、AdaptiveAvgPool2d)、循環層 (LSTM、GRU)、正規化層 (BatchNorm、LayerNorm、GroupNorm) 以及各類損失函數。torchvision 提供了 ResNet、VGG 等預訓練模型，支援遷移學習。</p>
+</div>
+
+<div class="section">
+  <h2>訓練流程</h2>
+  <p>標準訓練迴圈包含：模型前向傳播 → 計算損失 → 反向傳播 → 更新參數。使用 DataLoader 管理批次資料，支援多執行緒預載入。優化器 (Optimizer) 如 SGD、Adam、AdamW 通過 optimizer.step() 更新權重。學習率排程 (Scheduler) 如 StepLR、CosineAnnealingLR 動態調整學習率。混合精度訓練 (AMP) 使用 autocast 和 GradScaler 加速訓練並減少記憶體使用。</p>
+  <div class="code">
+for epoch in range(num_epochs):
+    for data, target in train_loader:
+        optimizer.zero_grad()
+        output = model(data)
+        loss = criterion(output, target)
+        loss.backward()
+        optimizer.step()
+  </div>
+</div>
+
+<div class="section">
+  <h2>模型部署與生態系統</h2>
+  <p>TorchScript 通過追蹤或腳本化將模型導出為獨立格式，ONNX 導出支援跨框架部署。TorchServe 提供生產級模型服務。PyTorch 生態系統豐富：torchvision（電腦視覺）、transformers（NLP）、PyTorch Lightning（訓練框架）、TorchRec（推薦系統）。PyTorch 支援分散式訓練（DDP）和 Apple Silicon GPU 加速（MPS 後端）。</p>
+</div>
+
+<div class="section">
+  <h2>相關連結</h2>
+  <ul>
+    <li><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E6%A9%9F%E5%99%A8%E5%AD%B8%E7%BF%92/PyTorch.md">Wiki: PyTorch</a></li>
+    <li><a href="TensorFlow.html">TensorFlow</a></li>
+    <li><a href="深度學習.html">深度學習</a></li>
+    <li><a href="神經網路.html">神經網路</a></li>
+  </ul>
+</div>
+
+</div>
+<footer><a href="main.html">機器學習</a> | <a href="../main.html">回首頁</a></footer>
+</body>
+</html>

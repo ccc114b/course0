@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FastAPI — 網頁設計</title>
+<link rel="stylesheet" href="../main.css">
+</head>
+<body>
+<header>
+  <div class="back-link"><a href="./index.html">← 回網頁設計</a></div>
+  <h1>FastAPI</h1>
+  <p>Python 高效能 Web 框架</p>
+</header>
+<div class="container">
+  <div class="section">
+    <h2>FastAPI 概述</h2>
+    <p>FastAPI 是現代、快速 (高效能) 的 Python Web 框架，基於 Starlette 和 Pydantic，支援自動生成 API 文件 (OpenAPI)。</p>
+    <div class="code">from fastapi import FastAPI<br><br>app = FastAPI(title="我的 API", version="1.0.0")<br><br>@app.get("/")<br>async def root():<br>    return {"message": "Hello World"}</div>
+  </div>
+  <div class="section">
+    <h2>路徑與查詢參數</h2>
+    <p>FastAPI 自動從路徑和查詢字串中提取參數，並進行型別驗證。</p>
+    <div class="code">@app.get("/items/{item_id}")<br>async def read_item(item_id: int, q: str = ""):<br>    return {"item_id": item_id, "q": q}</div>
+  </div>
+  <div class="section">
+    <h2>請求體與 Pydantic</h2>
+    <p>使用 Pydantic 模型定義請求體，自動進行資料驗證。</p>
+    <div class="code">from pydantic import BaseModel<br><br>class Item(BaseModel):<br>    name: str<br>    price: float<br>    tax: float | None = None<br><br>@app.post("/items/")<br>async def create_item(item: Item):<br>    return item</div>
+  </div>
+  <div class="section">
+    <h2>依賴注入與錯誤處理</h2>
+    <p>FastAPI 提供強大的依賴注入系統和例外處理機制。</p>
+    <div class="code">from fastapi import Depends, HTTPException<br><br>async def verify_token(x_token: str = Header(...)):<br>    if x_token != "secret":<br>        raise HTTPException(status_code=401)<br><br>@app.get("/items/", dependencies=[Depends(verify_token)])<br>async def read_items():<br>    return [{"item": "Foo"}]</div>
+  </div>
+  <div class="section">
+    <h2>本課程範例</h2>
+    <ul>
+      <li><a href="https://github.com/ccckmit/course0/blob/main/code/%E7%B6%B2%E7%AB%99%E8%A8%AD%E8%A8%88/11-fastapi">11-fastapi/</a> — FastAPI 範例</li>
+    </ul>
+  </div>
+  <div class="section">
+    <h2>相關連結</h2>
+    <ul>
+      <li><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E7%B6%B2%E9%A0%81%E8%A8%AD%E8%A8%88/FastAPI.md">Wiki: FastAPI</a></li>
+      <li><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E7%B6%B2%E9%A0%81%E8%A8%AD%E8%A8%88/%E5%BE%8C%E7%AB%AF%E9%96%8B%E7%99%BC.md">Wiki: 後端開發</a></li>
+      <li><a href="資料庫.html">資料庫 — 資料儲存</a></li>
+    </ul>
+  </div>
+  <footer><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E7%B6%B2%E9%A0%81%E8%A8%AD%E8%A8%88/FastAPI.md">FastAPI.md</a></footer>
+</div>
+</body>
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>堆積 — 演算法</title>
+<link rel="stylesheet" href="../main.css">
+</head>
+<body>
+<header>
+  <div class="back-link"><a href="main.html">← 回入口</a></div>
+  <h1>堆積 (Heap)</h1>
+  <p>完全二元樹實現的優先佇列資料結構</p>
+</header>
+<div class="container">
+<div class="section">
+<h2>堆積的定義與性質</h2>
+<p>堆積是一種特殊的完全二元樹，滿足堆積性質：每個節點的值都大於等於（最大堆積）或小於等於（最小堆積）其子節點的值。</p>
+<ul>
+<li><strong>最大堆積</strong>：根節點為最大值，每個父節點 ≥ 子節點</li>
+<li><strong>最小堆積</strong>：根節點為最小值，每個父節點 ≤ 子節點</li>
+<li>以陣列儲存：索引 i 的左子為 2i+1，右子為 2i+2</li>
+</ul>
+</div>
+<div class="section">
+<h2>基本操作</h2>
+<p><strong>插入 (push)</strong>：新增元素放到尾部，向上調整 (bubble up)，時間 O(log n)。</p>
+<p><strong>刪除 (pop)</strong>：移除根節點，將尾部元素移到根，向下調整 (bubble down)，時間 O(log n)。</p>
+<p><strong>建堆 (heapify)</strong>：從最後一個非葉節點開始向下調整，時間 O(n)。</p>
+</div>
+<div class="section">
+<h2>堆積排序</h2>
+<p>利用最大堆積進行排序：先將陣列建堆，然後重複取出根節點（最大值）放到陣列末尾，時間 O(n log n)，空間 O(1)。與快速排序相比，堆積排序保證最壞情況也是 O(n log n)。</p>
+</div>
+<div class="section">
+<h2>優先佇列</h2>
+<p>堆積是實現優先佇列最常見的方式。優先佇列中的每個元素有優先級，每次取出優先級最高的元素。應用包括：任務排程、Dijkstra 最短路徑、Huffman 編碼。</p>
+</div>
+<div class="section">
+<h2>本課程範例</h2>
+<ul>
+<li><a href="https://github.com/ccckmit/course0/tree/main/code/演算法/method/13-前處理法/01-sort/sort.py" target="_blank"><strong>sort.py</strong></a>：排序相關範例</li>
+<li><a href="https://github.com/ccckmit/course0/tree/main/code/演算法/method/07-分割擊破法/mergeSort/mergesort.py" target="_blank"><strong>mergesort.py</strong></a>：合併排序（可與堆積排序對比）</li>
+</ul>
+</div>
+<div class="section">
+<h2>相關連結</h2>
+<ul>
+<li><a href="main.html">回到演算法入口</a></li>
+<li><a href="index.html">回到演算法 index</a></li>
+<li><a href="https://github.com/ccckmit/course0/blob/main/wiki/演算法/資料結構.md" target="_blank">資料結構 Wiki</a></li>
+<li><a href="排序演算法.html">排序演算法</a></li>
+<li><a href="二元搜尋樹.html">二元搜尋樹</a></li>
+</ul>
+</div>
+</div>
+<footer><a href="main.html">演算法</a> | <a href="../index.html">回首頁</a></footer>
+</body>
+</html>

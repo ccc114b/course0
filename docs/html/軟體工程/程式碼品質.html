@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>程式碼品質 — 軟體工程</title>
+<link rel="stylesheet" href="../main.css">
+</head>
+<body>
+<header>
+  <div class="back-link"><a href="main.html">← 回入口</a></div>
+  <h1>程式碼品質</h1>
+  <p>可讀性、可維護性、效率與可靠度</p>
+</header>
+<div class="container">
+
+<div class="section">
+  <h2>品質維度</h2>
+  <ul>
+    <li><strong>可讀性</strong>：一致的命名規範、適當的註解、清晰的程式結構</li>
+    <li><strong>可維護性</strong>：低耦合高內聚、DRY 原則、避免長函數</li>
+    <li><strong>效率</strong>：演算法複雜度合理、資源使用優化</li>
+    <li><strong>可靠度</strong>：錯誤處理完善、邊界條件考慮周全、單元測試覆蓋率高</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h2>命名規範</h2>
+  <div class="code">
+# 變數：小寫 + 底線
+user_name = "Alice"
+is_active = True
+
+# 類別：駝峰式
+class UserAccount:
+    pass
+
+# 常數：全大寫
+MAX_RETRY_COUNT = 3
+
+# 函數：動詞或動詞片語
+def get_user_info(user_id):
+    pass
+  </div>
+</div>
+
+<div class="section">
+  <h2>技術債</h2>
+  <p>技術債由 Ward Cunningham 提出，是為趕進度而做出的非最佳技術決策，類似金融債務需要償還利息。類型包括：</p>
+  <ul>
+    <li><strong>程式碼層級</strong>：重複程式碼、複雜條件</li>
+    <li><strong>設計層級</strong>：緊密耦合、缺乏抽象層</li>
+    <li><strong>測試層級</strong>：缺乏單元測試、低覆蓋率</li>
+    <li><strong>文件層級</strong>：過時文件、缺少架構文件</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h2>重構</h2>
+  <p>重構是在不改變外部行為的前提下改善內部結構。常見重構手法：提煉函數、搬移欄位、以多型取代條件式、拆分循環等。充分的測試覆蓋是安全重構的基礎。</p>
+</div>
+
+<div class="section">
+  <h2>本課程範例</h2>
+  <ul>
+    <li><a href="https://github.com/ccckmit/course0/tree/main/code/軟體工程/c0">c0 — 程式碼品質範例</a></li>
+  </ul>
+</div>
+
+<div class="section">
+  <h2>相關連結</h2>
+  <ul>
+    <li><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E8%BD%AF%E9%AB%94%E5%B7%A5%E7%A8%8B/%E7%A8%8B%E5%BC%8F%E7%A2%BC%E5%93%81%E8%B3%AA.md">Wiki: 程式碼品質</a></li>
+    <li><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E8%BD%AF%E9%AB%94%E5%B7%A5%E7%A8%8B/%E6%8A%80%E8%A1%93%E5%82%B5.md">Wiki: 技術債</a></li>
+    <li><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E8%BD%AF%E9%AB%94%E5%B7%A5%E7%A8%8B/%E6%B8%AC%E8%A9%A6.md">Wiki: 測試</a></li>
+  </ul>
+</div>
+
+</div>
+</body>
+</html>

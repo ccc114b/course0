@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RISC-V — 系統程式</title>
+<link rel="stylesheet" href="../main.css">
+</head>
+<body>
+<header>
+  <div class="back-link"><a href="main.html">← 回入口</a></div>
+  <h1>RISC-V</h1>
+  <p>開放指令集架構的未來</p>
+</header>
+<div class="container">
+<div class="section">
+<h2>什麼是 RISC-V？</h2>
+<p>RISC-V 是從 UC Berkeley 發起的開放標準指令集架構（ISA），與 ARM、x86 不同，完全免費開放。這種開放性使其在學術、嵌入式、雲端運算領域迅速獲得關注。</p>
+</div>
+<div class="section">
+<h2>特點</h2>
+<ul>
+<li><strong>開放標準</strong>：無需授權費用</li>
+<li><strong>模組化設計</strong>：基本指令集 + 擴充套件</li>
+<li><strong>精簡</strong>：基礎指令集易於學習和實現</li>
+<li><strong>擴展性</strong>：支援自訂指令</li>
+<li><strong>社群活躍</strong>：開源生態系統</li>
+</ul>
+</div>
+<div class="section">
+<h2>基本整數指令集</h2>
+<table>
+<tr><th>類別</th><th>指令</th><th>說明</th></tr>
+<tr><td>算術</td><td>add, sub, mul</td><td>加、減、乘</td></tr>
+<tr><td>邏輯</td><td>and, or, xor</td><td>位元運算</td></tr>
+<tr><td>移位</td><td>sll, srl, sra</td><td>邏輯/算術移位</td></tr>
+<tr><td>分支</td><td>beq, bne, blt</td><td>條件跳躍</td></tr>
+<tr><td>載入/儲存</td><td>lw, sw, lb, sb</td><td>記憶體存取</td></tr>
+<tr><td>跳躍</td><td>jal, jalr</td><td>函數呼叫</td></tr>
+</table>
+</div>
+<div class="section">
+<h2>擴展套件</h2>
+<p><strong>M</strong>：整數乘除法；<strong>A</strong>：原子操作；<strong>F/D</strong>：單/雙精度浮點；<strong>C</strong>：壓縮指令；<strong>V</strong>：向量運算。</p>
+</div>
+<div class="section">
+<h2>本課程範例</h2>
+<ul>
+<li><a href="https://github.com/ccckmit/course0/tree/main/code/系統程式/os/mini-riscv-os2" target="_blank"><strong>mini-riscv-os2</strong></a>：RISC-V 作業系統實作（9 階段）</li>
+<li><a href="https://github.com/ccckmit/course0/tree/main/code/系統程式/irvm/rv0" target="_blank"><strong>rv0</strong></a>：RISC-V 虛擬機實作</li>
+</ul>
+</div>
+<div class="section">
+<h2>相關連結</h2>
+<ul>
+<li><a href="index.html">回到系統程式 index</a></li>
+<li><a href="main.html">回到入口</a></li>
+<li><a href="https://github.com/ccckmit/course0/blob/main/wiki/系統程式/RISC-V.md" target="_blank">原始 Wiki 文章</a></li>
+<li><a href="https://github.com/ccckmit/course0/tree/main/code/系統程式/os/mini-riscv-os2" target="_blank">程式碼範例</a></li>
+</ul>
+</div>
+</div>
+<footer><a href="main.html">系統程式</a> | <a href="../index.html">回首頁</a></footer>
+</body>
+</html>

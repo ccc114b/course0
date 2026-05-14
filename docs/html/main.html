@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>陳鍾誠的課程教材 — 入口</title>
+<link rel="stylesheet" href="main.css">
+<style>
+header { background: linear-gradient(135deg, #2c3e50 0%, #1a252f 100%); }
+.container { max-width: 1100px; }
+.section h2 { color: #2c3e50; }
+footer a { color: #2c3e50; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 14px; }
+.card { background: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border: 1px solid #eee; text-decoration: none; color: inherit; transition: transform .15s, box-shadow .15s; }
+.card:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.12); border-color: #2c3e50; }
+.card h3 { font-size: 1.1rem; margin-bottom: 6px; }
+.card p { font-size: 0.85rem; color: #666; }
+.card .badge { display: inline-block; font-size: 0.7rem; padding: 2px 8px; border-radius: 8px; color: #fff; margin-top: 6px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>📚 陳鍾誠的課程教材</h1>
+  <p>金門大學資訊工程系 — 電腦科學與人工智慧課程</p>
+</header>
+<div class="container">
+<div class="section">
+<h2>所有課程主題</h2>
+<p style="margin-bottom:14px;color:#666">點擊進入各科目的完整教學內容與程式碼範例</p>
+<div class="grid">
+  <a href="系統程式/main.html" class="card">
+    <h3>⚙️ 系統程式</h3>
+    <p>編譯器、作業系統、虛擬機、網路、LLVM、RISC-V</p>
+    <span class="badge" style="background:#e74c3c">19 個主題</span>
+  </a>
+  <a href="數學/main.html" class="card">
+    <h3>🧮 數學</h3>
+    <p>代數、幾何、微積分、機率統計、線性代數、密碼學</p>
+    <span class="badge" style="background:#3498db">10 個主題</span>
+  </a>
+  <a href="計算理論/main.html" class="card">
+    <h3>🔣 計算理論</h3>
+    <p>圖靈機、NP完全性、Lambda演算、形式文法、自動機</p>
+    <span class="badge" style="background:#9b59b6">11 個主題</span>
+  </a>
+  <a href="機器學習/main.html" class="card">
+    <h3>🤖 機器學習</h3>
+    <p>神經網路、深度學習、Transformer、LLM、強化學習</p>
+    <span class="badge" style="background:#667eea">34 個主題</span>
+  </a>
+  <a href="軟體工程/main.html" class="card">
+    <h3>📦 軟體工程</h3>
+    <p>開發流程、DevOps、敏捷、架構、Agent、Prompt工程</p>
+    <span class="badge" style="background:#27ae60">16 個主題</span>
+  </a>
+  <a href="演算法/main.html" class="card">
+    <h3>📊 演算法</h3>
+    <p>時間複雜度、排序、搜尋、動態規劃、貪婪、圖論</p>
+    <span class="badge" style="background:#e67e22">21 個主題</span>
+  </a>
+  <a href="計算機結構/main.html" class="card">
+    <h3>🖥️ 計算機結構</h3>
+    <p>數位邏輯、CPU、記憶體、管線、GPU、CUDA、Nand2Tetris</p>
+    <span class="badge" style="background:#16a085">16 個主題</span>
+  </a>
+  <a href="網頁設計/main.html" class="card">
+    <h3>🌐 網頁設計</h3>
+    <p>HTML、CSS、JavaScript、React、FastAPI、資料庫</p>
+    <span class="badge" style="background:#f39c12">13 個主題</span>
+  </a>
+</div>
+</div>
+</div>
+<footer>
+  <a href="https://github.com/ccckmit/course0">GitHub 原始碼</a> · 金門大學資訊工程系 · 陳鍾誠
+</footer>
+</body>
+</html>

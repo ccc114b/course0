@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>排序演算法 — 演算法</title>
+<link rel="stylesheet" href="../main.css">
+</head>
+<body>
+<header>
+  <div class="back-link"><a href="main.html">← 回入口</a></div>
+  <h1>排序演算法 (Sorting Algorithms)</h1>
+  <p>將無序資料轉變為有序序列的經典演算法</p>
+</header>
+<div class="container">
+<div class="section">
+<h2>排序演算法分類</h2>
+<p>排序演算法可分為比較排序與非比較排序兩大類。比較排序的理論下限為 O(n log n)，而非比較排序可達到 O(n)。</p>
+<ul>
+<li><strong>O(n²) 比較排序</strong>：氣泡排序、選擇排序、插入排序</li>
+<li><strong>O(n log n) 比較排序</strong>：合併排序、快速排序、堆積排序</li>
+<li><strong>O(n) 非比較排序</strong>：計數排序、基數排序、桶排序</li>
+</ul>
+</div>
+<div class="section">
+<h2>常見排序演算法</h2>
+<p><strong>氣泡排序 (Bubble Sort)</strong>：重複走訪數列，相鄰元素兩兩比較，大的向後移。時間 O(n²)，空間 O(1)。</p>
+<p><strong>合併排序 (Merge Sort)</strong>：分治策略，將數列分成兩半分別排序再合併。時間 O(n log n)，空間 O(n)。</p>
+<p><strong>快速排序 (Quick Sort)</strong>：選 pivot 分區，左小右大。平均 O(n log n)，最壞 O(n²)。</p>
+<p><strong>堆積排序 (Heap Sort)</strong>：利用最大堆積進行排序。時間 O(n log n)，空間 O(1)。</p>
+</div>
+<div class="section">
+<h2>時間複雜度比較</h2>
+<table>
+<tr><th>演算法</th><th>最好</th><th>平均</th><th>最壞</th><th>空間</th><th>穩定</th></tr>
+<tr><td>氣泡排序</td><td>O(n)</td><td>O(n²)</td><td>O(n²)</td><td>O(1)</td><td>是</td></tr>
+<tr><td>選擇排序</td><td>O(n²)</td><td>O(n²)</td><td>O(n²)</td><td>O(1)</td><td>否</td></tr>
+<tr><td>插入排序</td><td>O(n)</td><td>O(n²)</td><td>O(n²)</td><td>O(1)</td><td>是</td></tr>
+<tr><td>合併排序</td><td>O(n log n)</td><td>O(n log n)</td><td>O(n log n)</td><td>O(n)</td><td>是</td></tr>
+<tr><td>快速排序</td><td>O(n log n)</td><td>O(n log n)</td><td>O(n²)</td><td>O(log n)</td><td>否</td></tr>
+<tr><td>堆積排序</td><td>O(n log n)</td><td>O(n log n)</td><td>O(n log n)</td><td>O(1)</td><td>否</td></tr>
+</table>
+</div>
+<div class="section">
+<h2>本課程範例</h2>
+<ul>
+<li><a href="https://github.com/ccckmit/course0/tree/main/code/演算法/method/05b-改良法/bubbleSort.py" target="_blank"><strong>bubbleSort.py</strong></a>：氣泡排序實作</li>
+<li><a href="https://github.com/ccckmit/course0/tree/main/code/演算法/method/07-分割擊破法/mergeSort/mergesort.py" target="_blank"><strong>mergesort.py</strong></a>：合併排序實作</li>
+<li><a href="https://github.com/ccckmit/course0/tree/main/code/演算法/method/13-前處理法/01-sort/sort.py" target="_blank"><strong>sort.py</strong></a>：排序前處理範例</li>
+</ul>
+</div>
+<div class="section">
+<h2>相關連結</h2>
+<ul>
+<li><a href="main.html">回到演算法入口</a></li>
+<li><a href="index.html">回到演算法 index</a></li>
+<li><a href="https://github.com/ccckmit/course0/blob/main/wiki/演算法/排序演算法.md" target="_blank">原始 Wiki 文章</a></li>
+<li><a href="時間複雜度.html">時間複雜度</a></li>
+<li><a href="分割擊破法.html">分割擊破法</a></li>
+</ul>
+</div>
+</div>
+<footer><a href="main.html">演算法</a> | <a href="../index.html">回首頁</a></footer>
+</body>
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>大型語言模型 (LLM) — 機器學習</title>
+<link rel="stylesheet" href="../main.css">
+</head>
+<body>
+<header>
+  <div class="back-link"><a href="main.html">← 回到機器學習</a></div>
+  <h1>大型語言模型 (LLM)</h1>
+  <p>基於 Transformer 在海量文字上預訓練的語言模型</p>
+</header>
+<div class="container">
+
+<div class="section">
+  <h2>概述</h2>
+  <p>大型語言模型（Large Language Model，LLM）是指基於深度學習技術，特別是 Transformer 架構，在海量文字資料上進行預訓練而形成的語言模型。LLM 不僅能夠理解和生成人類語言，還展現出推理、程式碼撰寫、翻譯、問答等多種能力。從 GPT-3 到 GPT-4，從 LLaMA 到 Claude，LLM 正在深刻改變人工智慧的發展方向。</p>
+</div>
+
+<div class="section">
+  <h2>發展歷程</h2>
+  <ul>
+    <li><strong>2017</strong>：Transformer 論文「Attention is All You Need」</li>
+    <li><strong>2018</strong>：GPT-1（110M 參數）、BERT（340M 參數）</li>
+    <li><strong>2019</strong>：GPT-2（1.5B 參數）、T5（11B 參數）</li>
+    <li><strong>2020</strong>：GPT-3（175B 參數），湧現能力被發現</li>
+    <li><strong>2022</strong>：ChatGPT（GPT-3.5 + RLHF），對話突破</li>
+    <li><strong>2023-2024</strong>：GPT-4、LLaMA、Claude、Gemini 多模態能力</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h2>核心技術</h2>
+  <h3>Transformer 架構</h3>
+  <p>LLM 的核心架構是 Transformer 的解碼器部分，使用自注意力機制來捕捉文字中的長距離依賴關係。模型通過在大量未標記文字上進行語言建模（預測下一個 token）來學習語言知識。</p>
+  <h3>預訓練與微調</h3>
+  <p>兩階段訓練策略：第一階段在大規模語料上進行無監督預訓練，第二階段在特定任務上進行微調。RLHF（基於人類回饋的強化學習）進一步將模型輸出與人類偏好對齊。</p>
+</div>
+
+<div class="section">
+  <h2>湧現能力</h2>
+  <p>當模型規模超過某個閾值時，LLM 展現出小模型不具備的湧現能力：</p>
+  <ul>
+    <li><strong>上下文學習</strong>：僅透過提示詞中的範例就能學習新任務</li>
+    <li><strong>思維鏈推理</strong>：生成中間推理步驟來解決複雜問題</li>
+    <li><strong>指令遵循</strong>：理解並執行自然語言指令</li>
+    <li><strong>程式碼生成</strong>：根據描述生成可執行的程式碼</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h2>本課程範例</h2>
+  <ul>
+    <li><a href="https://github.com/ccckmit/course0/blob/main/code/%E6%A9%9F%E5%99%A8%E5%AD%B8%E7%BF%92/nn/microgpt/microgpt.py">microgpt.py</a> — 微型 GPT 實作</li>
+    <li><a href="https://github.com/ccckmit/course0/blob/main/code/%E6%A9%9F%E5%99%A8%E5%AD%B8%E7%BF%92/nn/nn1tensor/gpt.py">gpt.py</a> — Tensor 版 GPT</li>
+    <li><a href="https://github.com/ccckmit/course0/blob/main/code/%E6%A9%9F%E5%99%A8%E5%AD%B8%E7%BF%92/nn/nn0/nn0py/gpt0.py">gpt0.py</a> — 簡化版 GPT</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h2>相關連結</h2>
+  <ul>
+    <li><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E6%A9%9F%E5%99%A8%E5%AD%B8%E7%BF%92/%E5%A4%A7%E5%9E%8B%E8%AA%9E%E8%A8%80%E6%A8%A1%E5%9E%8B.md">Wiki: 大型語言模型</a></li>
+    <li><a href="Transformer.html">Transformer</a></li>
+    <li><a href="深度學習.html">深度學習</a></li>
+    <li><a href="自然語言處理.html">自然語言處理</a></li>
+  </ul>
+</div>
+
+</div>
+<footer><a href="https://github.com/ccckmit/course0/blob/main/wiki/%E6%A9%9F%E5%99%A8%E5%AD%B8%E7%BF%92/%E5%A4%A7%E5%9E%8B%E8%AA%9E%E8%A8%80%E6%A8%A1%E5%9E%8B.md">編輯此頁</a></footer>
+</body>
+</html>
